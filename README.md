@@ -1,70 +1,90 @@
-# Getting Started with Create React App
+# 📝 Odara Gestão - Projeto de TCC
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📌 Visão Geral
+**Odara Gestão** é uma plataforma digital inovadora desenvolvida como trabalho de conclusão de curso (TCC), focada na gestão integrada de lares para idosos e instituições de longa permanência. O sistema foi projetado para:
 
-## Available Scripts
+- Otimizar rotinas administrativas
+- Melhorar a comunicação entre profissionais e familiares
+- Garantir maior segurança e bem-estar aos residentes
+- Oferecer uma interface amigável e acessível
 
-In the project directory, you can run:
+## 🧑‍💻 Equipe de Desenvolvimento
+| Desenvolvedor       | GitHub | LinkedIn |
+|---------------------|--------|----------|
+| Letícia Veiga       |        |          |
+| Lucas Martins       |        |          |
+| Nicole Cajueiro     |        |          |
+| Jamily              |        | 
 
-### `npm start`
+## 🚀 Tecnologias Utilizadas
+### Frontend
+- React.js
+- Tailwind CSS
+- React Icons
+- Axios (para requisições HTTP)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Backend
+- Node.js
+- Express
+- MongoDB (banco de dados)
+- Mongoose (ODM)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Outras Ferramentas
+- Git (controle de versão)
+- GitHub (repositório)
+- Figma (design de interface)
 
-### `npm test`
+## 📋 Funcionalidades Principais
+1. **Gestão de Residentes**
+   - Cadastro completo de idosos
+   - Histórico médico digitalizado
+   - Controle de medicamentos
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. **Comunicação Integrada**
+   - Mensagens entre equipe e familiares
+   - Notificações importantes
+   - Relatórios periódicos automáticos
 
-### `npm run build`
+3. **Administração**
+   - Controle de funcionários
+   - Agenda de atividades
+   - Gestão de estoque e suprimentos
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🛠️ Como Executar o Projeto
+### Pré-requisitos
+- Node.js (v16 ou superior)
+- Git
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Instalação
+```bash
+# Clonar o repositório
+git clone https://github.com/seu-usuario/odara-gestao.git
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Instalar dependências do frontend
+cd frontend
+npm install
 
-### `npm run eject`
+# Instalar dependências do backend
+cd ../backend
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Configuração
+1. Criar arquivo `.env` no backend baseado no `.env.example`
+2. Configurar as variáveis de ambiente (conexão com MongoDB, chaves de API, etc.)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Execução
+```bash
+# Iniciar backend
+cd backend
+npm start
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# Iniciar frontend (em outro terminal)
+cd frontend
+npm start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 📚 Documentação Adicional
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🙏 Agradecimentos
