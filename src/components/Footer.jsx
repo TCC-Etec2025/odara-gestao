@@ -6,13 +6,22 @@ const Footer = () => {
     <footer className="bg-odara-primary text-white py-8 border-t-4 border-odara-accent">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row justify-between items-center mb-8 gap-6">
-          
-          <div className="flex flex-col items-center lg:items-start">
+
+          <div className="flex flex-col items-center lg:items-start group">
             <div className="flex items-center mb-4">
-              <div className="w-14 h-14 bg-odara-accent rounded-full mr-3 flex items-center justify-center">
-                <span className="text-2xl font-bold text-odara-dark">OG</span>
+              <div className="w-14 h-14 bg-odara-accent rounded-full mr-3 flex items-center justify-center overflow-hidden border-2 border-white shadow-lg">
+                <img
+                  src="../images/Logo final - Icone fundo branco redondo[1].png"
+                  alt="Logo Odara Gestão"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                  }}
+                />
               </div>
-              <h2 className="text-2xl font-bold">Odara Gestão</h2>
+              <h2 className="text-2xl font-bold transition-transform group-hover:scale-105">
+                Odara <span className="font-normal">Gestão</span>
+              </h2>
             </div>
 
             <div className="mb-6 md:mb-0">
@@ -25,9 +34,9 @@ const Footer = () => {
             </div>
           </div>
 
-          <a 
-            href="https://wa.me/5512987654321" 
-            target="_blank" 
+          <a
+            href="https://wa.me/5512987654321"
+            target="_blank"
             rel="noopener noreferrer"
             className="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-full flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
