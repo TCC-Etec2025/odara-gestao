@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme { /* o '@theme' funciona primeiro chamando o que vc quer estilizar entao a chave é "--color-NOME_DA_COR", "--font-NOME_DA_FONTE"*/
+  --color-odara-primary: #B76E79;
+  --color-odara-secondary: #F8E9E9;
+  --color-odara-accent: #E3C4C8;
+  --color-odara-dark: #4A2A2F;
+}
