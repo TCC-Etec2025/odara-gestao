@@ -20,7 +20,7 @@ const Footer = () => {
                 />
               </div>
               <h2 className="text-2xl font-bold transition-transform group-hover:scale-105">
-                Odara <span className="font-normal">Gestão</span>
+                Odara <span className="nome-empresa-medio">Gestão</span>
               </h2>
             </div>
 

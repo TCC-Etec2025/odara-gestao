@@ -1,81 +1,202 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Documentacao = () => {
+  const [activeItem, setActiveItem] = useState(null);
+
+  const funcionalidades = [
+    {
+      nome: 'Registro de medicamentos',
+      descricao: 'Controle completo da medicação dos residentes com alertas e histórico detalhado',
+      icone: '💊',
+      detalhes: [
+        'Controle de horários e dosagens',
+        'Alertas para medicamentos pendentes',
+        'Relatório de administração',
+      ]
+    },
+    {
+      nome: 'Registro de Atividades',
+      descricao: 'Organização e acompanhamento das atividades diárias dos residentes',
+      icone: '📋',
+      detalhes: [
+        'Agendamento de atividades recreativas',
+        'Registro de participação',
+        'Avaliação de desempenho',
+        'Programação semanal',
+      ]
+    },
+    {
+      nome: 'Registro de Ocorrências',
+      descricao: 'Documentação de incidentes e acompanhamento de resolução',
+      icone: '⚠️',
+      detalhes: [
+        'Classificação por gravidade',
+        'Registro fotográfico',
+        'Fluxo de acompanhamento',
+        'Comunicação com familiares',
+        'Relatórios analíticos'
+      ]
+    },
+    {
+      nome: 'Registro da saúde corporal inicial',
+      descricao: 'Monitoramento contínuo do estado de saúde dos residentes',
+      icone: '🏥',
+      detalhes: [
+        'O Registro da Saúde Corporal Inicial se refere à investigação e registro de eventuais ferimentos e/ou questões corporais no momento da entrada inicial da pessoa idosa na Casa. Com um template anatômico prático, basta selecionar as regiões do corpo afetadas e descrever os sintomas físicos da pessoa idosa referentes a essa região, dessa forma preza-se por um acompanhamento mais completo da saúde do individuo e garante um melhor entendimento da situação da saúde dele ao entrar em seu novo lar.',
+      ]
+    },
+    {
+      nome: 'Registro de alimentação',
+      descricao: 'Gestão nutricional e acompanhamento alimentar',
+      icone: '🍽️',
+      detalhes: [
+        'Registro de consumo',
+        'Controle de dietas especiais',
+        'Preferências individuais'
+      ]
+    },
+    {
+      nome: 'Registro de comportamento',
+      descricao: 'Registro e análise de padrões comportamentais',
+      icone: '📊',
+      detalhes: [
+        'Identificação de alterações',
+        'Acompanhamento psicológico',
+        'Registro de humor',
+        'Integração com equipe'
+      ]
+    },
+    {
+      nome: 'Registro de preferências',
+      descricao: 'Registro das preferências individuais de cada residente',
+      icone: '⭐',
+      detalhes: [
+        'Hábitos pessoais',
+        'Gostos e aversões',
+        'Rotinas preferidas',
+        'Atividades favoritas',
+      ]
+    },
+    {
+      nome: 'Registro de relações internas',
+      descricao: 'Mapeamento das relações interpessoais na instituição',
+      icone: '👥',
+      detalhes: [
+        'Vínculos entre residentes',
+        'Registro de visitas',
+        'Contatos familiares',
+        'Preferências de convivência'
+      ]
+    },
+    {
+      nome: 'Registro de consultas médicas',
+      descricao: 'Controle completo de consultas e acompanhamento médico',
+      icone: '🩺',
+      detalhes: [
+        'Agendamento de consultas',
+        'Prescrições digitais',
+        'Laudos médicos',
+      ]
+    },
+    {
+      nome: 'Registro de exames médicos',
+      descricao: 'Organização e resultados de exames médicos',
+      icone: '🔬',
+      detalhes: [
+        'Agendamento de exames',
+        'Alertas',
+      ]
+    },
+    {
+      nome: 'Registros de vídeo e fotográfico',
+      descricao: 'Armazenamento de registros fotográficos e vídeos',
+      icone: '📹',
+      detalhes: [
+        'Registro de evolução',
+        'Compartilhamento familiar',
+      ]
+    },
+    {
+      nome: 'Plataforma para Reuniões',
+      descricao: 'Sistema integrado de reuniões e comunicação',
+      icone: '📞',
+      detalhes: [
+        'Agenda compartilhada',
+        'Comunicação com familiares',
+        'Reuniões multidisciplinares',
+      ]
+    }
+  ];
+
   return (
-    <main className="container mx-auto py-8 px-4 max-w-4xl">
+    <main className="container mx-auto py-8 px-4 max-w-6xl font-sans">
+      {/* Cabeçalho */}
       <header className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-odara-primary mb-2">Odara Gestão</h1>
-        <h2 className="text-xl text-odara-dark">Confira abaixo a documentação de cada funcionalidade</h2>
+        <h1 className="text-4xl font-bold text-odara-primary mb-2">Funcionalidades do Sistema</h1>
+        <h2 className="text-xl text-gray-600">Explore todas as ferramentas disponíveis para gestão de ILPS</h2>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
-        {[
-          'Registro de medicamentos',
-          'Registro de Atividades',
-          'Registro de Ocorrências',
-          'Registro da saúde corporal inicial',
-          'Registro de quadro alimentar',
-          'Registro de comportamento',
-          'Registro de preferências',
-          'Registro de relações internas',
-          'Registro de consultas médicas',
-          'Registro de exames médicos',
-          'Registros de vídeo e fotográfico',
-          'Plataforma para chamadas de vídeo'
-        ].map((item, index) => (
-          <div 
-            key={index} 
-            className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border-l-4 border-odara-accent"
+      {/* Lista de funcionalidades */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {funcionalidades.map((item, index) => (
+          <button
+            key={index}
+            onClick={() => setActiveItem(index)}
+            className={`bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all text-left border-2 ${activeItem === index ? 'border-odara-light-blue shadow-md' : 'border-gray-100'}`}
           >
-            <p className="text-odara-dark">{item}</p>
-          </div>
+            <div className="flex items-start">
+              <span className="text-2xl mr-4">{item.icone}</span>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800">{item.nome}</h3>
+                <p className="text-sm text-gray-500 mt-1 line-clamp-2">{item.descricao}</p>
+              </div>
+            </div>
+          </button>
         ))}
       </div>
 
-      <section className="bg-white p-6 rounded-lg shadow-md mb-12">
-        <h2 className="text-2xl font-bold text-odara-primary mb-4">Registro da Saúde Corporal Inicial</h2>
-        <p className="text-odara-dark mb-4">
-          O <strong className="text-odara-dark">Registro da Saúde Corporal Inicial</strong> se refere à investigação e registro de eventuais ferimentos e/ou questões corporais no momento da entrada inicial da pessoa idosa na Casa. Com um template anatômico prático, basta selecionar as regiões do corpo afetadas e descrever os sintomas físicos da pessoa idosa referentes a essa região, dessa forma preza-se por um acompanhamento mais completo da saúde do indivíduo e garante um melhor entendimento da situação da saúde dele ao entrar em seu novo lar.
-        </p>
+      {/* Seção de detalhes */}
+      {activeItem !== null && (
+        <section className="bg-gray-50 rounded-xl p-8 mb-8 animate-fadeIn">
+          <div className="flex items-center mb-6">
+            <span className="text-3xl mr-4">{funcionalidades[activeItem].icone}</span>
+            <div>
+              <h2 className="text-2xl font-bold text-odara-primary">{funcionalidades[activeItem].nome}</h2>
+              <p className="text-gray-600">{funcionalidades[activeItem].descricao}</p>
+            </div>
+          </div>
 
-        <div className="text-odara-dark space-y-6 mt-8">
-          {[
-            {
-              area: 'Área 1',
-              condicoes: [
-                'Descrição da condição pontuada.',
-                'Descrição da condição pontuada.'
-              ]
-            },
-            {
-              area: 'Área 2',
-              condicoes: [
-                'Descrição da condição pontuada.'
-              ]
-            },
-            {
-              area: 'Área 3',
-              condicoes: [
-                'Descrição da condição pontuada.'
-              ]
-            }
-          ].map((item, index) => (
-            <div 
-              key={index} 
-              className="border-l-4 border-odara-accent pl-4"
-            >
-              <h3 className="font-semibold text-lg text-odara-darkest">{item.area}</h3>
-              <ul className="mt-2 space-y-2">
-                {item.condicoes.map((condicao, i) => (
-                  <li key={i} className="text-odara-dark">
-                    <span className="font-medium text-odara-darkest">Condição {i+1}:</span> {condicao}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-xs border border-gray-100">
+              <h3 className="text-lg font-semibold text-odara-darkest mb-4 flex items-center">
+                <svg className="w-5 h-5 mr-2 text-odara-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Recursos Principais
+              </h3>
+              <ul className="space-y-3">
+                {funcionalidades[activeItem].detalhes.map((detalhe, i) => (
+                  <li key={i} className="flex items-start">
+                    <span className="text-odara-dark-blue mr-2">•</span>
+                    <span className="text-gray-700">{detalhe}</span>
                   </li>
                 ))}
               </ul>
             </div>
-          ))}
+          </div>
+        </section>
+      )}
+
+      {/* Informação para ver as descrições */}
+      {activeItem === null && (
+        <div className="text-center py-12">
+          <svg className="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <h3 className="text-lg font-medium text-gray-500 mt-4">Selecione uma funcionalidade para ver detalhes</h3>
+          <p className="text-gray-400 mt-1">Conheça todas as ferramentas disponíveis para gestão de ILPS</p>
         </div>
-      </section>
+      )}
     </main>
   );
 };
