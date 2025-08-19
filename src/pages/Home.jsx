@@ -68,7 +68,7 @@ const Home = () => {
         <div className="w-full px-6 relative z-10">
           <div className="max-w-6xl mx-auto text-center">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-              Odara <span className="text-odara-accent">Gestão</span>
+              Odara <span className="text-odara-name">Gestão</span>
             </h1>
             <p className="text-xl md:text-2xl mb-4 text-white/90 animate-fade-in-delay">
               Sistema completo de gestão para cuidados especializados
@@ -82,13 +82,13 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <button
                 onClick={() => scrollToSection("documentacao")}
-                className="bg-odara-accent hover:bg-odara-accent/90 text-odara-dark font-semibold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                className="bg-odara-accent border-2 border-odara-contorno hover:bg-odara-secondary/90 text-odara-contorno font-semibold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
               >
                 Explorar Funcionalidades
               </button>
               <button
                 onClick={() => scrollToSection("cadastro")}
-                className="border-2 border-white text-white hover:bg-white hover:text-odara-primary font-semibold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105"
+                className="border-2 border-odara-contorno text-odara-contorno hover:bg-white hover:text-odara-primary font-semibold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105"
               >
                 Começar Agora
               </button>
@@ -117,8 +117,8 @@ const Home = () => {
         <div className="w-full px-6">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-odara-primary mb-6">Funcionalidades Completas</h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-bold text-odara-accent mb-6">Funcionalidades Completas</h2>
+              <p className="text-xl text-odara-dark max-w-3xl mx-auto">
                 Descubra todas as ferramentas disponíveis para uma gestão eficiente e completa
               </p>
             </div>
@@ -127,12 +127,12 @@ const Home = () => {
               {funcionalidades.map((funcionalidade, index) => (
                 <div
                   key={index}
-                  className="group bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-odara-dark-blue hover:border-odara-primary transform hover:-translate-y-2"
+                  className="group bg-odara-offwhite p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-odara-primary hover:border-odara-contorno hover:bg-odara-secondary transform hover:-translate-y-2"
                 >
                   <div className="flex items-start space-x-4">
                     <div className="text-2xl mb-3">{funcionalidade.icon}</div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-odara-dark group-hover:text-odara-primary transition-colors text-sm leading-tight">
+                      <h3 className="font-semibold text-odara-name group-hover:text-odara-white transition-colors text-sm leading-tight">
                         {funcionalidade.nome}
                       </h3>
                     </div>
@@ -144,7 +144,7 @@ const Home = () => {
             <div className="flex justify-center mt-12">
               <button
                 onClick={() => window.location.href = "/documentacao"}
-                className="bg-odara-accent hover:bg-odara-accent/90 text-odara-dark font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-lg w-auto min-w-[240px]"
+                className="bg-odara-accent border-2 border-odara-contorno hover:bg-odara-secondary/90 text-odara-contorno font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-lg w-auto min-w-[240px]"
               >
                 Confira mais sobre as funcionalidades
               </button>
@@ -172,10 +172,10 @@ const Home = () => {
       <section id="sobre" ref={sobreRef} className="min-h-screen bg-white flex items-center py-20">
         <div className="w-full px-6">
           <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-odara-primary mb-6">Sobre o Sistema</h2>
-            <section className="bg-white p-6 rounded-lg shadow-md mb-10 border-l-4 border-odara-dark-blue">
+            <h2 className="text-4xl md:text-5xl font-bold text-odara-accent mb-6">Sobre o Sistema</h2>
+            <section className="bg-odara-offwhite p-6 rounded-lg shadow-md mb-10 border-l-4 border-odara-primary">
               <p className="text-odara-dark mb-4">
-                A <strong className="text-odara-primary">Odara Gestão</strong> é um Sistema de Gestão dedicado à facilitação da gestão de Instituições de Lares para Pessoas Séniores (ILPS). Temos como objetivo auxiliar a administração diária e cuidados dos devidos pacientes.
+                A <strong className="text-odara-name">Odara Gestão</strong> é um Sistema de Gestão dedicado à facilitação da gestão de Instituições de Lares para Pessoas Séniores (ILPS). Temos como objetivo auxiliar a administração diária e cuidados dos devidos pacientes.
               </p>
               <p className="text-odara-dark">
                 Esse aplicativo estará contribuindo tanto com o trabalho de registrar informações dos enfermeiros quanto a participação e ciência dos responsáveis pelo sênior.
@@ -184,7 +184,7 @@ const Home = () => {
             <div className="flex justify-center mt-12">
               <button
                 onClick={() => window.location.href = "/sobre"}
-                className="bg-odara-accent hover:bg-odara-accent/90 text-odara-dark font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-lg w-auto min-w-[240px]"
+                className="bg-odara-accent border-2 border-odara-contorno hover:bg-odara-secondary/90 text-odara-contorno font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-lg w-auto min-w-[240px]"
               >
                 Quero saber mais
               </button>
@@ -198,7 +198,7 @@ const Home = () => {
             <button
               onClick={() => scrollToSection("cadastro")}
               aria-label="Rolar para Cadastro"
-              className="text-gray-400 hover:text-odara-primary transition-colors"
+              className="text-gray-400 hover:text-odara-accent transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />

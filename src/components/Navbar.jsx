@@ -85,7 +85,7 @@ const Navbar = () => {
             </div>
             <div className="flex flex-col">
               <h1 className="text-xl font-bold text-white transition-transform group-hover:scale-105">
-                Odara <span className="font-normal text-white/90 nome-empresa-medio">Gestão</span>
+                Odara <span className="font-normal  nome-empresa-medio">Gestão</span>
               </h1>
               <span className="text-xs text-white/70 hidden sm:block">Sistema de Gestão para ILPs</span>
             </div>
