@@ -62,7 +62,7 @@ const Home = () => {
         ref={heroRef}
         className="min-h-screen w-full bg-odara-primary text-white relative overflow-hidden flex items-center justify-center"
       >
-        {/* Fazendo as Bolinhas de funfo*/}
+        {/* Fazendo as Bolinhas de fundo*/}
         <div className="absolute inset-0 opacity-5 bg-[radial-gradient(white_1px,transparent_1px)] [background-size:16px_16px]" />
 
         <div className="w-full px-6 relative z-10">

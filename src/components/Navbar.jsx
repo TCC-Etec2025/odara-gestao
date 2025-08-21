@@ -98,21 +98,21 @@ const Navbar = () => {
                 key={item.path}
                 to={item.path}
                 className={`
-                  flex items-center space-x-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 relative group
+                  flex items-center space-x-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 relative group font-semibold text-odara-contorno transform
                   ${isActive(item.path)
-                    ? "bg-odara-light-blue text-odara-dark border border-white/20 shadow-lg backdrop-blur-sm"
-                    : "text-white/90 hover:text-white hover:bg-white/10 hover:shadow-md hover:backdrop-blur-sm"
+                    ? "bg-odara-secondary text-odara-contorno border-2 border-odara-contorno shadow-lg backdrop-blur-sm"
+                    : "hover:bg-white hover:text-odara-primary hover:border-2 hover:border-odara-contorno  hover:scale-101 hover:shadow-md hover:backdrop-blur-sm"
                   }
                 `}
               >
                 <span
-                  className={`transition-colors ${isActive(item.path) ? "text-odara-dark" : "text-white/80 group-hover:text-white"}`}
+                  className={`transition-colors ${isActive(item.path) ? "text-odara-white" : ""}`}
                 >
                   {item.icon}
                 </span>
                 <span>{item.label}</span>
                 {isActive(item.path) && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2 h-0.5 bg-odara-dark rounded-full"></div>
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2 h-0.5 rounded-full"></div>
                 )}
               </Link>
             ))}
@@ -136,16 +136,16 @@ const Navbar = () => {
                 key={item.path}
                 to={item.path}
                 className={`
-                  flex items-center space-x-3 px-4 py-3 text-sm font-medium transition-all duration-200 rounded-lg mx-2
+                  flex items-center space-x-3 px-4 py-3 text-sm font-medium transition-all duration-200 rounded-lg mx-2 font-semibold text-odara-contorno rounded-lg transform
                   ${isActive(item.path)
-                    ? "bg-odara-accent text-odara-dark border-l-4 border-white shadow-md"
-                    : "text-white/90 hover:text-white hover:bg-white/10"
+                    ? "bg-odara-secondary text-odara-contorno border-2 border-odara-contorno shadow-md"
+                    : "hover:bg-white hover:text-odara-primary hover:border-2 hover:border-odara-contorno  hover:scale-101"
                   }
                 `}
               >
                 {/* Ícone com transição de cor */}
 
-                <span className={`transition-colors ${isActive(item.path) ? "text-odara-dark" : "text-white/80"}`}>
+                <span className={`transition-colors ${isActive(item.path) ? "text-odara-white" : ""}`}>
                   {item.icon}
                 </span>
                 {/* Label do item */}
