@@ -63,7 +63,7 @@ const Home = () => {
         className="min-h-screen w-full bg-odara-primary text-white relative overflow-hidden flex items-center justify-center"
       >
         {/* Imagem de fundo*/}
-        <div className="absolute inset-0 opacity-18">
+        <div className="absolute inset-0 opacity-25">
           <img
             src="../images/idosos.jpg"
             alt="Logo Odara Gestão"
@@ -76,16 +76,18 @@ const Home = () => {
 
         <div className="w-full px-6 relative z-10">
           <div className="max-w-6xl mx-auto text-center">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
+            <h1 className="text-5xl sm:text-7xl md:text-7xl lg:text-7xl xl:text-7xl font-bold my-10 animate-fade-in">
               Odara <span className="text-odara-name">Gestão</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-4 text-odara-white animate-fade-in-delay ">
-              Sistema completo de gestão para cuidados especializados
-            </p>
-            <p className="text-lg mb-12 text-odara-white max-w-4xl mx-auto leading-relaxed ">
-              A Odara Gestão é um Sistema de Gestão dedicado à administração de Instituições de Longa Permanência para Idosos (ILPIs). Nosso objetivo é facilitar o registro de informações por cuidadores e garantir que
-              responsáveis estejam sempre cientes e conectados ao cuidado.
-            </p>
+            <div className="bg-white/20 backdrop-blur-sm p-10 mb-10 rounded-2xl max-w-2xl mx-auto my-6 group hover:bg-odara-white/60 transition-all duration-300">
+              <p className="text-xl mb-6 group-hover:text-odara-accent font-bold animate-fade-in-delay ">
+                Sistema completo de gestão para cuidados especializados
+              </p>
+              <p className="text-lg text-odara-white group-hover:text-odara-dark text-justify max-w-4xl mx-auto leading-relaxed ">
+                A Odara Gestão é um Sistema de Gestão dedicado à administração de Instituições de Longa Permanência para Idosos (ILPIs). Nosso objetivo é facilitar o registro de informações por cuidadores e garantir que
+                responsáveis estejam sempre cientes e conectados ao cuidado.
+              </p>
+            </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <button
