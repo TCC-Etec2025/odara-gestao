@@ -62,18 +62,27 @@ const Home = () => {
         ref={heroRef}
         className="min-h-screen w-full bg-odara-primary text-white relative overflow-hidden flex items-center justify-center"
       >
-        {/* Fazendo as Bolinhas de fundo*/}
-        <div className="absolute inset-0 opacity-5 bg-[radial-gradient(white_1px,transparent_1px)] [background-size:16px_16px]" />
+        {/* Imagem de fundo*/}
+        <div className="absolute inset-0 opacity-18">
+          <img
+            src="../images/idosos.jpg"
+            alt="Logo Odara Gestão"
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.target.onerror = null
+            }}
+          />
+        </div>
 
         <div className="w-full px-6 relative z-10">
           <div className="max-w-6xl mx-auto text-center">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
               Odara <span className="text-odara-name">Gestão</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-4 text-white/90 animate-fade-in-delay">
+            <p className="text-xl md:text-2xl mb-4 text-white/90 animate-fade-in-delay ">
               Sistema completo de gestão para cuidados especializados
             </p>
-            <p className="text-lg mb-12 text-white/80 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg mb-12 text-white/80 max-w-4xl mx-auto leading-relaxed ">
               A Odara Gestão é um Sistema de Gestão dedicado à administração de Instituições de Lares para Pessoas
               Séniores (ILPS). Nosso objetivo é facilitar o registro de informações por cuidadores e garantir que
               responsáveis estejam sempre cientes e conectados ao cuidado.
