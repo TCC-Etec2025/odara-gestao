@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+/* === Definição da Fonte Nirmala Text === */
+@font-face {
+  font-family: 'Nirmala Text';
+  src: local('Nirmala Text'), local('NirmalaText');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@theme { /* o '@theme' funciona primeiro chamando o que vc quer estilizar entao a chave é "--color-NOME_DA_COR", "--font-NOME_DA_FONTE"*/
+  --color-odara-primary: #D8A4AA; /* Rosinha */
+  --color-odara-secondary: #2D5B78; /* Azul médio */
+  --color-odara-accent: #8B324B; /* Rosa Escuro */
+  --color-odara-dark: #52323A; /* Marrom */
+  --color-odara-name: #072333; /* Azul Escuro */
+  --color-odara-dropdown: #E0EAF9; /* azul mais clarinho */
+  --color-odara-dropdown-accent: #072333; /* azul claro */
+  --color-odara-contorno: #FFEFDF; /* Amarelinho */
+  --color-odara-offwhite: #F3EDED; /* Branco amareladinho */
+  --color-odara-alerta: #F54846; /* Vermelho */
+  --color-odara-white: #FFFFFF; /* Branco */
+}
+
+body {
+  font-family: 'Nirmala Text', sans-serif; /* Aplica a fonte globalmente */
+}
+
+/* === Classes personalizadas para o nome da empresa === */
+.nome-empresa-grande {
+  font-family: 'Nirmala Text', sans-serif;
+  font-size: 100px;
+  font-weight: normal;
+  color: var(--color-odara-name); /* Usa a variável definida */
+}
+
+.nome-empresa-medio {
+  font-family: 'Nirmala Text', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--color-odara-name);
+}
