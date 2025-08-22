@@ -79,12 +79,11 @@ const Home = () => {
             <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
               Odara <span className="text-odara-name">Gestão</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-4 text-white/90 animate-fade-in-delay ">
+            <p className="text-xl md:text-2xl mb-4 text-odara-white animate-fade-in-delay ">
               Sistema completo de gestão para cuidados especializados
             </p>
-            <p className="text-lg mb-12 text-white/80 max-w-4xl mx-auto leading-relaxed ">
-              A Odara Gestão é um Sistema de Gestão dedicado à administração de Instituições de Lares para Pessoas
-              Séniores (ILPS). Nosso objetivo é facilitar o registro de informações por cuidadores e garantir que
+            <p className="text-lg mb-12 text-odara-white max-w-4xl mx-auto leading-relaxed ">
+              A Odara Gestão é um Sistema de Gestão dedicado à administração de Instituições de Longa Permanência para Idosos (ILPIs). Nosso objetivo é facilitar o registro de informações por cuidadores e garantir que
               responsáveis estejam sempre cientes e conectados ao cuidado.
             </p>
 
@@ -111,7 +110,7 @@ const Home = () => {
             <button
               onClick={() => scrollToSection("documentacao")}
               aria-label="Rolar para Documentação"
-              className="text-white/50 hover:text-white transition-colors"
+              className="text-odara-accent hover:text-odara-contorno transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
@@ -132,16 +131,16 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-cols-3 gap-6">
               {funcionalidades.map((funcionalidade, index) => (
                 <div
                   key={index}
-                  className="group bg-odara-offwhite p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-odara-primary hover:border-odara-contorno hover:bg-odara-secondary transform hover:-translate-y-2"
+                  className="group bg-odara-offwhite p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-odara-primary hover:border-odara-dropdown-accent hover:bg-odara-dropdown transform hover:-translate-y-2"
                 >
-                  <div className="flex items-start space-x-4">
-                    <div className="text-2xl mb-3">{funcionalidade.icon}</div>
+                  <div className="flex items-center space-x-4 my-2">
+                    <div className="text-2xl">{funcionalidade.icon}</div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-odara-name group-hover:text-odara-white transition-colors text-sm leading-tight">
+                      <h3 className="font-semibold text-odara-dark group-hover:text-odara-secondary transition-colors text-md leading-tight">
                         {funcionalidade.nome}
                       </h3>
                     </div>
@@ -167,7 +166,7 @@ const Home = () => {
             <button
               onClick={() => scrollToSection("sobre")}
               aria-label="Rolar para Sobre"
-              className="text-gray-400 hover:text-odara-primary transition-colors"
+              className="text-odara-accent hover:text-odara-contorno transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
@@ -184,7 +183,7 @@ const Home = () => {
             <h2 className="text-4xl md:text-5xl font-bold text-odara-accent mb-6">Sobre o Sistema</h2>
             <section className="bg-odara-offwhite p-6 rounded-lg shadow-md mb-10 border-l-4 border-odara-primary">
               <p className="text-odara-dark mb-4">
-                A <strong className="text-odara-name">Odara Gestão</strong> é um Sistema de Gestão dedicado à facilitação da gestão de Instituições de Lares para Pessoas Séniores (ILPS). Temos como objetivo auxiliar a administração diária e cuidados dos devidos pacientes.
+                A <strong className="text-odara-name">Odara Gestão</strong> é um Sistema de Gestão dedicado à facilitação da gestão de Instituições de Longa Permanência para Idosos (ILPIs). Temos como objetivo auxiliar a administração diária e cuidados dos devidos pacientes.
               </p>
               <p className="text-odara-dark">
                 Esse aplicativo estará contribuindo tanto com o trabalho de registrar informações dos enfermeiros quanto a participação e ciência dos responsáveis pelo sênior.
@@ -207,7 +206,7 @@ const Home = () => {
             <button
               onClick={() => scrollToSection("cadastro")}
               aria-label="Rolar para Cadastro"
-              className="text-gray-400 hover:text-odara-accent transition-colors"
+              className="text-odara-accent hover:text-odara-contorno transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
@@ -226,20 +225,20 @@ const Home = () => {
         <div className="w-full px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold mb-8">Pronto para Começar?</h2>
-            <p className="text-xl mb-12 text-white/90 max-w-2xl mx-auto">
+            <p className="text-xl mb-12 text-odara-white max-w-2xl mx-auto">
               Junte-se a centenas de profissionais que já utilizam nosso sistema para otimizar seus cuidados.
             </p>
 
-            <div className="bg-white/10 backdrop-blur-sm p-12 rounded-2xl max-w-2xl mx-auto mb-16">
+            <div className="bg-white/20 backdrop-blur-sm p-12 rounded-2xl max-w-2xl mx-auto mb-16">
               <h3 className="text-2xl font-bold mb-8">Comece sua jornada hoje</h3>
               <div className="space-y-6">
                 <button
                   onClick={() => window.location.href = "/cadastro"}
-                  className="w-full bg-odara-accent hover:bg-odara-accent/90 text-odara-dark font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-lg"
+                  className="w-full bg-odara-accent border-2 bg-odara-accent hover:bg-odara-secondary/90 text-odara-contorno font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-lg"
                 >
                   Criar Conta Gratuita
                 </button>
-                <p className="text-white/70">Configuração em minutos • Suporte incluído</p>
+                <p className="text-odara-white">Configuração em minutos • Suporte incluído</p>
               </div>
             </div>
           </div>

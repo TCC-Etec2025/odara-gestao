@@ -15,7 +15,7 @@
   --color-odara-dark: #52323A; /* Marrom */
   --color-odara-name: #072333; /* Azul Escuro */
   --color-odara-dropdown: #E0EAF9; /* azul mais clarinho */
-  --color-odara-dropdown-accent: #072333; /* azul claro */
+  --color-odara-dropdown-accent: #7Cb0FF; /* azul claro */
   --color-odara-contorno: #FFEFDF; /* Amarelinho */
   --color-odara-offwhite: #F3EDED; /* Branco amareladinho */
   --color-odara-alerta: #F54846; /* Vermelho */
@@ -35,6 +35,13 @@ body {
 }
 
 .nome-empresa-medio {
+  font-family: 'Nirmala Text', sans-serif;
+  font-size: 35px;
+  font-weight: bold;
+  color: var(--color-odara-name);
+}
+
+.nome-empresa-pequeno {
   font-family: 'Nirmala Text', sans-serif;
   font-size: 20px;
   font-weight: bold;

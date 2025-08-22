@@ -72,11 +72,11 @@ const Navbar = () => {
 
   return (
     <nav className="bg-odara-primary text-white shadow-lg sticky top-0 z-50 backdrop-blur-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div className="flex justify-between items-center h-16">
           {/* Logo Section */}
           <div className="flex items-center space-x-3 group">
-            <div className="w-12 h-12 bg-odara-accent rounded-full flex items-center justify-center overflow-hidden border-2 border-white shadow-lg transition-transform group-hover:scale-105">
+            <div className="w-12 h-12 bg-odara-white rounded-full flex items-center justify-center overflow-hidden border-2 border-odara-contorno shadow-lg transition-transform group-hover:scale-105">
               <img
                 src="../images/Logo final - Icone fundo branco redondo[1].png"
                 alt="Logo Odara Gestão"
@@ -88,9 +88,9 @@ const Navbar = () => {
             </div>
             <div className="flex flex-col">
               <h1 className="text-xl font-bold text-white transition-transform group-hover:scale-105">
-                Odara <span className="font-normal  nome-empresa-medio">Gestão</span>
+                Odara <span className="font-normal  nome-empresa-pequeno">Gestão</span>
               </h1>
-              <span className="text-xs text-white/70 hidden sm:block">Sistema de Gestão para ILPs</span>
+              <span className="text-xs text-odara-white hidden sm:block">Sistema de Gestão para ILPIs</span>
             </div>
           </div>
 
@@ -144,22 +144,18 @@ const Navbar = () => {
                   key={item.path}
                   to={item.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`
-            flex items-center space-x-3 px-4 py-3 text-sm font-medium transition duration-100 rounded-lg mx-2 font-semibold text-odara-contorno transform
-            ease-in-out
-            ${isActive(item.path)
+                  className={`flex items-center space-x-3 px-4 py-3 text-sm font-medium transition duration-100 rounded-lg mx-2 font-semibold text-odara-contorno transform ease-in-out ${isActive(item.path)
                       ? "bg-odara-secondary text-odara-contorno border-2 border-odara-contorno shadow-md"
-                      : "hover:bg-white hover:text-odara-primary hover:border-2 hover:border-odara-contorno hover:scale-100"
+                      : "hover:bg-white hover:text-odara-primary hover:border-2 hover:border-odara-contorno"
                     }
-          `}
+                  `}
                 >
                   {/* Ícone com transição de cor */}
-
                   <span className={`transition-colors ${isActive(item.path) ? "text-odara-white" : ""}`}>
                     {item.icon}
                   </span>
-                  {/* Label do item */}
 
+                  {/* Label do item */}
                   <span>{item.label}</span>
                 </Link>
               ))}
