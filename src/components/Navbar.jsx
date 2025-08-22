@@ -1,4 +1,5 @@
-import { Link, useLocation } from "react-router-dom"
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const location = useLocation()
@@ -7,6 +8,8 @@ const Navbar = () => {
   const isActive = (path) => {
     return location.pathname.toLowerCase() === path.toLowerCase()
   }
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationItems = [
     {
@@ -98,10 +101,11 @@ const Navbar = () => {
                 key={item.path}
                 to={item.path}
                 className={`
-                  flex items-center space-x-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 relative group font-semibold text-odara-contorno transform
+                  flex items-center space-x-2 px-4 py-2.5 rounded-lg text-sm font-medium transition duration-200 relative group font-semibold text-odara-contorno transform
+                  ease-in-out
                   ${isActive(item.path)
                     ? "bg-odara-secondary text-odara-contorno border-2 border-odara-contorno shadow-lg backdrop-blur-sm"
-                    : "hover:bg-white hover:text-odara-primary hover:border-2 hover:border-odara-contorno  hover:scale-101 hover:shadow-md hover:backdrop-blur-sm"
+                    : "hover:bg-white hover:text-odara-primary hover:border-2 hover:border-odara-contorno  hover:scale-100 hover:shadow-md hover:backdrop-blur-sm"
                   }
                 `}
               >
@@ -118,9 +122,12 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Mobile Menu Button - Aparece apenas em telas menores que md (mobile) */}
+          {/* Botão do menu mobile */}
           <div className="md:hidden">
-            <button className="p-2 rounded-lg text-white/90 hover:text-white hover:bg-white/10 transition-colors">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-lg text-white/90 hover:text-white hover:bg-white/10 transition-colors"
+            >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
@@ -129,34 +136,38 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Navigation - Menu expandido (visível apenas em mobile) */}
-        <div className="md:hidden border-t border-white/20 py-2">
-          <div className="flex flex-col space-y-1">
-            {navigationItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`
-                  flex items-center space-x-3 px-4 py-3 text-sm font-medium transition-all duration-200 rounded-lg mx-2 font-semibold text-odara-contorno rounded-lg transform
-                  ${isActive(item.path)
-                    ? "bg-odara-secondary text-odara-contorno border-2 border-odara-contorno shadow-md"
-                    : "hover:bg-white hover:text-odara-primary hover:border-2 hover:border-odara-contorno  hover:scale-101"
-                  }
-                `}
-              >
-                {/* Ícone com transição de cor */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-white/20 py-2">
+            <div className="flex flex-col space-y-1">
+              {navigationItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`
+            flex items-center space-x-3 px-4 py-3 text-sm font-medium transition duration-100 rounded-lg mx-2 font-semibold text-odara-contorno transform
+            ease-in-out
+            ${isActive(item.path)
+                      ? "bg-odara-secondary text-odara-contorno border-2 border-odara-contorno shadow-md"
+                      : "hover:bg-white hover:text-odara-primary hover:border-2 hover:border-odara-contorno hover:scale-100"
+                    }
+          `}
+                >
+                  {/* Ícone com transição de cor */}
 
-                <span className={`transition-colors ${isActive(item.path) ? "text-odara-white" : ""}`}>
-                  {item.icon}
-                </span>
-                {/* Label do item */}
+                  <span className={`transition-colors ${isActive(item.path) ? "text-odara-white" : ""}`}>
+                    {item.icon}
+                  </span>
+                  {/* Label do item */}
 
-                <span>{item.label}</span>
-              </Link>
-            ))}
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
-    </nav>
+    </nav >
   )
 }
 
