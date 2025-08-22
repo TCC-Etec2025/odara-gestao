@@ -47,7 +47,7 @@ const Footer = () => {
 
         <div className="border-t border-odara-accent my-6 opacity-30"></div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
+        <div className="grid grid-cols-3 md:grid-cols-3 gap-6 text-center justify-items-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center mb-2">
               <FaMapMarkerAlt className="text-odara-accent mr-2" />
