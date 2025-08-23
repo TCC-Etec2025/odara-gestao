@@ -1,13 +1,15 @@
 "use client" // Este componente roda no cliente (browser) porque usa interatividade (hooks, eventos, etc.)
 
 import { useState, useEffect, useRef } from "react"
+import { Pill, ClipboardList, AlertTriangle, Hospital, Utensils, BarChart, Star, Users, Stethoscope, Microscope, Video, Phone } from "lucide-react"
 
 const Home = () => {
   const [isScrolling, setIsScrolling] = useState(false)
   const [showArrows, setShowArrows] = useState({
     hero: false,
     documentacao: false,
-    sobre: false
+    sobre: false,
+    cadastro: false
   })
 
   const heroRef = useRef(null);
@@ -26,32 +28,33 @@ const Home = () => {
   }, [])
 
   // Função de scroll suave
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId)
+  const scrollToSection = (refOrId) => {
+    const element = typeof refOrId === "string"
+      ? document.getElementById(refOrId)
+      : refOrId.current;
+
     if (element) {
-      setIsScrolling(true)
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      })
-      setTimeout(() => setIsScrolling(false), 1000)
+      setIsScrolling(true);
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => setIsScrolling(false), 1000);
     }
-  }
+  };
+
 
 
   const funcionalidades = [
-    { nome: "Registro de medicamentos", icon: "💊" },
-    { nome: "Registro de Atividades", icon: "📋" },
-    { nome: "Registro de Ocorrências", icon: "⚠️" },
-    { nome: "Registro da saúde corporal inicial", icon: "🏥" },
-    { nome: "Registro de alimentação", icon: "🍽️" },
-    { nome: "Registro de comportamento", icon: "📊" },
-    { nome: "Registro de preferências", icon: "⭐" },
-    { nome: "Registro de relações internas", icon: "👥" },
-    { nome: "Registro de consultas médicas", icon: "🩺" },
-    { nome: "Registro de exames médicos", icon: "🔬" },
-    { nome: "Registros de vídeo e fotográfico", icon: "📹" },
-    { nome: "Plataforma para Reuniões", icon: "📞" },
+    { nome: "Registro de medicamentos", icon: <Pill size={24} /> },
+    { nome: "Registro de Atividades", icon: <ClipboardList size={24} /> },
+    { nome: "Registro de Ocorrências", icon: <AlertTriangle size={24} /> },
+    { nome: "Registro da saúde corporal inicial", icon: <Hospital size={24} /> },
+    { nome: "Registro de alimentação", icon: <Utensils size={24} /> },
+    { nome: "Registro de comportamento", icon: <BarChart size={24} /> },
+    { nome: "Registro de preferências", icon: <Star size={24} /> },
+    { nome: "Registro de relações internas", icon: <Users size={24} /> },
+    { nome: "Registro de consultas médicas", icon: <Stethoscope size={24} /> },
+    { nome: "Registro de exames médicos", icon: <Microscope size={24} /> },
+    { nome: "Registros de vídeo e fotográfico", icon: <Video size={24} /> },
+    { nome: "Plataforma para Reuniões", icon: <Phone size={24} /> },
   ]
 
   return (
@@ -63,7 +66,7 @@ const Home = () => {
         className="min-h-screen w-full bg-odara-primary text-white relative overflow-hidden flex items-center justify-center"
       >
         {/* Imagem de fundo*/}
-        <div className="absolute inset-0 opacity-25">
+        <div className="absolute inset-0 opacity-30">
           <img
             src="../images/idosos.jpg"
             alt="Logo Odara Gestão"
@@ -79,7 +82,7 @@ const Home = () => {
             <h1 className="text-5xl sm:text-7xl md:text-7xl lg:text-7xl xl:text-7xl font-bold my-10 animate-fade-in">
               Odara <span className="text-odara-name">Gestão</span>
             </h1>
-            <div className="bg-white/20 backdrop-blur-sm p-10 mb-10 rounded-2xl max-w-2xl mx-auto my-6 group hover:bg-odara-white/60 transition-all duration-300">
+            <div className="my-1 backdrop-blur-sm p-10 mb-10 rounded-2xl max-w-2xl mx-auto  group hover:bg-odara-white/40 transition-all duration-200">
               <p className="text-xl mb-6 group-hover:text-odara-accent font-bold animate-fade-in-delay ">
                 Sistema completo de gestão para cuidados especializados
               </p>
@@ -123,7 +126,7 @@ const Home = () => {
       </section>
 
       {/* Seção Documentação/ funcionalidades */}
-      <section id="documentacao" ref={docRef} className="min-h-screen bg-gray-50 flex items-center py-20">
+      <section id="documentacao" ref={docRef} className="min-h-screen bg-gray-50 flex items-center py-20 relative">
         <div className="w-full px-6">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
@@ -133,16 +136,16 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {funcionalidades.map((funcionalidade, index) => (
                 <div
                   key={index}
-                  className="group bg-odara-offwhite p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-odara-primary hover:border-odara-dropdown-accent hover:bg-odara-dropdown transform hover:-translate-y-2"
+                  className="group bg-odara-offwhite p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-odara-primary hover:border-odara-dropdown-accent hover:bg-odara-dropdown transform hover:-translate-y-1"
                 >
-                  <div className="flex items-center space-x-4 my-2">
-                    <div className="text-2xl">{funcionalidade.icon}</div>
+                  <div className="flex items-center space-x-3 my-2">
+                    <div className="text-xl">{funcionalidade.icon}</div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-odara-dark group-hover:text-odara-secondary transition-colors text-md leading-tight">
+                      <h3 className="font-semibold text-odara-dark group-hover:text-odara-secondary transition-colors text-sm leading-tight">
                         {funcionalidade.nome}
                       </h3>
                     </div>
@@ -150,6 +153,7 @@ const Home = () => {
                 </div>
               ))}
             </div>
+
 
             <div className="flex justify-center mt-12">
               <button
@@ -179,18 +183,32 @@ const Home = () => {
       </section>
 
       {/* Seção Sobre */}
-      <section id="sobre" ref={sobreRef} className="min-h-screen bg-white flex items-center py-20">
+      <section id="sobre" ref={sobreRef} className="min-h-screen bg-white flex items-center py-20 relative">
         <div className="w-full px-6">
           <div className="max-w-6xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-odara-accent mb-6">Sobre o Sistema</h2>
-            <section className="bg-odara-offwhite p-6 rounded-lg shadow-md mb-10 border-l-4 border-odara-primary">
-              <p className="text-odara-dark mb-4">
-                A <strong className="text-odara-name">Odara Gestão</strong> é um Sistema de Gestão dedicado à facilitação da gestão de Instituições de Longa Permanência para Idosos (ILPIs). Temos como objetivo auxiliar a administração diária e cuidados dos devidos pacientes.
-              </p>
-              <p className="text-odara-dark">
-                Esse aplicativo estará contribuindo tanto com o trabalho de registrar informações dos enfermeiros quanto a participação e ciência dos responsáveis pelo sênior.
-              </p>
-            </section>
+
+            {/* Cards Missão, Visão e Valores */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 text-left">
+              <div className="bg-odara-offwhite p-6 rounded-lg shadow-md border-l-4 border-odara-primary hover:scale-105 transition-transform duration-300">
+                <h3 className="text-2xl font-bold text-odara-accent mb-4">Missão</h3>
+                <p className="text-odara-dark leading-relaxed">
+                  Facilitar a gestão de ILPIs através de tecnologia acessível, promovendo qualidade de vida, transparência e eficiência nos cuidados oferecidos.
+                </p>
+              </div>
+              <div className="bg-odara-offwhite p-6 rounded-lg shadow-md border-l-4 border-odara-primary hover:scale-105 transition-transform duration-300">
+                <h3 className="text-2xl font-bold text-odara-accent mb-4">Visão</h3>
+                <p className="text-odara-dark leading-relaxed">
+                  Ser referência em sistemas de gestão voltados para instituições de cuidado ao idoso, contribuindo para um futuro mais humano e conectado.
+                </p>
+              </div>
+              <div className="bg-odara-offwhite p-6 rounded-lg shadow-md border-l-4 border-odara-primary hover:scale-105 transition-transform duration-300">
+                <h3 className="text-2xl font-bold text-odara-accent mb-4">Valores</h3>
+                <p className="text-odara-dark leading-relaxed">
+                  Respeito, ética, empatia e compromisso com a qualidade de vida, valorizando o trabalho dos profissionais e a confiança dos familiares.
+                </p>
+              </div>
+            </div>
             <div className="flex justify-center mt-12">
               <button
                 onClick={() => window.location.href = "/sobre"}
@@ -222,10 +240,22 @@ const Home = () => {
       <section
         id="cadastro"
         ref={cadastroRef}
-        className="min-h-screen bg-odara-primary text-white flex items-center justify-center py-20"
+        className="relative min-h-screen bg-odara-primary text-white flex items-center justify-center py-20"
       >
-        <div className="w-full px-6">
-          <div className="max-w-4xl mx-auto text-center">
+
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="w-full px-6">
+            {/* Imagem de fundo*/}
+            <div className="absolute inset-0 opacity-30">
+              <img
+                src="../images/ceu.jpg"
+                alt="Logo Odara Gestão"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.onerror = null
+                }}
+              />
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold mb-8">Pronto para Começar?</h2>
             <p className="text-xl mb-12 text-odara-white max-w-2xl mx-auto">
               Junte-se a centenas de profissionais que já utilizam nosso sistema para otimizar seus cuidados.

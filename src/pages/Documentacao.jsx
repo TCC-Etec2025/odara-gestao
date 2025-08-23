@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Pill, ClipboardList, AlertTriangle, Hospital, Utensils, BarChart, Star, Users, Stethoscope, Microscope, Video, Phone } from "lucide-react"
+
 
 const Documentacao = () => {
   const [activeItem, setActiveItem] = useState(null);
@@ -7,7 +9,7 @@ const Documentacao = () => {
     {
       nome: 'Registro de medicamentos',
       descricao: 'Controle completo da medicação dos residentes com alertas e histórico detalhado',
-      icone: '💊',
+      icone: <Pill size={24} /> ,
       detalhes: [
         'Controle de horários e dosagens',
         'Alertas para medicamentos pendentes',
@@ -17,7 +19,7 @@ const Documentacao = () => {
     {
       nome: 'Registro de Atividades',
       descricao: 'Organização e acompanhamento das atividades diárias dos residentes',
-      icone: '📋',
+      icone: <ClipboardList size={24} />,
       detalhes: [
         'Agendamento de atividades recreativas',
         'Registro de participação',
@@ -28,7 +30,7 @@ const Documentacao = () => {
     {
       nome: 'Registro de Ocorrências',
       descricao: 'Documentação de incidentes e acompanhamento de resolução',
-      icone: '⚠️',
+      icone: <AlertTriangle size={24} />,
       detalhes: [
         'Classificação por gravidade',
         'Registro fotográfico',
@@ -40,7 +42,7 @@ const Documentacao = () => {
     {
       nome: 'Registro da saúde corporal inicial',
       descricao: 'Monitoramento contínuo do estado de saúde dos residentes',
-      icone: '🏥',
+      icone: <Hospital size={24} />,
       detalhes: [
         'O Registro da Saúde Corporal Inicial se refere à investigação e registro de eventuais ferimentos e/ou questões corporais no momento da entrada inicial da pessoa idosa na Casa. Com um template anatômico prático, basta selecionar as regiões do corpo afetadas e descrever os sintomas físicos da pessoa idosa referentes a essa região, dessa forma preza-se por um acompanhamento mais completo da saúde do individuo e garante um melhor entendimento da situação da saúde dele ao entrar em seu novo lar.',
       ]
@@ -48,7 +50,7 @@ const Documentacao = () => {
     {
       nome: 'Registro de alimentação',
       descricao: 'Gestão nutricional e acompanhamento alimentar',
-      icone: '🍽️',
+      icone: <Utensils size={24} />,
       detalhes: [
         'Registro de consumo',
         'Controle de dietas especiais',
@@ -58,7 +60,7 @@ const Documentacao = () => {
     {
       nome: 'Registro de comportamento',
       descricao: 'Registro e análise de padrões comportamentais',
-      icone: '📊',
+      icone: <BarChart size={24} />,
       detalhes: [
         'Identificação de alterações',
         'Acompanhamento psicológico',
@@ -69,7 +71,7 @@ const Documentacao = () => {
     {
       nome: 'Registro de preferências',
       descricao: 'Registro das preferências individuais de cada residente',
-      icone: '⭐',
+      icone: <Star size={24} />,
       detalhes: [
         'Hábitos pessoais',
         'Gostos e aversões',
@@ -80,7 +82,7 @@ const Documentacao = () => {
     {
       nome: 'Registro de relações internas',
       descricao: 'Mapeamento das relações interpessoais na instituição',
-      icone: '👥',
+      icone: <Users size={24} />,
       detalhes: [
         'Vínculos entre residentes',
         'Registro de visitas',
@@ -91,7 +93,7 @@ const Documentacao = () => {
     {
       nome: 'Registro de consultas médicas',
       descricao: 'Controle completo de consultas e acompanhamento médico',
-      icone: '🩺',
+      icone: <Stethoscope size={24} />,
       detalhes: [
         'Agendamento de consultas',
         'Prescrições digitais',
@@ -101,7 +103,7 @@ const Documentacao = () => {
     {
       nome: 'Registro de exames médicos',
       descricao: 'Organização e resultados de exames médicos',
-      icone: '🔬',
+      icone: <Microscope size={24} />,
       detalhes: [
         'Agendamento de exames',
         'Alertas',
@@ -110,7 +112,7 @@ const Documentacao = () => {
     {
       nome: 'Registros de vídeo e fotográfico',
       descricao: 'Armazenamento de registros fotográficos e vídeos',
-      icone: '📹',
+      icone: <Video size={24} />,
       detalhes: [
         'Registro de evolução',
         'Compartilhamento familiar',
@@ -119,7 +121,7 @@ const Documentacao = () => {
     {
       nome: 'Plataforma para Reuniões',
       descricao: 'Sistema integrado de reuniões e comunicação',
-      icone: '📞',
+      icone: <Phone size={24} />,
       detalhes: [
         'Agenda compartilhada',
         'Comunicação com familiares',
