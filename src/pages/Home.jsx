@@ -168,7 +168,8 @@ const Home = () => {
 
         {/* Seta de scroll - APENAS se sobre existir */}
         {showArrows.sobre && (
-          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 animate-bounce z-50">
+          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 animate-bounce z-50absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce z-50
+               sm:bottom-6 md:bottom-8 lg:bottom-10">
             <button
               onClick={() => scrollToSection("sobre")}
               aria-label="Rolar para Sobre"
@@ -222,7 +223,8 @@ const Home = () => {
 
         {/* Seta de scroll - APENAS se cadastro existir */}
         {showArrows.cadastro && (
-          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 animate-bounce z-50">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce z-50
+               sm:bottom-6 md:bottom-8 lg:bottom-10">
             <button
               onClick={() => scrollToSection("cadastro")}
               aria-label="Rolar para Cadastro"

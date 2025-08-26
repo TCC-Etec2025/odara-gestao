@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Pill, ClipboardList, AlertTriangle, Hospital, Utensils, BarChart, Star, Users, Stethoscope, Microscope, Video, Phone } from "lucide-react"
 
 
 const Documentacao = () => {
   const [activeItem, setActiveItem] = useState(null);
+  const detailsRef = useRef(null);
+
 
   const funcionalidades = [
     {
       nome: 'Registro de medicamentos',
       descricao: 'Controle completo da medicação dos residentes com alertas e histórico detalhado',
-      icone: <Pill size={24} /> ,
+      icone: <Pill size={24} />,
       detalhes: [
         'Controle de horários e dosagens',
         'Alertas para medicamentos pendentes',
@@ -130,6 +132,24 @@ const Documentacao = () => {
     }
   ];
 
+  // Efeito para rolar até os detalhes quando activeItem muda
+  useEffect(() => {
+    if (activeItem !== null && detailsRef.current) {
+      // Pequeno timeout para garantir que o DOM foi atualizado
+      setTimeout(() => {
+        detailsRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 50);
+    }
+  }, [activeItem]);
+
+  const handleItemClick = (index) => {
+    setActiveItem(index);
+  };
+
+
   return (
     <main className="container mx-auto py-8 px-4 max-w-6xl font-sans">
       {/* Cabeçalho */}
@@ -143,11 +163,11 @@ const Documentacao = () => {
         {funcionalidades.map((item, index) => (
           <button
             key={index}
-            onClick={() => setActiveItem(index)}
+            onClick={() => handleItemClick(index)}
             className={`bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all text-left border-2 ${activeItem === index ? 'border-odara-light-blue shadow-md' : 'border-gray-100'}`}
           >
             <div className="flex items-start">
-              <span className="text-2xl mr-4">{item.icone}</span>
+              <span className="text-2xl mr-4 text-odara-primary">{item.icone}</span>
               <div>
                 <h3 className="text-lg font-semibold text-gray-800">{item.nome}</h3>
                 <p className="text-sm text-gray-500 mt-1 line-clamp-2">{item.descricao}</p>
@@ -157,37 +177,62 @@ const Documentacao = () => {
         ))}
       </div>
 
-      {/* Seção de detalhes */}
-      {activeItem !== null && (
-        <section className="bg-gray-50 rounded-xl p-8 mb-8 animate-fadeIn">
-          <div className="flex items-center mb-6">
-            <span className="text-3xl mr-4">{funcionalidades[activeItem].icone}</span>
-            <div>
-              <h2 className="text-2xl font-bold text-odara-primary">{funcionalidades[activeItem].nome}</h2>
-              <p className="text-gray-600">{funcionalidades[activeItem].descricao}</p>
+      {/* Seção de detalhes com ref para scroll */}
+      <div ref={detailsRef}>
+        {activeItem !== null && (
+          <section className="bg-gray-50 rounded-xl p-8 mb-8 animate-fadeIn">
+            <div className="flex items-center mb-6">
+              <span className="text-3xl mr-4 text-odara-primary">{funcionalidades[activeItem].icone}</span>
+              <div>
+                <h2 className="text-2xl font-bold text-odara-primary">{funcionalidades[activeItem].nome}</h2>
+                <p className="text-gray-600">{funcionalidades[activeItem].descricao}</p>
+              </div>
             </div>
-          </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-xs border border-gray-100">
-              <h3 className="text-lg font-semibold text-odara-darkest mb-4 flex items-center">
-                <svg className="w-5 h-5 mr-2 text-odara-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Recursos Principais
-              </h3>
-              <ul className="space-y-3">
-                {funcionalidades[activeItem].detalhes.map((detalhe, i) => (
-                  <li key={i} className="flex items-start">
-                    <span className="text-odara-dark-blue mr-2">•</span>
-                    <span className="text-gray-700">{detalhe}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow-xs border border-gray-100">
+                <h3 className="text-lg font-semibold text-odara-darkest mb-4 flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-odara-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Recursos Principais
+                </h3>
+                <ul className="space-y-3">
+                  {funcionalidades[activeItem].detalhes.map((detalhe, i) => (
+                    <li key={i} className="flex items-start">
+                      <span className="text-odara-dark-blue mr-2">•</span>
+                      <span className="text-gray-700">{detalhe}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="bg-odara-light-blue bg-opacity-10 p-6 rounded-lg border border-odara-light-blue">
+                <h3 className="text-lg font-semibold text-odara-darkest mb-4 flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-odara-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Benefícios
+                </h3>
+                <p className="text-gray-700">
+                  Esta funcionalidade foi desenvolvida para otimizar o trabalho dos cuidadores e 
+                  melhorar a qualidade de vida dos residentes, proporcionando um acompanhamento 
+                  mais preciso e personalizado.
+                </p>
+              </div>
             </div>
-          </div>
-        </section>
-      )}
+            
+            <div className="mt-8 text-center">
+              <button 
+                onClick={() => setActiveItem(null)}
+                className="px-4 py-2 bg-odara-primary text-white rounded-lg hover:bg-odara-dark-blue transition-colors"
+              >
+                Fechar Detalhes
+              </button>
+            </div>
+          </section>
+        )}
+      </div>
 
       {/* Informação para ver as descrições */}
       {activeItem === null && (

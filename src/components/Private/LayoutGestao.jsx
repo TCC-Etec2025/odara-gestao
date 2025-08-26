@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
-import NavbarGestao from './Navbar';
-import Footer from './Footer';
+import NavbarGestao from './NavbarGestao';
+import Footer from '../Footer';
 
 const LayoutGestao = () => {
   return (
