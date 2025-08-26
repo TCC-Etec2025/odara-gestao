@@ -154,8 +154,8 @@ const Documentacao = () => {
     <main className="container mx-auto py-8 px-4 max-w-6xl font-sans">
       {/* Cabeçalho */}
       <header className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-odara-primary mb-2">Funcionalidades do Sistema</h1>
-        <h2 className="text-xl text-gray-600">Explore todas as ferramentas disponíveis para gestão de ILPS</h2>
+        <h1 className="text-4xl font-bold text-odara-accent mb-2">Funcionalidades do Sistema</h1>
+        <h2 className="text-xl text-odara-dark">Explore todas as ferramentas disponíveis para gestão de ILPIs</h2>
       </header>
 
       {/* Lista de funcionalidades */}
@@ -163,14 +163,13 @@ const Documentacao = () => {
         {funcionalidades.map((item, index) => (
           <button
             key={index}
-            onClick={() => handleItemClick(index)}
-            className={`bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all text-left border-2 ${activeItem === index ? 'border-odara-light-blue shadow-md' : 'border-gray-100'}`}
+            onClick={() => setActiveItem(index)}
+            className={`group text-odara-dark p-6 rounded-xl shadow-sm hover:shadow-md transition-all text-left border-l-4 ${activeItem === index ? 'border-odara-secondary bg-odara-dropdown shadow-md' : 'bg-odara-offwhite border-odara-primary hover:bg-odara-primary hover:border-odara-accent'}`}
           >
-            <div className="flex items-start">
-              <span className="text-2xl mr-4 text-odara-primary">{item.icone}</span>
+            <div className="flex items-center">
+              <span className={`text-2xl mr-4 ${activeItem === index ? 'text-odara-secondary' : 'text-odara-primary group-hover:text-odara-accent'}`}>{item.icone}</span>
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">{item.nome}</h3>
-                <p className="text-sm text-gray-500 mt-1 line-clamp-2">{item.descricao}</p>
+                <h3 className={`text-lg font-bold ${activeItem === index ? 'text-odara-dropdown-accent' : 'text-odara-dark group-hover:text-odara-white'}`}>{item.nome}</h3>
               </div>
             </div>
           </button>
@@ -184,15 +183,15 @@ const Documentacao = () => {
             <div className="flex items-center mb-6">
               <span className="text-3xl mr-4 text-odara-primary">{funcionalidades[activeItem].icone}</span>
               <div>
-                <h2 className="text-2xl font-bold text-odara-primary">{funcionalidades[activeItem].nome}</h2>
-                <p className="text-gray-600">{funcionalidades[activeItem].descricao}</p>
+                <h2 className="text-2xl font-bold text-odara-accent">{funcionalidades[activeItem].nome}</h2>
+                <p className="text-odara-dark">{funcionalidades[activeItem].descricao}</p>
               </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow-xs border border-gray-100">
-                <h3 className="text-lg font-semibold text-odara-darkest mb-4 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-odara-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-odara-dropdown border-l-4 border-odara-secondary p-6 rounded-lg shadow-xs">
+                <h3 className="text-lg font-bold text-odara-dropdown-accent mb-4 flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-odara-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   Recursos Principais
@@ -200,21 +199,21 @@ const Documentacao = () => {
                 <ul className="space-y-3">
                   {funcionalidades[activeItem].detalhes.map((detalhe, i) => (
                     <li key={i} className="flex items-start">
-                      <span className="text-odara-dark-blue mr-2">•</span>
-                      <span className="text-gray-700">{detalhe}</span>
+                      <span className="text-odara-secondary mr-2">•</span>
+                      <span className="text-odara-name">{detalhe}</span>
                     </li>
                   ))}
                 </ul>
               </div>
               
-              <div className="bg-odara-light-blue bg-opacity-10 p-6 rounded-lg border border-odara-light-blue">
-                <h3 className="text-lg font-semibold text-odara-darkest mb-4 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-odara-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-odara-white bg-opacity-10 p-6 rounded-lg border-2 border-odara-primary">
+                <h3 className="text-lg font-semibold text-odara-accent mb-4 flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-odara-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   Benefícios
                 </h3>
-                <p className="text-gray-700">
+                <p className="text-odara-dark">
                   Esta funcionalidade foi desenvolvida para otimizar o trabalho dos cuidadores e 
                   melhorar a qualidade de vida dos residentes, proporcionando um acompanhamento 
                   mais preciso e personalizado.
@@ -223,9 +222,9 @@ const Documentacao = () => {
             </div>
             
             <div className="mt-8 text-center">
-              <button 
+              <button
                 onClick={() => setActiveItem(null)}
-                className="px-4 py-2 bg-odara-primary text-white rounded-lg hover:bg-odara-dark-blue transition-colors"
+                className="bg-odara-accent hover:bg-odara-secondary/90 text-odara-contorno font-semibold px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
               >
                 Fechar Detalhes
               </button>
@@ -240,8 +239,8 @@ const Documentacao = () => {
           <svg className="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <h3 className="text-lg font-medium text-gray-500 mt-4">Selecione uma funcionalidade para ver detalhes</h3>
-          <p className="text-gray-400 mt-1">Conheça todas as ferramentas disponíveis para gestão de ILPS</p>
+          <h3 className="text-lg font-medium text-gray-500 mt-4">Selecione uma funcionalidade para ver seus detalhes</h3>
+          <p className="text-gray-400 mt-1">Conheça todas as ferramentas disponíveis para gestão de ILPIs</p>
         </div>
       )}
     </main>

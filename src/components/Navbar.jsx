@@ -76,7 +76,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo Section */}
           <div className="flex items-center space-x-3 group">
-            <div className="w-12 h-12 bg-odara-white rounded-full flex items-center justify-center overflow-hidden border-2 border-odara-contorno shadow-lg transition-transform group-hover:scale-105">
+            <div className="w-12 h-12 bg-odara-white rounded-full flex items-center justify-center overflow-hidden border-2 border-odara-contorno shadow-lg transition-transform">
               <img
                 src="../images/Logo final - Icone fundo branco redondo[1].png"
                 alt="Logo Odara Gestão"
@@ -87,7 +87,7 @@ const Navbar = () => {
               />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-xl font-bold text-white transition-transform group-hover:scale-105">
+              <h1 className="text-xl font-bold text-white transition-transform">
                 Odara <span className="font-normal  nome-empresa-pequeno">Gestão</span>
               </h1>
               <span className="text-xs text-odara-white hidden sm:block">Sistema de Gestão para ILPIs</span>
