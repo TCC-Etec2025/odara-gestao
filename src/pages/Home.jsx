@@ -140,12 +140,12 @@ const Home = () => {
               {funcionalidades.map((funcionalidade, index) => (
                 <div
                   key={index}
-                  className="group bg-odara-offwhite p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-odara-primary hover:border-odara-dropdown-accent hover:bg-odara-dropdown transform hover:-translate-y-1"
+                  className="group bg-odara-offwhite p-4 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 border-l-4 border-odara-primary transform hover:-translate-y-1"
                 >
                   <div className="flex items-center space-x-3 my-2">
-                    <div className="text-xl">{funcionalidade.icon}</div>
+                    <div className="text-xl text-odara-primary">{funcionalidade.icon}</div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-odara-dark group-hover:text-odara-secondary transition-colors text-sm leading-tight">
+                      <h3 className="font-semibold text-odara-dark text-lg leading-tight">
                         {funcionalidade.nome}
                       </h3>
                     </div>
