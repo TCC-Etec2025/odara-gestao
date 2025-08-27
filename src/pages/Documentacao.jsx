@@ -141,12 +141,12 @@ const Documentacao = () => {
           <button
             key={index}
             onClick={() => setActiveItem(index)}
-            className={`group text-odara-dark p-6 rounded-xl shadow-sm hover:shadow-md text-left border-l-4 transition-all duration-300 transform hover:scale-105 shadow-lg ${activeItem === index ? 'bg-odara-dropdown border-odara-secondary shadow-md' : 'bg-odara-offwhite border-odara-primary hover:bg-odara-primary hover:border-odara-accent'}`}
+            className={`group text-odara-dark p-6 rounded-xl shadow-sm hover:shadow-md text-left border-l-4 transition-all duration-300 shadow-lg ${activeItem === index ? 'bg-odara-dropdown border-odara-secondary shadow-md' : 'transform hover:scale-105 bg-odara-offwhite border-odara-primary hover:bg-odara-primary/50 hover:border-odara-accent'}`}
           >
             <div className="flex items-center">
               <span className={`text-2xl mr-4 ${activeItem === index ? 'text-odara-secondary' : 'text-odara-primary group-hover:text-odara-accent'}`}>{item.icone}</span>
               <div>
-                <h3 className={`text-lg font-semibold ${activeItem === index ? 'text-odara-dropdown-accent' : 'text-odara-dark group-hover:text-odara-white'}`}>{item.nome}</h3>
+                <h3 className={`text-lg font-semibold ${activeItem === index ? 'text-odara-dropdown-accent' : 'text-odara-dark group-hover:text-odara-dark'}`}>{item.nome}</h3>
               </div>
             </div>
           </button>
