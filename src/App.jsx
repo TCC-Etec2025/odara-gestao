@@ -11,6 +11,9 @@ import Usuarios from './pages/gestao/Usuarios';
 import Residentes from './pages/gestao/Residentes';
 import Configuracoes from './pages/gestao/Configuracoes';
 
+import RegistroPreferencias from './pages/gestao/RegistroPreferencias';
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -30,6 +33,10 @@ function App() {
           <Route path="usuarios" element={<Usuarios />} />
           <Route path="residentes" element={<Residentes />} />
           <Route path="configuracoes" element={<Configuracoes />} />
+
+          {/* Novas rotas de registros */}
+          <Route path="registroPreferencias" element={<RegistroPreferencias />} />
+
         </Route>
       </Routes>
     </BrowserRouter>
