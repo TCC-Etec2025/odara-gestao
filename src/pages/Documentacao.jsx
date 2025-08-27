@@ -9,13 +9,11 @@ const Documentacao = () => {
 
   const funcionalidades = [
     {
-      nome: 'Registro de medicamentos',
+      nome: 'Registro de Medicamentos',
       descricao: 'Controle completo da medicação dos residentes com alertas e histórico detalhado',
       icone: <Pill size={24} />,
       detalhes: [
-        'Controle de horários e dosagens',
-        'Alertas para medicamentos pendentes',
-        'Relatório de administração',
+        'O Registro de Medicamentos está localizado os respectivos cadastros para melhor controle detalhado de medicação tais quais o paciente deverá ingerir para a realização de seu tratamento.   Ele garante a segurança e continuidade do tratamento dos residentes, e auxiliam na organização, otimização e na avaliação da funcionalidade do mesmo, colaborando para o trabalho da equipe de saúde.'
       ]
     },
     {
@@ -23,10 +21,7 @@ const Documentacao = () => {
       descricao: 'Organização e acompanhamento das atividades diárias dos residentes',
       icone: <ClipboardList size={24} />,
       detalhes: [
-        'Agendamento de atividades recreativas',
-        'Registro de participação',
-        'Avaliação de desempenho',
-        'Programação semanal',
+        'O Registro de Atividades é um documento fundamental que reúne todas as ações, cuidados e acontecimentos do dia a dia na instituição. Ele serve para garantir a organização, transparência e a qualidade do atendimento aos idosos. Ele permite monitorar o que foi feito com cada residente, como medicação, alimentação, atividades físicas e sociais, também ajuda a identificar rapidamente qualquer problema. ',
       ]
     },
     {
@@ -34,15 +29,11 @@ const Documentacao = () => {
       descricao: 'Documentação de incidentes e acompanhamento de resolução',
       icone: <AlertTriangle size={24} />,
       detalhes: [
-        'Classificação por gravidade',
-        'Registro fotográfico',
-        'Fluxo de acompanhamento',
-        'Comunicação com familiares',
-        'Relatórios analíticos'
+        'O Registro de Ocorrências ficha onde se registra qualquer situação fora do comum envolvendo os residentes, funcionários ou a rotina da casa de repouso, podendo ser clínica,  comportamental ou até mesmo relacional, esse diário ajuda a acompanhar tudo o que pode impactar o bem-estar dos idosos e na organização do local, também na ciência dos responsáveis sobre os acontecimentos do dia.',
       ]
     },
     {
-      nome: 'Registro da saúde corporal inicial',
+      nome: 'Registro da Saúde Corporal Inicial',
       descricao: 'Monitoramento contínuo do estado de saúde dos residentes',
       icone: <Hospital size={24} />,
       detalhes: [
@@ -50,74 +41,62 @@ const Documentacao = () => {
       ]
     },
     {
-      nome: 'Registro de alimentação',
+      nome: 'Registro de Alimentação',
       descricao: 'Gestão nutricional e acompanhamento alimentar',
       icone: <Utensils size={24} />,
       detalhes: [
-        'Registro de consumo',
-        'Controle de dietas especiais',
-        'Preferências individuais'
+        'O Registro de  Quadro Alimentar é o documento no qual serão adicionadas minuciosamente todas as informações sobre alimentação do residente, para acompanhamento e avaliação, se a nutrição está adequada e se é necessário alguma alteração para atender melhor as necessidades do idoso. Deve estar registrado quantas refeições o mesmo fez, quando foi, e o que ingeriu, se ele se queixou de algo, deixou de se alimentar e o motivo de tal decisão.',
+        
       ]
     },
     {
-      nome: 'Registro de comportamento',
+      nome: 'Registro de Comportamento',
       descricao: 'Registro e análise de padrões comportamentais',
       icone: <BarChart size={24} />,
       detalhes: [
-        'Identificação de alterações',
-        'Acompanhamento psicológico',
-        'Registro de humor',
-        'Integração com equipe'
+        'O Registro de Comportamento esse relatório é onde será disposto informações sobre o comportamento dos residentes, seja durante exames, momento de lazer, alimentação, e de todo o seu dia a dia. Nele deverá haver conteúdo detalhado se o mesmo provocou consequências para si mesmo ou a terceiros (enfermeiros, médicos, responsáveis, ou outros residentes).',
       ]
     },
     {
-      nome: 'Registro de preferências',
+      nome: 'Registro de Preferências',
       descricao: 'Registro das preferências individuais de cada residente',
       icone: <Star size={24} />,
       detalhes: [
-        'Hábitos pessoais',
-        'Gostos e aversões',
-        'Rotinas preferidas',
-        'Atividades favoritas',
+        'O Registro de Preferências é uma ficha na qual serão anotadas as preferências pessoais de cada residente, para que a equipe possa oferecer um cuidado mais humanizado. Ele é parte importante do prontuário de atendimento, garante o bem-estar do idoso respeitando seus gostos, como comidas e temperos de preferência, sua rotina diária em geral (horário que acorda, prefere tomar banho, ou praticar seus lazeres).',
       ]
     },
     {
-      nome: 'Registro de relações internas',
+      nome: 'Registro de Relações Internas',
       descricao: 'Mapeamento das relações interpessoais na instituição',
       icone: <Users size={24} />,
       detalhes: [
-        'Vínculos entre residentes',
-        'Registro de visitas',
-        'Contatos familiares',
-        'Preferências de convivência'
+        'O Registro de Relações Internas o registro de relações internas é o instrumento de controle que irá  acompanhar como se dão as interações entre os residentes, funcionários e visitantes dentro da instituição, ele inclui as interações entre residentes como: participação em atividades coletivas, também o relacionamento com a equipe, observações de bem-estar social, ocorrências relevantes como situações e bullying ou discriminação e isolamento.',
       ]
     },
     {
-      nome: 'Registro de consultas médicas',
+      nome: 'Registro de Consultas Médicas',
       descricao: 'Controle completo de consultas e acompanhamento médico',
       icone: <Stethoscope size={24} />,
       detalhes: [
-        'Agendamento de consultas',
-        'Prescrições digitais',
-        'Laudos médicos',
+        'O Registro de Consultas Médicas é o documento onde serão anotadas todas as informações sobre os atendimentos médicos realizados a um paciente. No mesmo deve conter: nome completo, idade, sexo, número de prontuário data e horário da consulta, profissional responsável, motivo da consulta, histórico e evolução clínica, tratamentos indicados, encaminhamentos, exames solicitados e receitas médicas, assinatura e autenticação.',
+        
       ]
     },
     {
-      nome: 'Registro de exames médicos',
+      nome: 'Registro de Exames Médicos',
       descricao: 'Organização e resultados de exames médicos',
       icone: <Microscope size={24} />,
       detalhes: [
-        'Agendamento de exames',
-        'Alertas',
+        'O Registro de Exames Médicos aqui será anotado e organizado todas as informações sobre exames realizados por um paciente, seja para diagnóstico, acompanhamento ou controle de rotina.No documento deve haver controle e histórico para ser fornecido informações precisas para avaliar a evolução do paciente.',
+        
       ]
     },
     {
-      nome: 'Registros de vídeo e fotográfico',
+      nome: 'Registros de Vídeo e Fotográfico',
       descricao: 'Armazenamento de registros fotográficos e vídeos',
       icone: <Video size={24} />,
       detalhes: [
-        'Registro de evolução',
-        'Compartilhamento familiar',
+        'O Registro de Vídeos e Fotografia esses são documentoque que necessitam de grande cuidado e zelo, pois organiza e formaliza a captação de imagens e vídeos, seja para documentar, divulgar ou arquivar atividades e eventos. Ele é usado tanto para fins internos (memória institucional, acompanhamento de atividades), quanto externos (divulgação, relatórios, prestação de contas).',
       ]
     },
     {
@@ -125,9 +104,7 @@ const Documentacao = () => {
       descricao: 'Sistema integrado de reuniões e comunicação',
       icone: <Phone size={24} />,
       detalhes: [
-        'Agenda compartilhada',
-        'Comunicação com familiares',
-        'Reuniões multidisciplinares',
+        'A Plataforma para Reuniões é o ambiente pensado para que residentes possam se comunicar de forma remota com familiares, amigos ou profissionais de saúde, com conforto, privacidade e qualidade na conexão. Deve ser um ambiente silencioso obter uma iluminção adequada, privativo e com acessibilidades necessárias.',
       ]
     }
   ];
