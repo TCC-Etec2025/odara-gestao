@@ -25,15 +25,25 @@ const Sobre = () => {
   ];
 
   return (
-    <main className="container mx-auto py-8 px-4 max-w-4xl">
-      <header className="text-center mb-12">
+    <main className="flex flex-col items-center container mx-auto py-8 px-4 max-w-4xl">
+      <header className="flex flex-col text-center items-center">
+        <div className="bg-odara-white w-40 h-40 rounded-full overflow-hidden shadow-lg mb-8">
+          <img
+            src="../images/Logo final - Icone fundo branco redondo[1].png"
+            alt="Logo Odara Gestão"
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.target.onerror = null;
+            }}
+          />
+        </div>
         <h1 className="text-4xl font-bold text-odara-primary mb-2">
           Odara <span className="font-normal text-4xl nome-empresa-medio">Gestão</span>
         </h1>
-        <h2 className="text-xl text-odara-accent">Nossa Missão</h2>
+        <h2 className="mt-8 mb-3 text-xl text-odara-accent font-bold">Nossa Missão</h2>
       </header>
 
-      <section className="bg-odara-offwhite p-6 rounded-lg shadow-md mb-12 border-l-4 border-odara-primary">
+      <section className="bg-odara-offwhite p-6 rounded-lg shadow-md mb-10 border-l-4 border-odara-primary">
         <p className="text-odara-dark mb-4">
           A <strong className="text-odara-primary">Odara Gestão</strong> é um Sistema de Gestão dedicado à facilitação da gestão de Instituições de Lares para Pessoas Séniores (ILPS). Temos como objetivo auxiliar a administração diária e cuidados dos devidos pacientes.
         </p>
@@ -41,8 +51,8 @@ const Sobre = () => {
           Esse aplicativo estará contribuindo tanto com o trabalho de registrar informações dos enfermeiros quanto a participação e ciência dos responsáveis pelo sênior.
         </p>
       </section>
-      <header className="text-center mb-12">
-        <h2 className="text-xl text-odara-accent">Quem Somos?</h2>
+      <header className="text-center mb-3">
+        <h2 className="text-xl text-odara-accent font-bold">Quem Somos?</h2>
       </header>
 
       <section className="bg-odara-offwhite p-6 rounded-lg shadow-md mb-12 border-l-4 border-odara-primary">
@@ -59,7 +69,7 @@ const Sobre = () => {
         </p>
       </section>
 
-      <section className="bg-odara-dropdown p-6 rounded-lg shadow-md mb-12 border-l-4 border-odara-secondary">
+      <section className="bg-odara-dropdown p-6 rounded-lg shadow-md mb-10 border-l-4 border-odara-secondary">
         <h2 className="text-2xl font-bold text-odara-dropdown-accent mb-6 text-center">
           Confira abaixo os desenvolvedores da Odara Gestão!
         </h2>
