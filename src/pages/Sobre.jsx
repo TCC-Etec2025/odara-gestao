@@ -18,7 +18,7 @@ const Sobre = () => {
       linkedin: '#'
     },
     {
-      nome: 'Jamily',
+      nome: 'Jamilly Evelyn',
       github: '#',
       linkedin: '#'
     }
@@ -30,10 +30,10 @@ const Sobre = () => {
         <h1 className="text-4xl font-bold text-odara-primary mb-2">
           Odara <span className="font-normal text-4xl nome-empresa-medio">Gestão</span>
         </h1>
-        <h2 className="text-xl text-odara-dark">Nossa Missão</h2>
+        <h2 className="text-xl text-odara-accent">Nossa Missão</h2>
       </header>
 
-      <section className="bg-white p-6 rounded-lg shadow-md mb-12 border-l-4 border-odara-dark-blue">
+      <section className="bg-odara-offwhite p-6 rounded-lg shadow-md mb-12 border-l-4 border-odara-primary">
         <p className="text-odara-dark mb-4">
           A <strong className="text-odara-primary">Odara Gestão</strong> é um Sistema de Gestão dedicado à facilitação da gestão de Instituições de Lares para Pessoas Séniores (ILPS). Temos como objetivo auxiliar a administração diária e cuidados dos devidos pacientes.
         </p>
@@ -42,10 +42,10 @@ const Sobre = () => {
         </p>
       </section>
       <header className="text-center mb-12">
-        <h2 className="text-xl text-odara-dark">Quem Somos?</h2>
+        <h2 className="text-xl text-odara-accent">Quem Somos?</h2>
       </header>
 
-      <section className="bg-white p-6 rounded-lg shadow-md mb-12 border-l-4 border-odara-dark-blue">
+      <section className="bg-odara-offwhite p-6 rounded-lg shadow-md mb-12 border-l-4 border-odara-primary">
         <p className="text-odara-dark mb-4">
           Pensada para um projeto de conclusão de curso (TCC) a <strong className="text-odara-primary">Odara Gestão</strong> surgiu da observação de que o mercado dedicado aos cuidados com indivíduos séniores é carente, de forma geral, de sistemas de gestão dedicados a tanto facilitar a vida dos funcionários dessas residências quanto para apoiar e tranquilizar os parentes de seus clientes/pacientes.
         </p>
@@ -59,8 +59,8 @@ const Sobre = () => {
         </p>
       </section>
 
-      <section className="bg-white p-6 rounded-lg shadow-md mb-12 border-l-4 border-odara-dark-blue">
-        <h2 className="text-2xl font-bold text-odara-primary mb-6 text-center">
+      <section className="bg-odara-dropdown p-6 rounded-lg shadow-md mb-12 border-l-4 border-odara-secondary">
+        <h2 className="text-2xl font-bold text-odara-dropdown-accent mb-6 text-center">
           Confira abaixo os desenvolvedores da Odara Gestão!
         </h2>
 
@@ -69,10 +69,10 @@ const Sobre = () => {
             <div key={index} className="flex flex-col items-center min-w-[120px] flex-shrink-0">
               <span className="text-odara-dark font-medium mb-2 text-center">{dev.nome}</span>
               <div className="flex gap-3">
-                <a href={dev.github} target="_blank" rel="noopener noreferrer" className="text-odara-dark hover:text-odara-primary transition-colors">
+                <a href={dev.github} target="_blank" rel="noopener noreferrer" className="text-odara-secondary hover:text-odara-primary transition-colors">
                   <FaGithub size={24} />
                 </a>
-                <a href={dev.linkedin} target="_blank" rel="noopener noreferrer" className="text-odara-dark hover:text-odara-primary transition-colors">
+                <a href={dev.linkedin} target="_blank" rel="noopener noreferrer" className="text-odara-secondary hover:text-odara-primary transition-colors">
                   <FaLinkedin size={24} />
                 </a>
               </div>
