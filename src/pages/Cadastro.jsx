@@ -55,7 +55,7 @@ const Cadastro = () => {
                   {/* Nome da Instituição */}
                   <div className="col-span-2">
                     <label className="block text-odara-dark mb-1 text-sm font-medium">
-                      Nome da Instituição *
+                      Nome da Instituição <span class='text-odara-primary'>*</span>
                     </label>
                     <input
                       type="text"
@@ -63,7 +63,7 @@ const Cadastro = () => {
                       value={formData.nomeInstituicao}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent text-odara-secondary"
                       placeholder="Casa de Repouso Esperança"
                     />
                   </div>
@@ -71,7 +71,7 @@ const Cadastro = () => {
                   {/* CNPJ */}
                   <div>
                     <label className="block text-odara-dark mb-1 text-sm font-medium">
-                      CNPJ *
+                      CNPJ <span class='text-odara-primary'>*</span>
                     </label>
                     <input
                       type="text"
@@ -79,7 +79,7 @@ const Cadastro = () => {
                       value={formData.cnpj}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent text-odara-secondary"
                       placeholder="00.000.000/0000-00"
                     />
                   </div>
@@ -87,7 +87,7 @@ const Cadastro = () => {
                   {/* Email */}
                   <div>
                     <label className="block text-odara-dark mb-1 text-sm font-medium">
-                      Email *
+                      Email <span class='text-odara-primary'>*</span>
                     </label>
                     <input
                       type="email"
@@ -95,7 +95,7 @@ const Cadastro = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent text-odara-secondary"
                       placeholder="contato@instituicao.com"
                     />
                   </div>
@@ -103,7 +103,7 @@ const Cadastro = () => {
                   {/* Senha */}
                   <div>
                     <label className="block text-odara-dark mb-1 text-sm font-medium">
-                      Senha *
+                      Senha <span class='text-odara-primary'>*</span>
                     </label>
                     <input
                       type="password"
@@ -111,7 +111,7 @@ const Cadastro = () => {
                       value={formData.senha}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent text-odara-secondary"
                       placeholder="••••••••"
                     />
                   </div>
@@ -119,7 +119,7 @@ const Cadastro = () => {
                   {/* Confirmar Senha */}
                   <div>
                     <label className="block text-odara-dark mb-1 text-sm font-medium">
-                      Confirmar Senha *
+                      Confirmar Senha <span class='text-odara-primary'>*</span>
                     </label>
                     <input
                       type="password"
@@ -127,7 +127,7 @@ const Cadastro = () => {
                       value={formData.confirmarSenha}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent text-odara-secondary"
                       placeholder="••••••••"
                     />
                   </div>
@@ -135,7 +135,7 @@ const Cadastro = () => {
                   {/* Telefone */}
                   <div>
                     <label className="block text-odara-dark mb-1 text-sm font-medium">
-                      Telefone *
+                      Telefone <span class='text-odara-primary'>*</span>
                     </label>
                     <input
                       type="tel"
@@ -143,7 +143,7 @@ const Cadastro = () => {
                       value={formData.telefone}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent text-odara-secondary"
                       placeholder="(00) 00000-0000"
                     />
                   </div>
@@ -151,7 +151,7 @@ const Cadastro = () => {
                   {/* Endereço */}
                   <div className="col-span-2">
                     <label className="block text-odara-dark mb-1 text-sm font-medium">
-                      Endereço *
+                      Endereço <span class='text-odara-primary'>*</span>
                     </label>
                     <input
                       type="text"
@@ -159,7 +159,7 @@ const Cadastro = () => {
                       value={formData.endereco}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent text-odara-secondary"
                       placeholder="Rua, número, complemento"
                     />
                   </div>
@@ -167,7 +167,7 @@ const Cadastro = () => {
                   {/* Cidade */}
                   <div>
                     <label className="block text-odara-dark mb-1 text-sm font-medium">
-                      Cidade *
+                      Cidade <span class='text-odara-primary'>*</span>
                     </label>
                     <input
                       type="text"
@@ -175,7 +175,7 @@ const Cadastro = () => {
                       value={formData.cidade}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent text-odara-secondary"
                       placeholder="Sua cidade"
                     />
                   </div>
@@ -183,14 +183,14 @@ const Cadastro = () => {
                   {/* Estado */}
                   <div>
                     <label className="block text-odara-dark mb-1 text-sm font-medium">
-                      Estado *
+                      Estado <span class='text-odara-primary'>*</span>
                     </label>
                     <select
                       name="estado"
                       value={formData.estado}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 text-odara-secondary focus:ring-odara-primary focus:border-transparent"
                     >
                       <option value="">Selecione</option>
                       {estadosBrasil.map(uf => (
@@ -202,7 +202,7 @@ const Cadastro = () => {
                   {/* CEP */}
                   <div>
                     <label className="block text-odara-dark mb-1 text-sm font-medium">
-                      CEP *
+                      CEP <span class='text-odara-primary'>*</span>
                     </label>
                     <input
                       type="text"
@@ -210,7 +210,7 @@ const Cadastro = () => {
                       value={formData.cep}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent text-odara-secondary"
                       placeholder="00000-000"
                     />
                   </div>
@@ -230,8 +230,8 @@ const Cadastro = () => {
                     />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor="aceitaTermos" className="font-medium text-gray-700">
-                      Eu li e aceito os <a href="/termos" className="text-odara-primary hover:underline">Termos de Uso</a> e <a href="/privacidade" className="text-odara-primary hover:underline">Política de Privacidade</a> *
+                    <label htmlFor="aceitaTermos" className="font-medium text-odara-dark">
+                      Eu li e aceito os <a href="/termos" className="text-odara-primary hover:underline">Termos de Uso</a> e <a href="/privacidade" className="text-odara-primary hover:underline">Política de Privacidade</a> <span class='text-odara-primary'>*</span>
                     </label>
                   </div>
                 </div>
@@ -245,7 +245,7 @@ const Cadastro = () => {
               </form>
 
               <div className="mt-6 text-center">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-odara-dark">
                   Já tem uma conta?{" "}
                   <button
                     onClick={handleNavigate}
