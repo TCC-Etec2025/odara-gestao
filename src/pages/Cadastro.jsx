@@ -48,7 +48,7 @@ const Cadastro = () => {
         <div className="flex justify-center w-full">  {/* Adicionei w-full aqui */}
           <div className="w-full lg:w-2/3">  {/* Removi a div flex desnecessária e ajustei a largura */}
             <section className="bg-white p-8 rounded-xl shadow-lg">
-              <h2 className="text-3xl font-bold text-odara-primary mb-6 text-center">Cadastro da Instituição</h2>
+              <h2 className="text-3xl font-bold text-odara-accent mb-6 text-center">Cadastro da Instituição</h2>
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -63,7 +63,7 @@ const Cadastro = () => {
                       value={formData.nomeInstituicao}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
                       placeholder="Casa de Repouso Esperança"
                     />
                   </div>
@@ -79,7 +79,7 @@ const Cadastro = () => {
                       value={formData.cnpj}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
                       placeholder="00.000.000/0000-00"
                     />
                   </div>
@@ -95,7 +95,7 @@ const Cadastro = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
                       placeholder="contato@instituicao.com"
                     />
                   </div>
@@ -111,7 +111,7 @@ const Cadastro = () => {
                       value={formData.senha}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
                       placeholder="••••••••"
                     />
                   </div>
@@ -127,7 +127,7 @@ const Cadastro = () => {
                       value={formData.confirmarSenha}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
                       placeholder="••••••••"
                     />
                   </div>
@@ -143,7 +143,7 @@ const Cadastro = () => {
                       value={formData.telefone}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
                       placeholder="(00) 00000-0000"
                     />
                   </div>
@@ -159,7 +159,7 @@ const Cadastro = () => {
                       value={formData.endereco}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
                       placeholder="Rua, número, complemento"
                     />
                   </div>
@@ -175,7 +175,7 @@ const Cadastro = () => {
                       value={formData.cidade}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
                       placeholder="Sua cidade"
                     />
                   </div>
@@ -190,7 +190,7 @@ const Cadastro = () => {
                       value={formData.estado}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
                     >
                       <option value="">Selecione</option>
                       {estadosBrasil.map(uf => (
@@ -210,7 +210,7 @@ const Cadastro = () => {
                       value={formData.cep}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
+                      className="w-full px-4 py-3 border border-odara-secondary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-primary focus:border-transparent"
                       placeholder="00000-000"
                     />
                   </div>
@@ -226,7 +226,7 @@ const Cadastro = () => {
                       checked={formData.aceitaTermos}
                       onChange={handleInputChange}
                       required
-                      className="focus:ring-odara-primary h-4 w-4 text-odara-primary border-gray-300 rounded"
+                      className="focus:ring-odara-primary h-4 w-4 text-odara-primary border-odara-secondary/50 rounded"
                     />
                   </div>
                   <div className="ml-3 text-sm">
@@ -238,7 +238,7 @@ const Cadastro = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-odara-primary hover:bg-odara-dark text-white py-3 px-4 rounded-lg font-medium transition duration-200 mt-6 text-lg"
+                  className="w-full bg-odara-accent hover:bg-odara-secondary text-odara-contorno py-3 px-4 rounded-lg font-medium transition duration-200 mt-6 text-lg"
                 >
                   Cadastrar Instituição
                 </button>
@@ -249,7 +249,7 @@ const Cadastro = () => {
                   Já tem uma conta?{" "}
                   <button
                     onClick={handleNavigate}
-                    className="text-odara-primary hover:text-odara-dark font-medium"
+                    className="text-odara-primary hover:underline font-medium"
                   >
                     Fazer Login
                   </button>

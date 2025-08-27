@@ -105,7 +105,7 @@ const Navbar = () => {
                   ease-in-out
                   ${isActive(item.path)
                     ? "bg-odara-secondary text-odara-contorno border-2 border-odara-contorno shadow-lg backdrop-blur-sm"
-                    : "hover:bg-white hover:text-odara-primary hover:border-2 hover:border-odara-contorno  hover:scale-100 hover:shadow-md hover:backdrop-blur-sm"
+                    : "hover:bg-white hover:text-odara-primary hover:scale-100 hover:shadow-md hover:backdrop-blur-sm"
                   }
                 `}
               >
@@ -146,7 +146,7 @@ const Navbar = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`flex items-center space-x-3 px-4 py-3 text-sm font-medium transition duration-100 rounded-lg mx-2 font-semibold text-odara-contorno transform ease-in-out ${isActive(item.path)
                       ? "bg-odara-secondary text-odara-contorno border-2 border-odara-contorno shadow-md"
-                      : "hover:bg-white hover:text-odara-primary hover:border-2 hover:border-odara-contorno"
+                      : "hover:bg-white hover:text-odara-primary"
                     }
                   `}
                 >

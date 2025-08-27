@@ -164,7 +164,7 @@ const Documentacao = () => {
           <button
             key={index}
             onClick={() => setActiveItem(index)}
-            className={`group text-odara-dark p-6 rounded-xl shadow-sm hover:shadow-md text-left border-l-4 transition-all duration-300 transform hover:scale-105 shadow-lg ${activeItem === index ? 'border-odara-secondary bg-odara-dropdown shadow-md' : 'bg-odara-offwhite border-odara-primary hover:bg-odara-primary hover:border-odara-accent'}`}
+            className={`group text-odara-dark p-6 rounded-xl shadow-sm hover:shadow-md text-left border-l-4 transition-all duration-300 transform hover:scale-105 shadow-lg ${activeItem === index ? 'bg-odara-dropdown border-odara-secondary shadow-md' : 'bg-odara-offwhite border-odara-primary hover:bg-odara-primary hover:border-odara-accent'}`}
           >
             <div className="flex items-center">
               <span className={`text-2xl mr-4 ${activeItem === index ? 'text-odara-secondary' : 'text-odara-primary group-hover:text-odara-accent'}`}>{item.icone}</span>
