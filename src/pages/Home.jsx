@@ -244,7 +244,6 @@ const Home = () => {
         ref={cadastroRef}
         className="relative min-h-screen bg-odara-primary text-white flex items-center justify-center py-20"
       >
-
         <div className="max-w-4xl mx-auto text-center">
           <div className="w-full px-6">
             {/* Imagem de fundo*/}
@@ -258,21 +257,22 @@ const Home = () => {
                 }}
               />
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-8">Pronto para Começar?</h2>
-            <p className="text-xl mb-12 text-odara-white max-w-2xl mx-auto">
-              Junte-se a centenas de profissionais que já utilizam nosso sistema para otimizar seus cuidados.
-            </p>
-
-            <div className="bg-white/20 backdrop-blur-sm p-12 rounded-2xl max-w-2xl mx-auto mb-16">
-              <h3 className="text-2xl font-bold mb-8">Comece sua jornada hoje</h3>
-              <div className="space-y-6">
-                <button
-                  onClick={() => window.location.href = "/cadastro"}
-                  className="w-full bg-odara-accent border-2 bg-odara-accent hover:bg-odara-secondary/90 text-odara-contorno font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-lg"
-                >
-                  Criar Conta Gratuita
-                </button>
-                <p className="text-odara-white">Configuração em minutos • Suporte incluído</p>
+            <div class="backdrop-blur-sm">
+              <h2 className="text-4xl md:text-5xl font-bold text-odara-dark mb-8">Pronto para Começar?</h2>
+              <p className="text-xl mb-12 text-odara-white max-w-2xl mx-auto">
+                Junte-se a centenas de profissionais que já utilizam nosso sistema para otimizar seus cuidados.
+              </p>
+              <div className="bg-white/20  p-12 rounded-2xl max-w-2xl mx-auto mb-10">
+                <h3 className="text-2xl font-bold mb-8">Comece sua jornada hoje</h3>
+                <div className="space-y-6">
+                  <button
+                    onClick={() => window.location.href = "/cadastro"}
+                    className="w-full bg-odara-accent border-2 bg-odara-accent hover:bg-odara-secondary/90 text-odara-contorno font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-lg"
+                  >
+                    Criar Conta Gratuita
+                  </button>
+                  <p className="text-odara-white">Configuração em minutos • Suporte incluído</p>
+                </div>
               </div>
             </div>
           </div>

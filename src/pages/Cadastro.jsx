@@ -238,7 +238,7 @@ const Cadastro = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-odara-accent hover:bg-odara-secondary text-odara-contorno py-3 px-4 rounded-lg font-medium transition duration-200 mt-6 text-lg"
+                  className="w-full bg-odara-accent border-2 border-odara-contorno hover:bg-odara-secondary text-odara-contorno py-3 px-4 rounded-lg font-medium mt-6 text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   Cadastrar Instituição
                 </button>
