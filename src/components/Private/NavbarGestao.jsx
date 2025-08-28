@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const NavbarGestao = () => {
@@ -7,10 +7,20 @@ const NavbarGestao = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isRegistrosDropdownOpen, setIsRegistrosDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [registroSearchTerm, setRegistroSearchTerm] = useState("");
 
   // Verifique se a rota está ativa
   const isActive = (path) => {
     return location.pathname.toLowerCase() === path.toLowerCase();
+  };
+
+  const isRegistroActive = () => {
+    return registrosItems.some(category =>
+      category.items.some(item =>
+        location.pathname.toLowerCase().includes(item.path.toLowerCase().replace("./", ""))
+      )
+    );
   };
 
   const navigationItems = [
@@ -29,8 +39,8 @@ const NavbarGestao = () => {
       ),
     },
     {
-      path: "./Usuarios",
-      label: "Usuarios",
+      path: "./Funcionarios",
+      label: "Funcionarios",
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -59,58 +69,274 @@ const NavbarGestao = () => {
   ];
 
   const registrosItems = [
-    { path: "./RegistroPreferencias", label: "Registro de Preferências" },
-    { path: "./RegistroMedicamentos", label: "Registro de Medicamento" },
-    { path: "./RegistroOcorrencias", label: "Registro de Ocorrências" },
+    {
+      category: "Saúde",
+      items: [
+        {
+          path: "./RegistroMedicamentos",
+          label: "Registro de Medicamentos",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2zM12 7v10m-5-5h10" />
+            </svg>
+          )
+        },
+        {
+          path: "./RegistroConsultas",
+          label: "Registro de Consultas",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          )
+        },
+        {
+          path: "./RegistroSaudeInicial",
+          label: "Registro de Saude Inicial",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          )
+        },
+        {
+          path: "./RegistroExames",
+          label: "Registro de Exames",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          )
+        },
+        {
+          path: "./RegistroConsultas",
+          label: "Registro de Consultas",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          )
+        },
+      ]
+    },
+    {
+      category: "Atividades",
+      items: [
+        {
+          path: "./RegistroPreferencias",
+          label: "Registro de Preferências",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          )
+        },
+        {
+          path: "./RegistroAtividades",
+          label: "Registro de Atividades",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          )
+        },
+        {
+          path: "./RegistroAlimentar",
+          label: "Registro Alimentar",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          )
+        },
+      ]
+    },
+    {
+      category: "Ocorrências",
+      items: [
+        {
+          path: "./RegistroOcorrencias",
+          label: "Ocorrências",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          )
+        },
+        {
+          path: "./RegistroComportamento",
+          label: "Registro de Comportamento",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          )
+        },
+      ]
+    },
+    {
+      category: "Relações & Reuniões",
+      items: [
+        {
+          path: "./RegistroRelacoes",
+          label: "Registro de Relaçoes Internas",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          )
+        },
+        {
+          path: "./RegistroVideos",
+          label: "Registro de Videos dos Residentes",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          )
+        },
+        {
+          path: "./PlataformaMeet",
+          label: "Reuniões",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          )
+        },
+      ]
+    },
   ];
+
+  // Filtrar registros baseado no termo de busca
+  const filteredRegistros = useMemo(() => {
+    if (!registroSearchTerm) return registrosItems;
+
+    return registrosItems.map(category => ({
+      ...category,
+      items: category.items.filter(item =>
+        item.label.toLowerCase().includes(registroSearchTerm.toLowerCase())
+      )
+    })).filter(category => category.items.length > 0);
+  }, [registroSearchTerm]);
 
   return (
     <>
-      {/* Botão para abrir/fechar a sidebar em mobile */}
-      <button
-        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-odara-primary text-white"
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
+      <div className="fixed top-0 left-0 right-0 h-13 bg-white shadow-md z-40 flex items-center justify-between px-4">
+        <div className="flex items-center">
+          <button
+            className="md:hidden p-2 rounded-md text-odara-primary mr-2"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
 
-      {/* Sidebar estilo ILPI com cores Odara */}
-      <div className={`
-        fixed inset-y-0 left-0 z-40 bg-odara-primary text-white 
-        transform transition-all duration-300 ease-in-out
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
-        md:translate-x-0 
-        ${isCollapsed ? 'w-20' : 'w-64'} 
-        shadow-xl flex flex-col
-      `}>
-        {/* Cabeçalho com informações do usuário */}
-        <div className="p-4 border-b border-odara-secondary/30">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-odara-white rounded-full flex items-center justify-center overflow-hidden border-2 border-odara-contorno shadow-lg">
-                <img
-                  src="../images/Logo final - Icone fundo branco redondo[1].png"
-                  alt="Logo Odara Gestão"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                  }}
-                />
-              </div>
-              {!isCollapsed && (
-                <div className="flex flex-col">
-                  <h1 className="text-lg font-bold text-white">
-                    Odara <span className="font-normal">Gestão</span>
-                  </h1>
-                  <span className="text-xs text-odara-white/80">Sistema para ILPIs</span>
-                </div>
-              )}
+        {/* Campo de busca */}
+        <div className="flex-1 max-w-md mx-4">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+              <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+              </svg>
             </div>
-            
+            <input
+              type="text"
+              placeholder="Buscar..."
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-odara-primary focus:border-odara-primary sm:text-sm"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-4">
+          {/* Botão de notificações */}
+          <button className="relative p-1 text-gray-600 hover:text-odara-primary">
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
+          </button>
+
+          {/* Dropdown do perfil */}
+          <div className="relative">
+            <button
+              className="flex items-center space-x-2 focus:outline-none"
+              onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+            >
+              <div className="w-8 h-8 rounded-full bg-odara-primary flex items-center justify-center text-white font-bold text-xs">
+                CA
+              </div>
+              <span className="hidden md:block text-sm font-medium text-gray-700">Dr. Carlos Admin</span>
+              <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {isProfileDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                <Link
+                  to="/perfil"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setIsProfileDropdownOpen(false)}
+                >
+                  Meu Perfil
+                </Link>
+                <Link
+                  to="/configuracoes"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setIsProfileDropdownOpen(false)}
+                >
+                  Configurações
+                </Link>
+                <div className="border-t border-gray-100"></div>
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => {
+                    // Lógica de logout aqui
+                    setIsProfileDropdownOpen(false);
+                  }}
+                >
+                  Sair
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Sidebar */}
+      <div className={`
+        fixed top-0 left-0 inset-y-0 z-50 bg-odara-primary text-white
+      transform transition-all duration-300 ease-in-out
+      ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
+      md:translate-x-0 
+      ${isCollapsed ? 'w-20' : 'w-64'}  
+      shadow-xl flex flex-col
+        h-screen
+      `}>
+        <div className="p-4 border-b border-odara-secondary/30">
+          <div className="flex items-center overflow-hidden">
+            <img
+              src="../images/Logo final - Icone fundo branco redondo[1].png"
+              alt="Logo Odara Gestão"
+              className="w-8 h-8 object-contain flex-shrink-0"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTEiIGZpbGw9IiM0YjU1NjAiLz4KPHBhdGggZD0iTTEwIDE2VjhIMTZNMTQgMTZWOEgxOCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjwvc3ZnPgo=";
+              }}
+            />
+            <span className={`ml-2 text-xl font-bold text-white transition-opacity duration-300 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
+              Odara <span className="font-normal">Gestão</span>
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+
             {/* Botão para recolher/expandir a sidebar (apenas em desktop) */}
-            <button 
+            <button
               className="hidden md:block text-odara-white hover:text-odara-contorno"
               onClick={() => setIsCollapsed(!isCollapsed)}
             >
@@ -123,30 +349,9 @@ const NavbarGestao = () => {
               </svg>
             </button>
           </div>
-          
-          {!isCollapsed && (
-            <div className="mt-4 flex items-center justify-between p-2 bg-odara-secondary/30 rounded-lg">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-full bg-odara-contorno flex items-center justify-center text-odara-primary font-bold text-xs">
-                  CA
-                </div>
-                <div>
-                  <Link 
-                    to="/perfil" 
-                    className="font-semibold text-sm hover:text-odara-contorno transition-colors"
-                    onClick={() => setIsProfileDropdownOpen(false)}
-                  >
-                    Dr. Carlos Admin
-                  </Link>
-                  <p className="text-xs text-odara-white/80">Admin</p>
-                </div>
-              </div>
-              <span className="text-xs bg-odara-white text-odara-primary px-2 py-1 rounded-full">45 mm</span>
-            </div>
-          )}
         </div>
 
-        {/* Navegação */}
+        {/* Navegação das paginas*/}
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {navigationItems.map((item) => (
             <Link
@@ -172,15 +377,15 @@ const NavbarGestao = () => {
               )}
             </Link>
           ))}
-          
-          {/* Dropdown de Registros */}
+
+          {/* Dropdown de Registros*/}
           <div className="relative">
             <button
               onClick={() => setIsRegistrosDropdownOpen(!isRegistrosDropdownOpen)}
               className={`
                 w-full flex items-center justify-between space-x-3 p-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                ${location.pathname.toLowerCase().includes('/registros') 
-                  ? "bg-odara-secondary text-odara-contorno border border-odara-contorno shadow-inner" 
+                ${isRegistroActive()
+                  ? "bg-odara-secondary text-odara-contorno border border-odara-contorno shadow-inner"
                   : "hover:bg-odara-secondary/50 hover:text-white"
                 }
               `}
@@ -198,82 +403,101 @@ const NavbarGestao = () => {
                 {!isCollapsed && <span>Registros</span>}
               </div>
               {!isCollapsed && (
-                <svg 
-                  className={`w-4 h-4 transition-transform ${isRegistrosDropdownOpen ? 'transform rotate-180' : ''}`} 
-                  fill="none" 
-                  stroke="currentColor" 
+                <svg
+                  className={`w-4 h-4 transition-transform ${isRegistrosDropdownOpen ? 'transform rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               )}
             </button>
-            
-            {/* Dropdown menu para Registros */}
+
             {(isRegistrosDropdownOpen || isCollapsed) && (
               <div className={`
                 mt-1 overflow-hidden transition-all duration-300
-                ${isCollapsed ? 'absolute left-full ml-2 w-48' : 'ml-6'}
+                ${isCollapsed ? 'absolute left-full ml-2 w-64' : 'ml-0'}
               `}>
                 <div className={`
-                  bg-odara-primary border border-odara-secondary rounded-lg shadow-lg py-1
+                  bg-odara-primary border border-odara-secondary rounded-lg shadow-lg
                   ${isCollapsed ? '' : 'border-l-2 border-l-odara-contorno'}
+                  max-h-96 overflow-hidden flex flex-col
                 `}>
-                  {registrosItems.map((item) => (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      className={`
-                        block px-4 py-2 text-sm transition-colors duration-200
-                        ${isActive(item.path)
-                          ? "bg-odara-secondary text-odara-contorno"
-                          : "hover:bg-odara-secondary/50 hover:text-white"
-                        }
-                      `}
-                      onClick={() => {
-                        setIsRegistrosDropdownOpen(false);
-                        if (window.innerWidth < 768) setIsSidebarOpen(false);
-                      }}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
+                  {/* Campo de busca dentro do dropdown de registros */}
+                  {!isCollapsed && (
+                    <div className="p-2 border-b border-odara-secondary/30">
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+                          <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Buscar registros..."
+                          className="block w-full pl-8 pr-3 py-1 border border-odara-secondary rounded-md leading-5 bg-odara-primary placeholder-gray-400 text-white text-xs focus:outline-none focus:placeholder-gray-300 focus:ring-1 focus:ring-odara-contorno focus:border-odara-contorno"
+                          value={registroSearchTerm}
+                          onChange={(e) => setRegistroSearchTerm(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Lista de registros com scroll */}
+                  <div className="overflow-y-auto flex-1">
+                    {filteredRegistros.map((category, index) => (
+                      <div key={index}>
+                        {/* Categoria (só mostra se não estiver recolhido) */}
+                        {!isCollapsed && category.items.length > 0 && (
+                          <div className="px-4 py-2 text-xs font-semibold text-odara-contorno uppercase tracking-wider border-t border-odara-secondary/30 first:border-t-0">
+                            {category.category}
+                          </div>
+                        )}
+
+                        {category.items.map((item) => (
+                          <Link
+                            key={item.path}
+                            to={item.path}
+                            className={`
+                              flex items-center px-4 py-2 text-sm transition-colors duration-200 group
+                              ${isActive(item.path)
+                                ? "bg-odara-secondary text-odara-contorno"
+                                : "hover:bg-odara-secondary/50 hover:text-white"
+                              }
+                            `}
+                            onClick={() => {
+                              setIsRegistrosDropdownOpen(false);
+                              if (window.innerWidth < 768) setIsSidebarOpen(false);
+                            }}
+                          >
+                            <span className={`mr-2 ${isActive(item.path) ? "text-odara-contorno" : "text-odara-white"}`}>
+                              {item.icon}
+                            </span>
+                            {!isCollapsed && <span>{item.label}</span>}
+                            {isCollapsed && (
+                              <div className="absolute left-full ml-2 px-2 py-1 bg-odara-secondary text-odara-contorno text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-50 whitespace-nowrap">
+                                {item.label}
+                              </div>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
+                    ))}
+
+                    {/* Mensagem quando não há resultados */}
+                    {filteredRegistros.length === 0 && (
+                      <div className="px-4 py-3 text-sm text-gray-400 text-center">
+                        Nenhum registro encontrado
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
           </div>
-          
-          {/* Configurações */}
-          <Link
-            to="/config"
-            className={`
-              flex items-center space-x-3 p-3 rounded-lg text-sm font-medium transition-all duration-200 group
-              ${isActive("/config")
-                ? "bg-odara-secondary text-odara-contorno border border-odara-contorno shadow-inner"
-                : "hover:bg-odara-secondary/50 hover:text-white"
-              }
-            `}
-            title={isCollapsed ? "Configurações" : ""}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-              />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            {!isCollapsed && <span>Configurações</span>}
-            {isCollapsed && (
-              <div className="absolute left-full ml-2 px-2 py-1 bg-odara-secondary text-odara-contorno text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-50">
-                Configurações
-              </div>
-            )}
-          </Link>
         </nav>
 
-        {/* Rodapé da sidebar */}
         <div className="p-4 border-t border-odara-secondary/30">
           {!isCollapsed && (
             <div className="text-center text-xs text-odara-white/60">
@@ -285,8 +509,8 @@ const NavbarGestao = () => {
 
       {/* Overlay para mobile quando sidebar está aberta */}
       {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/20 z-30 md:hidden"
+        <div
+          className="fixed inset-0 bg-black/20 z-20 md:hidden mt-16"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}

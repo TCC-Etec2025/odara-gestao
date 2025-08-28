@@ -1,6 +1,5 @@
 import { Outlet } from 'react-router-dom';
 import NavbarGestao from './NavbarGestao';
-import Footer from '../Footer';
 
 const LayoutGestao = () => {
   return (
@@ -15,10 +14,6 @@ const LayoutGestao = () => {
           <Outlet /> {/* Aqui serão renderizadas as páginas de gestão */}
         </div>
       </main>
-      
-      <div className="w-full">
-        <Footer />
-      </div>
     </div>
   );
 };

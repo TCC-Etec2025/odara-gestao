@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaUtensils, FaWalking, FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle } from 'react-icons/fa';
 
 const RegistroPreferencias = () => {
-  // Dados iniciais das preferências
+
   const [preferences, setPreferences] = useState({
     alimentar: [
       { id: 1, title: "Comida Italiana", description: "Prefere massas e pratos da culinária italiana" },
@@ -11,37 +11,45 @@ const RegistroPreferencias = () => {
     atividades: [
       { id: 3, title: "Leitura", description: "Gosta de ler livros no tempo livre" },
       { id: 4, title: "Caminhada", description: "Prefere caminhar ao ar livre" }
+    ],
+    cuidador: [
+      { id: 5, title: "Leticia", description: "Prefere que Leticia sirva seu alimento" },
+      { id: 6, title: "Maria", description: "Prefere que maria de banho e cuide de sua higiene" }
     ]
   });
-  
+
   const [modalAberto, setModalAberto] = useState(false);
   const [categoriaAtual, setCategoriaAtual] = useState('');
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
   const [novaPreferencia, setNovaPreferencia] = useState({ titulo: '', descricao: '' });
   const [filtroAtivo, setFiltroAtivo] = useState('todos');
+  const [filtroAberto, setFiltroAberto] = useState(false);
   const [editando, setEditando] = useState(false);
   const [idEditando, setIdEditando] = useState(null);
   const [tooltipVisivel, setTooltipVisivel] = useState(null);
+  const [infoVisivel, setInfoVisivel] = useState(false);
 
-  // Categorias disponíveis
   const CATEGORIAS = {
     ALIMENTAR: 'alimentar',
-    ATIVIDADES: 'atividades'
+    ATIVIDADES: 'atividades',
+    CUIDADOR: 'cuidador'
   };
 
   // Labels para exibição
   const CATEGORIA_LABELS = {
     [CATEGORIAS.ALIMENTAR]: "Alimentar",
-    [CATEGORIAS.ATIVIDADES]: "Atividades"
+    [CATEGORIAS.ATIVIDADES]: "Atividades",
+    [CATEGORIAS.CUIDADOR]: "Cuidador"
   };
 
-  // Filtros disponíveis
+  // Filtros
   const FILTROS = [
     { id: 'todos', label: 'Todos' },
     { id: CATEGORIAS.ALIMENTAR, label: CATEGORIA_LABELS[CATEGORIAS.ALIMENTAR] },
-    { id: CATEGORIAS.ATIVIDADES, label: CATEGORIA_LABELS[CATEGORIAS.ATIVIDADES] }
+    { id: CATEGORIAS.ATIVIDADES, label: CATEGORIA_LABELS[CATEGORIAS.ATIVIDADES] },
+    { id: CATEGORIAS.CUIDADOR, label: CATEGORIA_LABELS[CATEGORIAS.CUIDADOR] }
   ];
 
-  // Abrir modal para adicionar nova preferência
   const abrirModalAdicionar = (categoria) => {
     setCategoriaAtual(categoria);
     setNovaPreferencia({ titulo: '', descricao: '' });
@@ -50,14 +58,13 @@ const RegistroPreferencias = () => {
     setModalAberto(true);
   };
 
-  // Abrir modal para editar preferência existente
   const abrirModalEditar = (categoria, id) => {
     const preferenciaParaEditar = preferences[categoria].find(item => item.id === id);
     if (preferenciaParaEditar) {
       setCategoriaAtual(categoria);
-      setNovaPreferencia({ 
-        titulo: preferenciaParaEditar.title, 
-        descricao: preferenciaParaEditar.description 
+      setNovaPreferencia({
+        titulo: preferenciaParaEditar.title,
+        descricao: preferenciaParaEditar.description
       });
       setEditando(true);
       setIdEditando(id);
@@ -65,40 +72,39 @@ const RegistroPreferencias = () => {
     }
   };
 
-  // Salvar preferência (tanto nova quanto edição)
   const salvarPreferencia = () => {
     if (!novaPreferencia.titulo || !novaPreferencia.descricao) return;
-    
+
     if (editando && idEditando) {
-      // Modo edição
+      // Modo de edição
       setPreferences(prev => ({
         ...prev,
-        [categoriaAtual]: prev[categoriaAtual].map(item => 
-          item.id === idEditando ? { 
-            ...item, 
-            title: novaPreferencia.titulo, 
-            description: novaPreferencia.descricao 
+        [categoriaAtual]: prev[categoriaAtual].map(item =>
+          item.id === idEditando ? {
+            ...item,
+            title: novaPreferencia.titulo,
+            description: novaPreferencia.descricao
           } : item
         )
       }));
     } else {
-      // Modo adição
+      // Modo de adição
       const novoItem = {
         id: Date.now(),
         title: novaPreferencia.titulo,
         description: novaPreferencia.descricao
       };
-      
+
       setPreferences(prev => ({
         ...prev,
         [categoriaAtual]: [...prev[categoriaAtual], novoItem]
       }));
     }
-    
+
     setModalAberto(false);
   };
 
-  // Excluir preferência
+  // Excluir a preferência
   const excluirPreferencia = (categoria, id) => {
     if (window.confirm('Tem certeza que deseja excluir esta preferência?')) {
       setPreferences(prev => ({
@@ -109,157 +115,235 @@ const RegistroPreferencias = () => {
   };
 
   // Filtrar preferências com base no filtro ativo
-  const preferenciasFiltradas = filtroAtivo === 'todos' 
-    ? preferences 
+  const preferenciasFiltradas = filtroAtivo === 'todos'
+    ? preferences
     : { [filtroAtivo]: preferences[filtroAtivo] };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-odara-offwhite to-odara-primary/30 py-8 px-4">
+    <div className="ml-12 mt-10 min-h-screen bg-gradient-to-br from-odara-offwhite to-odara-primary/30 py-10 px-10">
       <div className="max-w-6xl mx-auto">
-        <header className="bg-odara-offwhite rounded-2xl shadow-lg p-6 mb-8 border-l-4 border-odara-primary">
-          <h1 className="text-3xl font-bold text-odara-dark mb-4">Registro de Preferências</h1>
-          <p className="text-odara-dark max-w-3xl leading-relaxed">
-            O <strong className="text-odara-accent">Registro de Preferências</strong> é uma ficha que permite um cuidado mais humanizado, 
-            respeitando os gostos individuais como preferências alimentares, horários, banho e atividades de lazer.
-          </p>
-        </header>
-        
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center">
+            <h1 className="text-3xl font-bold text-odara-dark mr-2">Registro de Preferências</h1>
+            <div className="relative">
+              <button
+                onMouseEnter={() => setInfoVisivel(true)}
+                onMouseLeave={() => setInfoVisivel(false)}
+                className="text-odara-accent hover:text-odara-secondary transition-colors duration-200"
+              >
+                <FaInfoCircle size={20} />
+              </button>
+              {infoVisivel && (
+                <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dark text-white text-sm rounded-lg shadow-lg">
+                  <h3 className="font-bold mb-2">Registro de Preferências</h3>
+                  <p>
+                    É uma ficha na qual serão anotadas as preferências pessoais de cada residente,
+                    para que a equipe possa oferecer um cuidado mais humanizado. Ele é parte importante
+                    do prontuário de atendimento, garante o bem-estar do idoso respeitando seus gostos,
+                    como comidas e temperos de preferência, sua rotina diária em geral (horário que acorda,
+                    prefere tomar banho, ou praticar seus lazeres).
+                  </p>
+                  <div className="absolute bottom-full left-4 border-4 border-transparent border-b-odara-dark"></div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <div className="bg-odara-offwhite rounded-2xl shadow-lg p-6 border-l-4 border-odara-primary">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h2 className="text-2xl font-bold text-odara-dark">Preferências</h2>
-                <div className="flex space-x-3">
-                  <button 
-                    className="bg-odara-accent hover:bg-odara-secondary/90 text-odara-contorno font-medium py-2 px-4 rounded-lg flex items-center transition duration-200 border-2 border-odara-contorno"
-                    onClick={() => abrirModalAdicionar(CATEGORIAS.ALIMENTAR)}
-                  >
-                    <FaPlus className="mr-2" />
-                    Adicionar
-                  </button>
+            <div className="bg-odara-offwhite rounded-lg shadow-sm p-4 flex items-center">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                  <div className="relative group">
+                    <button
+                      className="bg-odara-accent hover:bg-odara-secondary/90 text-odara-contorno font-medium py-2 px-4 rounded-lg flex items-center transition duration-200 border-2 border-odara-contorno"
+                      onClick={() => categoriaSelecionada && abrirModalAdicionar(categoriaSelecionada)}
+                      disabled={!categoriaSelecionada}
+                    >
+                      <FaPlus className="mr-2" />
+                      Adicionar
+                    </button>
+
+                    {/* dropdown para seleção de categoria */}
+                    <div className="absolute left-0 mt-1 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                      <div className="py-1">
+                        {Object.values(CATEGORIAS).map(categoria => (
+                          <button
+                            key={categoria}
+                            className={`block w-full text-left px-4 py-2 text-sm hover:bg-odara-primary/10 transition-colors ${categoriaSelecionada === categoria
+                              ? 'bg-odara-primary/20 text-odara-dark font-medium'
+                              : 'text-odara-dark'
+                              }`}
+                            onClick={() => setCategoriaSelecionada(categoria)}
+                          >
+                            {categoria}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {categoriaSelecionada && (
+                    <div className="bg-odara-primary/20 text-odara-dark rounded-full px-3 py-1 text-sm flex items-center">
+                      <span>{categoriaSelecionada}</span>
+                      <button
+                        onClick={() => setCategoriaSelecionada(null)}
+                        className="ml-2 text-odara-dark hover:text-odara-accent"
+                      >
+                        <FaTimes />
+                      </button>
+                    </div>
+                  )}
                 </div>
-              </div>
-              
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold text-odara-dark mb-4 flex items-center">
-                  <FaUtensils className="mr-2 text-odara-accent" />
-                  Alimentar
-                </h3>
-                <ul className="space-y-4 max-h-80 overflow-y-auto pr-2">
-                  {preferenciasFiltradas[CATEGORIAS.ALIMENTAR]?.map(item => (
-                    <li key={item.id} className="bg-white p-4 rounded-lg border border-gray-200 flex justify-between items-start hover:shadow-md transition-shadow duration-200">
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-semibold text-odara-dark">{item.title}</h4>
-                          <div className="relative">
-                            <button 
-                              onMouseEnter={() => setTooltipVisivel(item.id)}
-                              onMouseLeave={() => setTooltipVisivel(null)}
-                              className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-1"
-                            >
-                              <FaInfoCircle />
-                            </button>
-                            {tooltipVisivel === item.id && (
-                              <div className="absolute z-10 left-0 bottom-full mb-2 w-64 p-3 bg-odara-dark text-white text-sm rounded-lg shadow-lg">
-                                {item.description}
-                                <div className="absolute top-full left-4 border-4 border-transparent border-t-odara-dark"></div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <p className="text-odara-dark/70 text-sm mt-1 line-clamp-2">{item.description}</p>
-                      </div>
-                      <div className="flex space-x-2 ml-4">
-                        <button 
-                          onClick={() => abrirModalEditar(CATEGORIAS.ALIMENTAR, item.id)}
-                          className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-1 rounded-full hover:bg-odara-accent/10"
+
+                {/* Seção de Filtros */}
+                <div className="relative">
+                  <button
+                    className="ml-120 flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-odara-dark font-medium hover:bg-odara-primary/10 transition"
+                    onClick={() => setFiltroAberto(!filtroAberto)}
+                  >
+                    <FaFilter className="text-odara-accent mr-2" />
+                    Filtro
+                  </button>
+
+                  {/* Dropdown de opções */}
+                  {filtroAberto && (
+                    <div className="ml-120 absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                      {FILTROS.map(filtro => (
+                        <button
+                          key={filtro.id}
+                          onClick={() => {
+                            setFiltroAtivo(filtro.id);
+                            setFiltroAberto(false);
+                          }}
+                          className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/10 ${filtroAtivo === filtro.id ? 'bg-odara-primary/20 font-semibold' : ''
+                            }`}
                         >
-                          <FaEdit />
+                          {filtro.label}
                         </button>
-                        <button 
-                          onClick={() => excluirPreferencia(CATEGORIAS.ALIMENTAR, item.id)}
-                          className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1 rounded-full hover:bg-red-50"
-                        >
-                          <FaTrash />
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              
-              <div>
-                <h3 className="text-xl font-semibold text-odara-dark mb-4 flex items-center">
-                  <FaWalking className="mr-2 text-odara-accent" />
-                  Atividades
-                </h3>
-                <ul className="space-y-4 max-h-80 overflow-y-auto pr-2">
-                  {preferenciasFiltradas[CATEGORIAS.ATIVIDADES]?.map(item => (
-                    <li key={item.id} className="bg-white p-4 rounded-lg border border-gray-200 flex justify-between items-start hover:shadow-md transition-shadow duration-200">
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-semibold text-odara-dark">{item.title}</h4>
-                          <div className="relative">
-                            <button 
-                              onMouseEnter={() => setTooltipVisivel(item.id)}
-                              onMouseLeave={() => setTooltipVisivel(null)}
-                              className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-1"
-                            >
-                              <FaInfoCircle />
-                            </button>
-                            {tooltipVisivel === item.id && (
-                              <div className="absolute z-10 left-0 bottom-full mb-2 w-64 p-3 bg-odara-dark text-white text-sm rounded-lg shadow-lg">
-                                {item.description}
-                                <div className="absolute top-full left-4 border-4 border-transparent border-t-odara-dark"></div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <p className="text-odara-dark/70 text-sm mt-1 line-clamp-2">{item.description}</p>
-                      </div>
-                      <div className="flex space-x-2 ml-4">
-                        <button 
-                          onClick={() => abrirModalEditar(CATEGORIAS.ATIVIDADES, item.id)}
-                          className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-1 rounded-full hover:bg-odara-accent/10"
-                        >
-                          <FaEdit />
-                        </button>
-                        <button 
-                          onClick={() => excluirPreferencia(CATEGORIAS.ATIVIDADES, item.id)}
-                          className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1 rounded-full hover:bg-red-50"
-                        >
-                          <FaTrash />
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
               </div>
             </div>
-            
-            <div className="bg-odara-offwhite rounded-2xl shadow-lg p-6 border-l-4 border-odara-primary">
-              <h3 className="text-xl font-semibold text-odara-dark mb-4 flex items-center">
-                <FaFilter className="mr-2 text-odara-accent" />
-                Filtro
-              </h3>
-              <div className="flex flex-wrap gap-3">
-                {FILTROS.map(filtro => (
-                  <button
-                    key={filtro.id}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition duration-200 border-2 ${
-                      filtroAtivo === filtro.id 
-                        ? 'bg-odara-accent text-odara-contorno border-odara-contorno' 
-                        : 'bg-white text-odara-dark border-odara-primary/30 hover:bg-odara-primary/10'
-                    }`}
-                    onClick={() => setFiltroAtivo(filtro.id)}
-                  >
-                    {filtro.label}
-                  </button>
-                ))}
+
+            <div className="bg-odara-offwhite rounded-2xl shadow-lg p-6">
+              {/* scroll para preferências */}
+              <div className="max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
+                {/* Seção Alimentar */}
+                {(filtroAtivo === 'todos' || filtroAtivo === CATEGORIAS.ALIMENTAR) && (
+                  <div className="mb-8">
+                    <h3 className="text-xl font-semibold text-odara-dark mb-4 flex items-center">
+                      <FaUtensils className="mr-2 text-odara-accent" />
+                      Alimentar
+                    </h3>
+                    <ul className="space-y-4">
+                      {preferences[CATEGORIAS.ALIMENTAR]?.map(item => (
+                        <li key={item.id} className="bg-white p-4 rounded-lg border border-gray-200 flex justify-between items-start hover:shadow-md transition-shadow duration-200">
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <h4 className="font-semibold text-odara-dark">{item.title}</h4>
+                            </div>
+                            <p className="text-odara-dark/70 text-sm mt-1 line-clamp-2">{item.description}</p>
+                          </div>
+                          <div className="flex space-x-2 ml-4">
+                            <button
+                              onClick={() => abrirModalEditar(CATEGORIAS.ALIMENTAR, item.id)}
+                              className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-1 rounded-full hover:bg-odara-accent/10"
+                            >
+                              <FaEdit />
+                            </button>
+                            <button
+                              onClick={() => excluirPreferencia(CATEGORIAS.ALIMENTAR, item.id)}
+                              className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1 rounded-full hover:bg-red-50"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Seção Atividades */}
+                {(filtroAtivo === 'todos' || filtroAtivo === CATEGORIAS.ATIVIDADES) && (
+                  <div className="mb-8">
+                    <h3 className="text-xl font-semibold text-odara-dark mb-4 flex items-center">
+                      <FaWalking className="mr-2 text-odara-accent" />
+                      Atividades
+                    </h3>
+                    <ul className="space-y-4">
+                      {preferences[CATEGORIAS.ATIVIDADES]?.map(item => (
+                        <li key={item.id} className="bg-white p-4 rounded-lg border border-gray-200 flex justify-between items-start hover:shadow-md transition-shadow duration-200">
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <h4 className="font-semibold text-odara-dark">{item.title}</h4>
+                            </div>
+                            <p className="text-odara-dark/70 text-sm mt-1 line-clamp-2">{item.description}</p>
+                          </div>
+                          <div className="flex space-x-2 ml-4">
+                            <button
+                              onClick={() => abrirModalEditar(CATEGORIAS.ATIVIDADES, item.id)}
+                              className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-1 rounded-full hover:bg-odara-accent/10"
+                            >
+                              <FaEdit />
+                            </button>
+                            <button
+                              onClick={() => excluirPreferencia(CATEGORIAS.ATIVIDADES, item.id)}
+                              className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1 rounded-full hover:bg-red-50"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Seção Cuidador */}
+                {(filtroAtivo === 'todos' || filtroAtivo === CATEGORIAS.CUIDADOR) && (
+                  <div className="mb-8">
+                    <h3 className="text-xl font-semibold text-odara-dark mb-4 flex items-center">
+                      <FaWalking className="mr-2 text-odara-accent" />
+                      Cuidador
+                    </h3>
+                    <ul className="space-y-4">
+                      {preferences[CATEGORIAS.CUIDADOR]?.map(item => (
+                        <li key={item.id} className="bg-white p-4 rounded-lg border border-gray-200 flex justify-between items-start hover:shadow-md transition-shadow duration-200">
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <h4 className="font-semibold text-odara-dark">{item.title}</h4>
+                            </div>
+                            <p className="text-odara-dark/70 text-sm mt-1 line-clamp-2">{item.description}</p>
+                          </div>
+                          <div className="flex space-x-2 ml-4">
+                            <button
+                              onClick={() => abrirModalEditar(CATEGORIAS.CUIDADOR, item.id)}
+                              className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-1 rounded-full hover:bg-odara-accent/10"
+                            >
+                              <FaEdit />
+                            </button>
+                            <button
+                              onClick={() => excluirPreferencia(CATEGORIAS.CUIDADOR, item.id)}
+                              className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1 rounded-full hover:bg-red-50"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-          
+
           <div className="bg-odara-offwhite rounded-2xl shadow-lg p-6 h-fit border-l-4 border-odara-primary">
             <h3 className="text-xl font-semibold text-odara-dark mb-4">FOTO ILUSTRATIVA</h3>
             <div className="bg-white rounded-lg p-8 text-center border border-odara-primary/30">
@@ -270,7 +354,7 @@ const RegistroPreferencias = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Modal para adicionar/editar preferência */}
         {modalAberto && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -279,46 +363,46 @@ const RegistroPreferencias = () => {
                 <h2 className="text-2xl font-bold text-odara-dark">
                   {editando ? 'Editar' : 'Adicionar'} Preferência - {CATEGORIA_LABELS[categoriaAtual]}
                 </h2>
-                <button 
+                <button
                   onClick={() => setModalAberto(false)}
                   className="text-odara-dark hover:text-odara-accent transition-colors duration-200"
                 >
                   ✕
                 </button>
               </div>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-odara-dark font-medium mb-2">Título</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-accent focus:border-transparent transition-all duration-200"
                     value={novaPreferencia.titulo}
-                    onChange={(e) => setNovaPreferencia({...novaPreferencia, titulo: e.target.value})}
+                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, titulo: e.target.value })}
                     placeholder="Digite o título"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-odara-dark font-medium mb-2">Descrição</label>
-                  <textarea 
+                  <textarea
                     className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-odara-accent focus:border-transparent transition-all duration-200"
                     value={novaPreferencia.descricao}
-                    onChange={(e) => setNovaPreferencia({...novaPreferencia, descricao: e.target.value})}
+                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, descricao: e.target.value })}
                     placeholder="Digite a descrição"
                     rows="4"
                   ></textarea>
                 </div>
               </div>
-              
+
               <div className="flex justify-end space-x-3 mt-6">
-                <button 
+                <button
                   onClick={() => setModalAberto(false)}
                   className="px-4 py-2 border border-odara-primary/30 text-odara-dark rounded-lg hover:bg-white transition-colors duration-200"
                 >
                   Cancelar
                 </button>
-                <button 
+                <button
                   onClick={salvarPreferencia}
                   className="px-4 py-2 bg-odara-accent text-odara-contorno rounded-lg hover:bg-odara-secondary/90 transition-colors duration-200 border-2 border-odara-contorno"
                   disabled={!novaPreferencia.titulo || !novaPreferencia.descricao}
@@ -330,7 +414,7 @@ const RegistroPreferencias = () => {
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 

@@ -7,7 +7,7 @@ import Documentacao from './pages/Documentacao';
 import Cadastro from './pages/Cadastro';
 import Login from './pages/Login';
 import Dashboard from './pages/gestao/Dashboard';
-import Usuarios from './pages/gestao/Usuarios';
+import Funcionarios from './pages/gestao/Funcionarios';
 import Residentes from './pages/gestao/Residentes';
 import Configuracoes from './pages/gestao/Configuracoes';
 
@@ -30,7 +30,7 @@ function App() {
         {/* Rotas de gestão com Layout Gestão */}
         <Route path="/gestao" element={<LayoutGestao />}>
           <Route index element={<Dashboard />} />
-          <Route path="usuarios" element={<Usuarios />} />
+          <Route path="funcionarios" element={<Funcionarios />} />
           <Route path="residentes" element={<Residentes />} />
           <Route path="configuracoes" element={<Configuracoes />} />
 

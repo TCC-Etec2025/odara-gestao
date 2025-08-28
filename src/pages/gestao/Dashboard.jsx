@@ -1,160 +1,188 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { FaUtensils, FaWalking, FaUserNurse, FaInfoCircle, FaChartBar, FaHome, FaCog, FaSignOutAlt } from 'react-icons/fa';
 
 const Dashboard = () => {
-  const [notifications, setNotifications] = useState([
-    { id: 1, text: "Asa Escrita (e Seguro e extenso) - Ao término: +1.5 bilínea", completed: false },
-    { id: 2, text: "Conecta direto em acórdão para abril Sino - Antes financeiro: 1.5 bilíneas", completed: false },
-    { id: 3, text: "Atuais créditos relacionados com todos os atuais - Sistema: 1.5 bilíneas", completed: false },
-    { id: 4, text: "Receitas como: <0> condicionamento gratuito - D: Cível único - >0.15m", completed: false },
-  ]);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [preferences, setPreferences] = useState({
+    alimentar: [
+      { id: 1, title: "Comida Italiana", description: "Prefere massas e pratos da culinária italiana" },
+      { id: 2, title: "Vegetariano", description: "Prefere refeições sem carne" }
+    ],
+    atividades: [
+      { id: 3, title: "Leitura", description: "Gosta de ler livros no tempo livre" },
+      { id: 4, title: "Caminhada", description: "Prefere caminhar ao ar livre" }
+    ],
+    cuidador: [
+      { id: 5, title: "Leticia", description: "Prefere que Leticia sirva seu alimento" },
+      { id: 6, title: "Maria", description: "Prefere que maria de banho e cuide de sua higiene" }
+    ]
+  });
 
-  const toggleNotification = (id) => {
-    setNotifications(notifications.map(notification => 
-      notification.id === id 
-        ? { ...notification, completed: !notification.completed } 
-        : notification
-    ));
+  // Estatísticas para o dashboard
+  const stats = {
+    total: preferences.alimentar.length + preferences.atividades.length + preferences.cuidador.length,
+    alimentar: preferences.alimentar.length,
+    atividades: preferences.atividades.length,
+    cuidador: preferences.cuidador.length
   };
 
+  // Preferências recentes (últimas 3 adicionadas)
+  const recentPreferences = [
+    ...preferences.alimentar.map(p => ({ ...p, category: 'alimentar', icon: <FaUtensils /> })),
+    ...preferences.atividades.map(p => ({ ...p, category: 'atividades', icon: <FaWalking /> })),
+    ...preferences.cuidador.map(p => ({ ...p, category: 'cuidador', icon: <FaUserNurse /> }))
+  ].sort((a, b) => b.id - a.id).slice(0, 3);
+
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Cabeçalho */}
+    <div className="ml-12 mt-10 flex min-h-screen bg-odara-offwhite">
+      {/* Conteúdo Principal */}
+      <div className="flex-1 p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-odara-primary">Dashboard</h1>
-          <p className="text-odara-secondary mt-2">Sistema de Gestão</p>
+          <h1 className="text-3xl font-bold text-odara-dark">Dashboard</h1>
+          <p className="text-odara-dark/70">Visão geral das preferências dos residentes</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Coluna 1: Ações Administrativas */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-              <h2 className="text-xl font-bold text-odara-primary mb-4">Ações Administrativas</h2>
-              
-              <div className="mb-6">
-                <h3 className="font-semibold text-odara-secondary mb-2">Contexto/Receito:</h3>
-                <p className="text-odara-secondary mb-4">Informações e cursos: verificar do sistema</p>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start p-3 rounded-lg hover:bg-odara-light transition-colors">
-                    <div className="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-odara-primary mr-3"></div>
-                    <div>
-                      <span className="font-medium text-odara-secondary">Configurações</span>
-                      <p className="text-sm text-odara-secondary/80">Apesar configurá-las do sistema e permitirão</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start p-3 rounded-lg hover:bg-odara-light transition-colors">
-                    <div className="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-odara-primary mr-3"></div>
-                    <div>
-                      <span className="font-medium text-odara-secondary">Reflexão técnica</span>
-                      <p className="text-sm text-odara-secondary/80">Desde final, o procedimento é a órbita</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
+        {/* Cards de Estatísticas */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-odara-accent">
+            <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-semibold text-odara-secondary mb-2">Contexto/Receito:</h3>
-                <p className="text-odara-secondary mb-4">Informações e cursos: verificar do sistema</p>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-odara-light rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-odara-primary">95%</div>
-                    <div className="text-sm text-odara-secondary">Existências Mensais</div>
-                  </div>
-                  <div className="bg-odara-light rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-odara-primary">94%</div>
-                    <div className="text-sm text-odara-secondary">Inversa Consultoria</div>
-                  </div>
-                  <div className="bg-odara-light rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-odara-primary">92%</div>
-                    <div className="text-sm text-odara-secondary">Federico Obrasco</div>
-                  </div>
-                  <div className="bg-odara-light rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-odara-primary">96%</div>
-                    <div className="text-sm text-odara-secondary">Sardinário Canal</div>
-                  </div>
-                </div>
+                <p className="text-odara-dark/70">Total de Preferências</p>
+                <h3 className="text-2xl font-bold text-odara-dark">{stats.total}</h3>
               </div>
-            </div>
-
-            {/* Status do Externo */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-bold text-odara-primary mb-4">Status do Externo</h2>
-              <div className="grid grid-cols-2 gap-4">
-                {["Semiúde Principal", "Base de Distrito", "Estatura da Defesa", "Monitoragem"].map((status, index) => (
-                  <div key={index} className="bg-odara-light rounded-lg p-4 text-center">
-                    <div className="text-odara-secondary font-medium">{status}</div>
-                  </div>
-                ))}
+              <div className="bg-odara-accent/10 p-3 rounded-full">
+                <FaInfoCircle className="text-odara-accent text-xl" />
               </div>
             </div>
           </div>
 
-          {/* Coluna 2: Estatísticas e Notificações */}
-          <div className="space-y-6">
-            {/* Estatísticas Mensais */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-bold text-odara-primary mb-4">Existências Mensais</h2>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center p-3 bg-odara-light rounded-lg">
-                  <span className="text-odara-secondary">Inversa Consultoria</span>
-                  <span className="font-bold text-odara-primary">1.347</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-odara-light rounded-lg">
-                  <span className="text-odara-secondary">Federico Obrasco</span>
-                  <span className="font-bold text-odara-primary">42</span>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-odara-light rounded-lg">
-                  <span className="text-odara-secondary">Sardinário Canal</span>
-                  <span className="font-bold text-odara-primary">84%</span>
-                </div>
+          <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-odara-dark/70">Preferências Alimentares</p>
+                <h3 className="text-2xl font-bold text-odara-dark">{stats.alimentar}</h3>
+              </div>
+              <div className="bg-green-100 p-3 rounded-full">
+                <FaUtensils className="text-green-500 text-xl" />
               </div>
             </div>
+          </div>
 
-            {/* Acróbios Recorte */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-bold text-odara-primary mb-4">Acróbios Recorte</h2>
-              <div className="space-y-3">
-                {notifications.map((notification) => (
-                  <div 
-                    key={notification.id} 
-                    className="flex items-start p-3 rounded-lg hover:bg-odara-light transition-colors cursor-pointer"
-                    onClick={() => toggleNotification(notification.id)}
-                  >
-                    <input 
-                      type="checkbox" 
-                      checked={notification.completed}
-                      onChange={() => toggleNotification(notification.id)}
-                      className="mt-1 mr-3 h-4 w-4 text-odara-primary focus:ring-odara-primary border-gray-300 rounded"
-                    />
-                    <span className={`text-sm text-odara-secondary ${notification.completed ? 'line-through text-gray-400' : ''}`}>
-                      {notification.text}
-                    </span>
+          <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-odara-dark/70">Preferências de Atividades</p>
+                <h3 className="text-2xl font-bold text-odara-dark">{stats.atividades}</h3>
+              </div>
+              <div className="bg-blue-100 p-3 rounded-full">
+                <FaWalking className="text-blue-500 text-xl" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-odara-dark/70">Preferências de Cuidadores</p>
+                <h3 className="text-2xl font-bold text-odara-dark">{stats.cuidador}</h3>
+              </div>
+              <div className="bg-purple-100 p-3 rounded-full">
+                <FaUserNurse className="text-purple-500 text-xl" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-xl font-semibold text-odara-dark mb-4">Preferências Recentes</h2>
+            <div className="space-y-4">
+              {recentPreferences.map((item, index) => (
+                <div key={index} className="flex items-start p-3 border border-gray-100 rounded-lg hover:bg-odara-offwhite transition">
+                  <div className="bg-odara-primary/10 p-2 rounded-full mr-3">
+                    <span className="text-odara-primary">{item.icon}</span>
                   </div>
-                ))}
-              </div>
+                  <div className="flex-1">
+                    <h4 className="font-medium text-odara-dark">{item.title}</h4>
+                    <p className="text-sm text-odara-dark/70 truncate">{item.description}</p>
+                  </div>
+                  <span className="text-xs px-2 py-1 bg-odara-primary/10 text-odara-primary rounded-full capitalize">
+                    {item.category}
+                  </span>
+                </div>
+              ))}
             </div>
+          </div>
 
-            {/* Notificações Importantes */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-bold text-odara-primary mb-4">Notificações Importantes</h2>
-              <div className="space-y-4">
-                <div className="p-3 bg-odara-light rounded-lg">
-                  <h3 className="font-semibold text-odara-primary">Setores de Receita</h3>
-                  <p className="text-sm text-odara-secondary">Utilização autenticamente por 2 dias</p>
+          {/* Distribuição por Categoria */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-xl font-semibold text-odara-dark mb-4">Distribuição por Categoria</h2>
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between mb-1">
+                  <span className="text-odara-dark font-medium">Alimentar</span>
+                  <span className="text-odara-dark">{stats.alimentar} ({Math.round((stats.alimentar/stats.total)*100)}%)</span>
                 </div>
-                <div className="p-3 bg-odara-light rounded-lg">
-                  <h3 className="font-semibold text-odara-primary">Nível Internacional</h3>
-                  <p className="text-sm text-odara-secondary">Apresentar operações exclusivas</p>
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div 
+                    className="bg-odara-accent h-2.5 rounded-full" 
+                    style={{ width: `${(stats.alimentar/stats.total)*100}%` }}
+                  ></div>
                 </div>
-                <div className="p-3 bg-odara-light rounded-lg">
-                  <h3 className="font-semibold text-odara-primary">Relatório Manual</h3>
-                  <p className="text-sm text-odara-secondary">Processamental de serviço</p>
+              </div>
+              
+              <div>
+                <div className="flex justify-between mb-1">
+                  <span className="text-odara-dark font-medium">Atividades</span>
+                  <span className="text-odara-dark">{stats.atividades} ({Math.round((stats.atividades/stats.total)*100)}%)</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div 
+                    className="bg-green-500 h-2.5 rounded-full" 
+                    style={{ width: `${(stats.atividades/stats.total)*100}%` }}
+                  ></div>
+                </div>
+              </div>
+              
+              <div>
+                <div className="flex justify-between mb-1">
+                  <span className="text-odara-dark font-medium">Cuidador</span>
+                  <span className="text-odara-dark">{stats.cuidador} ({Math.round((stats.cuidador/stats.total)*100)}%)</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div 
+                    className="bg-purple-500 h-2.5 rounded-full" 
+                    style={{ width: `${(stats.cuidador/stats.total)*100}%` }}
+                  ></div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="mt-8 bg-white rounded-xl shadow-sm p-6">
+          <h2 className="text-xl font-semibold text-odara-dark mb-4">Acesso Rápido</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-odara-offwhite transition">
+              <div className="bg-odara-accent/10 p-3 rounded-full mb-2">
+                <FaUtensils className="text-odara-accent text-xl" />
+              </div>
+              <span className="text-odara-dark font-medium">Alimentar</span>
+            </button>
+            
+            <button className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-odara-offwhite transition">
+              <div className="bg-green-100 p-3 rounded-full mb-2">
+                <FaWalking className="text-green-500 text-xl" />
+              </div>
+              <span className="text-odara-dark font-medium">Atividades</span>
+            </button>
+            
+            <button className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-odara-offwhite transition">
+              <div className="bg-purple-100 p-3 rounded-full mb-2">
+                <FaUserNurse className="text-purple-500 text-xl" />
+              </div>
+              <span className="text-odara-dark font-medium">Cuidador</span>
+            </button>
           </div>
         </div>
       </div>
