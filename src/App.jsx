@@ -9,10 +9,14 @@ import Login from './pages/Login';
 import Dashboard from './pages/gestao/Dashboard';
 import Funcionarios from './pages/gestao/Funcionarios';
 import Residentes from './pages/gestao/Residentes';
-import Configuracoes from './pages/gestao/Configuracoes';
 
 import RegistroPreferencias from './pages/gestao/RegistroPreferencias';
 
+import RegistroMedicamentos from './pages/gestao/RegistroMedicamentos';
+import RegistroSaudeInicial from './pages/gestao/RegistroSaudeInicial';
+
+import RegistroOcorrencias from './pages/gestao/RegistroOcorrencias';
+import RegistroAlimentar from './pages/gestao/RegistroAlimentar';
 
 function App() {
   return (
@@ -32,11 +36,15 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="funcionarios" element={<Funcionarios />} />
           <Route path="residentes" element={<Residentes />} />
-          <Route path="configuracoes" element={<Configuracoes />} />
 
           {/* Novas rotas de registros */}
           <Route path="registroPreferencias" element={<RegistroPreferencias />} />
 
+          <Route path="registroMedicamentos" element={<RegistroMedicamentos />} />
+          <Route path="registroSaudeInicial" element={<RegistroSaudeInicial />} />
+
+          <Route path="registroOcorrencias" element={<RegistroOcorrencias />} />
+          <Route path="registroAlimentar" element={<RegistroAlimentar />} />
         </Route>
       </Routes>
     </BrowserRouter>
