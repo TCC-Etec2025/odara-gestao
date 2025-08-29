@@ -30,7 +30,7 @@ import { useState } from "react"
         <div className="w-full max-w-md">
           <section className="bg-white p-8 rounded-xl shadow-lg">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-odara-primary mb-2">Bem-vindo de volta</h1>
+              <h1 className="text-3xl font-bold text-odara-accent mb-2">Bem-vindo de volta</h1>
               <p className="text-gray-600">Faça login para acessar sua conta</p>
             </div>
 
@@ -91,7 +91,7 @@ import { useState } from "react"
 
               <button
                 type="submit"
-                className="w-full bg-odara-primary hover:bg-odara-dark text-white py-3 px-4 rounded-lg font-medium transition duration-200 mt-4"
+                className="w-full bg-odara-accent hover:bg-odara-dark text-white py-3 px-4 rounded-lg font-medium transition duration-200 mt-4"
               >
                 Entrar
               </button>

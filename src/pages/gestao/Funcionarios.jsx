@@ -24,22 +24,26 @@ const Funcionarios = () => {
   };
 
   return (
-    <div className="ml-12 mt-10 min-h-screen bg-odara-offwhite p-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="flex min-h-screen bg-odara-offwhite">
+      <div className="flex-1 p-6 lg:p-10">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-odara-dark">Gestão de Funcionários</h1>
-          <button className="bg-odara-accent hover:bg-odara-secondary text-white font-medium py-2 px-4 rounded-lg flex items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-odara-dark">Funcionários</h1>
+            <p className="text-sm text-odara-dark/70">Gestão de equipe e profissionais</p>
+          </div>
+          <button className="bg-odara-accent hover:bg-odara-secondary text-white font-medium py-2 px-4 rounded-lg flex items-center transition">
             <FaPlus className="mr-2" />
             Novo Funcionário
           </button>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
+        {/* Search */}
+        <div className="bg-white rounded-xl shadow-sm p-2 mb-6">
           <div className="flex items-center">
             <FaSearch className="text-gray-400 mr-3" />
             <input
               type="text"
-              placeholder="Buscar funcionário por nome, cargo ou departamento..."
+              placeholder="Buscar por nome, cargo ou departamento..."
               className="w-full p-2 outline-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -47,41 +51,42 @@ const Funcionarios = () => {
           </div>
         </div>
 
+        {/* Tabela com as informações dos funcionarios */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <table className="w-full">
+          <table className="w-full text-sm">
             <thead className="bg-odara-primary text-odara-contorno">
               <tr>
-                <th className="p-4 text-left">Nome</th>
-                <th className="p-4 text-left">Cargo</th>
-                <th className="p-4 text-left">Departamento</th>
-                <th className="p-4 text-left">Status</th>
-                <th className="p-4 text-left">Data de Admissão</th>
-                <th className="p-4 text-left">Ações</th>
+                <th className="p-4 text-left font-medium">Nome</th>
+                <th className="p-4 text-left font-medium">Cargo</th>
+                <th className="p-4 text-left font-medium">Departamento</th>
+                <th className="p-4 text-left font-medium">Status</th>
+                <th className="p-4 text-left font-medium">Admissão</th>
+                <th className="p-4 text-left font-medium">Ações</th>
               </tr>
             </thead>
-            <tbody>
-              {filteredFuncionarios.map((funcionario, index) => (
-                <tr key={funcionario.id} className={index % 2 === 0 ? 'bg-odara-offwhite' : 'bg-white'}>
-                  <td className="p-4 font-medium">{funcionario.nome}</td>
+            <tbody className="divide-y divide-gray-100">
+              {filteredFuncionarios.map((funcionario) => (
+                <tr key={funcionario.id} className="hover:bg-odara-offwhite/60 transition">
+                  <td className="p-4 font-medium text-odara-dark">{funcionario.nome}</td>
                   <td className="p-4">{funcionario.cargo}</td>
                   <td className="p-4">{funcionario.departamento}</td>
                   <td className="p-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      funcionario.status === 'Ativo' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium
+                      ${funcionario.status === 'Ativo' 
+                        ? 'bg-green-100 text-green-700' 
+                        : 'bg-yellow-100 text-yellow-700'}
+                    `}>
                       {funcionario.status}
                     </span>
                   </td>
                   <td className="p-4">{new Date(funcionario.dataAdmissao).toLocaleDateString('pt-BR')}</td>
                   <td className="p-4">
-                    <div className="flex space-x-2">
-                      <button className="text-blue-500 hover:text-blue-700">
+                    <div className="flex space-x-3">
+                      <button className="text-blue-500 hover:text-blue-700 transition">
                         <FaEdit />
                       </button>
                       <button 
-                        className="text-red-500 hover:text-red-700"
+                        className="text-red-500 hover:text-red-700 transition"
                         onClick={() => handleDelete(funcionario.id)}
                       >
                         <FaTrash />
@@ -94,6 +99,7 @@ const Funcionarios = () => {
           </table>
         </div>
 
+        {/* Contagem de funcionários*/}
         <div className="mt-4 text-sm text-gray-500">
           Total de {filteredFuncionarios.length} funcionário(s) encontrado(s)
         </div>

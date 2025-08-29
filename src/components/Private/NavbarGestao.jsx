@@ -179,7 +179,7 @@ const NavbarGestao = () => {
       items: [
         {
           path: "./RegistroRelacoes",
-          label: "Registro de Relaçoes Internas",
+          label: "Registro de Relações",
           icon: (
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -212,13 +212,16 @@ const NavbarGestao = () => {
   const filteredRegistros = useMemo(() => {
     if (!registroSearchTerm) return registrosItems;
 
-    return registrosItems.map(category => ({
-      ...category,
-      items: category.items.filter(item =>
-        item.label.toLowerCase().includes(registroSearchTerm.toLowerCase())
-      )
-    })).filter(category => category.items.length > 0);
+    return registrosItems
+      .map(category => ({
+        ...category,
+        items: category.items.filter(item =>
+          item.label.toLowerCase().includes(registroSearchTerm.toLowerCase())
+        )
+      }))
+      .filter(category => category.items.length > 0);
   }, [registroSearchTerm]);
+
 
   return (
     <>
@@ -234,18 +237,22 @@ const NavbarGestao = () => {
           </button>
         </div>
 
-        {/* Campo de busca */}
+        {/* Campo de busca (AINDA NÃO CONSEGUI FAZER FUNCIONAR) */}
         <div className="flex-1 max-w-md mx-4">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
               <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
             <input
               type="text"
               placeholder="Buscar..."
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-odara-primary focus:border-odara-primary sm:text-sm"
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-odara-primary focus:border-odara-primary sm:text-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -296,7 +303,7 @@ const NavbarGestao = () => {
                 <button
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={() => {
-                    // Lógica de logout aqui
+                    // Vamos tentar programar aqui a logica do logoff
                     setIsProfileDropdownOpen(false);
                   }}
                 >
@@ -330,7 +337,9 @@ const NavbarGestao = () => {
               }}
             />
             <span className={`ml-2 text-xl font-bold text-white transition-opacity duration-300 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
-              Odara <span className="font-normal">Gestão</span>
+              <h1 className="text-xl font-bold text-white transition-transform">
+                Odara <span className="font-normal  nome-empresa-pequeno">Gestão</span>
+              </h1>
             </span>
           </div>
           <div className="flex items-center justify-between">

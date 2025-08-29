@@ -1,190 +1,133 @@
-import React, { useState } from 'react';
-import { FaUtensils, FaWalking, FaUserNurse, FaInfoCircle, FaChartBar, FaHome, FaCog, FaSignOutAlt } from 'react-icons/fa';
+import React, { useState } from "react";
+import { FaUsers, FaUserTie, FaExclamationTriangle, FaClipboardList, FaBell, } from "react-icons/fa";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, } from "recharts";
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [preferences, setPreferences] = useState({
-    alimentar: [
-      { id: 1, title: "Comida Italiana", description: "Prefere massas e pratos da culinária italiana" },
-      { id: 2, title: "Vegetariano", description: "Prefere refeições sem carne" }
-    ],
-    atividades: [
-      { id: 3, title: "Leitura", description: "Gosta de ler livros no tempo livre" },
-      { id: 4, title: "Caminhada", description: "Prefere caminhar ao ar livre" }
-    ],
-    cuidador: [
-      { id: 5, title: "Leticia", description: "Prefere que Leticia sirva seu alimento" },
-      { id: 6, title: "Maria", description: "Prefere que maria de banho e cuide de sua higiene" }
-    ]
-  });
-
-  // Estatísticas para o dashboard
+  // Defindo / simulando estatisticas
   const stats = {
-    total: preferences.alimentar.length + preferences.atividades.length + preferences.cuidador.length,
-    alimentar: preferences.alimentar.length,
-    atividades: preferences.atividades.length,
-    cuidador: preferences.cuidador.length
+    residentes: 45,
+    funcionarios: 18,
+    alertas: 3,
+    acoes: 12,
   };
 
-  // Preferências recentes (últimas 3 adicionadas)
-  const recentPreferences = [
-    ...preferences.alimentar.map(p => ({ ...p, category: 'alimentar', icon: <FaUtensils /> })),
-    ...preferences.atividades.map(p => ({ ...p, category: 'atividades', icon: <FaWalking /> })),
-    ...preferences.cuidador.map(p => ({ ...p, category: 'cuidador', icon: <FaUserNurse /> }))
-  ].sort((a, b) => b.id - a.id).slice(0, 3);
+  const atividadesRecentes = [
+    { id: 1, atividade: "Banho realizado", horario: "08:00", responsavel: "Maria" },
+    { id: 2, atividade: "Medicamento entregue", horario: "09:30", responsavel: "João" },
+    { id: 3, atividade: "Café da manhã servido", horario: "07:30", responsavel: "Leticia" },
+  ];
+
+  // Estatísticas para simulação de dados mensais
+  const dadosMensais = [
+    { mes: "Jan", residentes: 40, funcionarios: 15 },
+    { mes: "Fev", residentes: 42, funcionarios: 16 },
+    { mes: "Mar", residentes: 44, funcionarios: 18 },
+    { mes: "Abr", residentes: 45, funcionarios: 18 },
+  ];
+
+  // informações definidas para simulação de notificações
+  const notificacoes = [
+    { id: 1, texto: "Consulta médica coletiva amanhã às 14h", tipo: "info" },
+    { id: 2, texto: "Alerta: 2 residentes com medicação atrasada", tipo: "alert" },
+    { id: 3, texto: "Reunião administrativa sexta às 10h", tipo: "admin" },
+  ];
 
   return (
-    <div className="ml-12 mt-10 flex min-h-screen bg-odara-offwhite">
-      {/* Conteúdo Principal */}
-      <div className="flex-1 p-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-odara-dark">Dashboard</h1>
-          <p className="text-odara-dark/70">Visão geral das preferências dos residentes</p>
-        </div>
+    <div className="flex min-h-screen bg-odara-offwhite">
+      <div className="flex-1 p-6 lg:p-10">
+        <header className="mb-10">
+          <h1 className="text-3xl font-bold text-odara-dark">Dashboard Administrativo
+          </h1>
+          <p className="text-odara-dark/60 text-sm">
+            Visão geral da gestão do sistema
+          </p>
+        </header>
 
-        {/* Cards de Estatísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-odara-accent">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-odara-dark/70">Total de Preferências</p>
-                <h3 className="text-2xl font-bold text-odara-dark">{stats.total}</h3>
-              </div>
-              <div className="bg-odara-accent/10 p-3 rounded-full">
-                <FaInfoCircle className="text-odara-accent text-xl" />
-              </div>
-            </div>
-          </div>
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          <Card titulo="Residentes" valor={stats.residentes} icone={<FaUsers />} cor="blue" />
+          <Card titulo="Funcionários" valor={stats.funcionarios} icone={<FaUserTie />} cor="green" />
+          <Card titulo="Alertas Críticos" valor={stats.alertas} icone={<FaExclamationTriangle />} cor="red" />
+          <Card titulo="Ações" valor={stats.acoes} icone={<FaClipboardList />} cor="purple" />
+        </section>
 
-          <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-odara-dark/70">Preferências Alimentares</p>
-                <h3 className="text-2xl font-bold text-odara-dark">{stats.alimentar}</h3>
-              </div>
-              <div className="bg-green-100 p-3 rounded-full">
-                <FaUtensils className="text-green-500 text-xl" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-odara-dark/70">Preferências de Atividades</p>
-                <h3 className="text-2xl font-bold text-odara-dark">{stats.atividades}</h3>
-              </div>
-              <div className="bg-blue-100 p-3 rounded-full">
-                <FaWalking className="text-blue-500 text-xl" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-odara-dark/70">Preferências de Cuidadores</p>
-                <h3 className="text-2xl font-bold text-odara-dark">{stats.cuidador}</h3>
-              </div>
-              <div className="bg-purple-100 p-3 rounded-full">
-                <FaUserNurse className="text-purple-500 text-xl" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-semibold text-odara-dark mb-4">Preferências Recentes</h2>
-            <div className="space-y-4">
-              {recentPreferences.map((item, index) => (
-                <div key={index} className="flex items-start p-3 border border-gray-100 rounded-lg hover:bg-odara-offwhite transition">
-                  <div className="bg-odara-primary/10 p-2 rounded-full mr-3">
-                    <span className="text-odara-primary">{item.icon}</span>
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium text-odara-dark">{item.title}</h4>
-                    <p className="text-sm text-odara-dark/70 truncate">{item.description}</p>
-                  </div>
-                  <span className="text-xs px-2 py-1 bg-odara-primary/10 text-odara-primary rounded-full capitalize">
-                    {item.category}
-                  </span>
-                </div>
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Atividades recentes */}
+          <div className="bg-white rounded-2xl shadow p-5">
+            <h2 className="text-lg font-semibold text-odara-dark mb-4">
+              Atividades Recentes
+            </h2>
+            <ul className="divide-y divide-gray-100">
+              {atividadesRecentes.map((a) => (
+                <li key={a.id} className="py-2 flex justify-between text-sm">
+                  <span>{a.atividade} <b>({a.horario})</b></span>
+                  <span className="text-odara-dark/60">{a.responsavel}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
-          {/* Distribuição por Categoria */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-semibold text-odara-dark mb-4">Distribuição por Categoria</h2>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between mb-1">
-                  <span className="text-odara-dark font-medium">Alimentar</span>
-                  <span className="text-odara-dark">{stats.alimentar} ({Math.round((stats.alimentar/stats.total)*100)}%)</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div 
-                    className="bg-odara-accent h-2.5 rounded-full" 
-                    style={{ width: `${(stats.alimentar/stats.total)*100}%` }}
-                  ></div>
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex justify-between mb-1">
-                  <span className="text-odara-dark font-medium">Atividades</span>
-                  <span className="text-odara-dark">{stats.atividades} ({Math.round((stats.atividades/stats.total)*100)}%)</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div 
-                    className="bg-green-500 h-2.5 rounded-full" 
-                    style={{ width: `${(stats.atividades/stats.total)*100}%` }}
-                  ></div>
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex justify-between mb-1">
-                  <span className="text-odara-dark font-medium">Cuidador</span>
-                  <span className="text-odara-dark">{stats.cuidador} ({Math.round((stats.cuidador/stats.total)*100)}%)</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div 
-                    className="bg-purple-500 h-2.5 rounded-full" 
-                    style={{ width: `${(stats.cuidador/stats.total)*100}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
+          {/* Grafico mensal */}
+          <div className="bg-white rounded-2xl shadow p-5">
+            <h2 className="text-lg font-semibold text-odara-dark mb-4">
+              Estatísticas Mensais - Funcionarios & Residentes
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={dadosMensais}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="mes" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="residentes" fill="#D8A4AA" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="funcionarios" fill="#2D5B78" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-        </div>
+        </section>
 
-        <div className="mt-8 bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-odara-dark mb-4">Acesso Rápido</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-odara-offwhite transition">
-              <div className="bg-odara-accent/10 p-3 rounded-full mb-2">
-                <FaUtensils className="text-odara-accent text-xl" />
+        {/* Notificações */}
+        <section className="mt-10 bg-white rounded-2xl shadow p-5">
+          <h2 className="text-lg font-semibold text-odara-dark mb-4">
+            Notificações
+          </h2>
+          <div className="space-y-3">
+            {notificacoes.map((n) => (
+              <div
+                key={n.id}
+                className={`p-3 rounded-xl flex items-center gap-3 text-sm ${n.tipo === "alert"
+                    ? "bg-red-50 text-red-700"
+                    : n.tipo === "admin"
+                      ? "bg-odara-primary/30 text-odara-accent"
+                      : "bg-odara-secondary/30 text-odara-name"
+                  }`}
+              >
+                <FaBell className="flex-shrink-0" />
+                <span>{n.texto}</span>
               </div>
-              <span className="text-odara-dark font-medium">Alimentar</span>
-            </button>
-            
-            <button className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-odara-offwhite transition">
-              <div className="bg-green-100 p-3 rounded-full mb-2">
-                <FaWalking className="text-green-500 text-xl" />
-              </div>
-              <span className="text-odara-dark font-medium">Atividades</span>
-            </button>
-            
-            <button className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-odara-offwhite transition">
-              <div className="bg-purple-100 p-3 rounded-full mb-2">
-                <FaUserNurse className="text-purple-500 text-xl" />
-              </div>
-              <span className="text-odara-dark font-medium">Cuidador</span>
-            </button>
+            ))}
           </div>
-        </div>
+        </section>
+      </div>
+    </div>
+  );
+};
+
+// Card de estatísticas
+const Card = ({ titulo, valor, icone, cor }) => {
+  const estilos = {
+    blue: "bg-blue-50 text-blue-600",
+    green: "bg-green-50 text-green-600",
+    red: "bg-red-50 text-red-600",
+    purple: "bg-purple-50 text-purple-600",
+  };
+
+  return (
+    <div className="bg-white rounded-2xl shadow p-5 flex justify-between items-center">
+      <div>
+        <p className="text-sm text-odara-dark/60">{titulo}</p>
+        <h3 className="text-2xl font-bold text-odara-dark">{valor}</h3>
+      </div>
+      <div className={`${estilos[cor]} p-3 rounded-full text-xl`}>
+        {icone}
       </div>
     </div>
   );
