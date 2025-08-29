@@ -2,6 +2,8 @@
 
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
+import { supabase } from "../supabaseClient"
+import bcrypt from 'bcryptjs'
 
 const Cadastro = () => {
   const navigate = useNavigate()
@@ -31,9 +33,61 @@ const Cadastro = () => {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => { // Adicione 'async' aqui
     e.preventDefault()
-    // Lucas colocar a lógica de submit aqui
+
+    // Validação de senhas
+    if (formData.senha !== formData.confirmarSenha) {
+      alert("As senhas não coincidem!");
+      return;
+    }
+
+    // Validação dos termos de uso
+    if (!formData.aceitaTermos) {
+      alert("Você deve aceitar os Termos de Uso e a Política de Privacidade.");
+      return;
+    }
+
+    try {
+      // Primeiro, cadastre o usuário no Supabase Auth
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.senha,
+      });
+
+      if (signUpError) {
+        throw signUpError;
+      }
+
+      const hashedPassword = await bcrypt.hash(formData.senha, 10);
+
+      // Em seguida, salve os dados da instituição na tabela 'instituicoes'
+      const { error } = await supabase
+        .from('instituicoes')
+        .insert([
+          {
+            nome_instituicao: formData.nomeInstituicao,
+            cnpj: formData.cnpj,
+            email: formData.email,
+            senha: hashedPassword,
+            telefone: formData.telefone,
+            endereco: formData.endereco,
+            cidade: formData.cidade,
+            estado: formData.estado,
+            cep: formData.cep,
+          },
+        ]);
+
+      if (error) {
+        throw error;
+      }
+
+      alert("Instituição cadastrada com sucesso!");
+      navigate('/login');
+    } catch (error) {
+      alert("Erro ao cadastrar instituição: " + error.message);
+      console.error("Erro no cadastro:", error);
+    }
   }
 
   const estadosBrasil = [

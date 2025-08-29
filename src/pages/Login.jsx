@@ -2,6 +2,8 @@
 
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
+import { supabase } from "../supabaseClient"
+import bcrypt from 'bcryptjs'
 
   const Login = () => {
     const navigate = useNavigate()
@@ -19,11 +21,39 @@ import { useState } from "react"
       setFormData(prev => ({ ...prev, [name]: value }))
     }
 
-    const handleSubmit = (e) => {
-      e.preventDefault()
-      // Lucar adicionar a lógica de autenticação aqui
-      console.log("Dados do login:", formData)
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const { data: userData, error: fetchError } = await supabase
+        .from('usuarios_sistema')
+        .select('email, senha')
+        .eq('email', formData.email)
+        .single();
+
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        throw fetchError;
+      }
+
+      if (!userData) {
+        alert("Email ou senha inválidos.");
+        return;
+      }
+
+      const passwordMatch = await bcrypt.compare(formData.senha, userData.senha);
+
+      if (passwordMatch) {
+        alert("Login realizado com sucesso!");
+        console.log("Usuário conectado:", userData);
+        navigate('/gestao');
+      } else {
+        alert("Email ou senha inválidos.");
+      }
+    } catch (error) {
+      alert("Erro ao fazer login: " + error.message);
+      console.error("Erro no login:", error);
     }
+    };
 
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">

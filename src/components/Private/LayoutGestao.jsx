@@ -3,11 +3,12 @@ import { Outlet } from 'react-router-dom';
 import NavbarGestao from './NavbarGestao';
 
 const LayoutGestao = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false); // estado da sidebar
-  const [searchTerm, setSearchTerm] = useState('');      // estado global do search
-
+  const [isCollapsed, setIsCollapsed] = useState(true); 
+  const [searchTerm, setSearchTerm] = useState('');
+  
   return (
-    <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
+    <div
+      className="min-h-screen flex flex-col w-full overflow-x-hidden">
       <div className="w-full">
         <NavbarGestao
           isCollapsed={isCollapsed}
@@ -17,16 +18,15 @@ const LayoutGestao = () => {
         />
       </div>
 
-      {/* Configutração para o site geral no sidebar e navbar*/}
+      {/* Área de conteúdo principal, ajusta o padding com base no estado recolhido da barra lateral */}
       <main
         className={`flex-grow transition-all duration-300
-          ${isCollapsed ? 'pl-20' : 'pl-25'} 
+          ${isCollapsed ? 'pl-20' : 'pl-64'} // Ajusta o padding com base em isCollapsed
           pt-13
           bg-odara-offwhite
         `}
       >
         <div className="mx-auto w-full">
-          {/* Passa searchTerm para todas as páginas (NÃO FUNCIONANDO)*/}
           <Outlet /> 
         </div>
       </main>

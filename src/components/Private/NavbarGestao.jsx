@@ -1,16 +1,16 @@
 import { useState, useMemo } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const NavbarGestao = () => {
+// NavbarGestao agora aceita 'isCollapsed' e 'setIsCollapsed' como props do seu pai
+const NavbarGestao = ({ isCollapsed, setIsCollapsed, searchTerm, setSearchTerm }) => {
   const location = useLocation();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Estado da barra lateral móvel, começa fechada
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isRegistrosDropdownOpen, setIsRegistrosDropdownOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const [registroSearchTerm, setRegistroSearchTerm] = useState("");
 
-  // Verifique se a rota está ativa
+  // Verifica se a rota está ativa
   const isActive = (path) => {
     return location.pathname.toLowerCase() === path.toLowerCase();
   };
@@ -40,7 +40,7 @@ const NavbarGestao = () => {
     },
     {
       path: "./Funcionarios",
-      label: "Funcionarios",
+      label: "Funcionários",
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -92,7 +92,7 @@ const NavbarGestao = () => {
         },
         {
           path: "./RegistroSaudeInicial",
-          label: "Registro de Saude Inicial",
+          label: "Registro de Saúde Inicial",
           icon: (
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -188,7 +188,7 @@ const NavbarGestao = () => {
         },
         {
           path: "./RegistroVideos",
-          label: "Registro de Videos dos Residentes",
+          label: "Registro de Vídeos dos Residentes",
           icon: (
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -208,7 +208,7 @@ const NavbarGestao = () => {
     },
   ];
 
-  // Filtrar registros baseado no termo de busca
+  // Filtra os registros com base no termo de busca
   const filteredRegistros = useMemo(() => {
     if (!registroSearchTerm) return registrosItems;
 
@@ -225,8 +225,10 @@ const NavbarGestao = () => {
 
   return (
     <>
+      {/* Barra de Navegação Superior */}
       <div className="fixed top-0 left-0 right-0 h-13 bg-white shadow-md z-40 flex items-center justify-between px-4">
         <div className="flex items-center">
+          {/* Botão de alternância da barra lateral para dispositivos móveis */}
           <button
             className="md:hidden p-2 rounded-md text-odara-primary mr-2"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -237,7 +239,7 @@ const NavbarGestao = () => {
           </button>
         </div>
 
-        {/* Campo de busca (AINDA NÃO CONSEGUI FAZER FUNCIONAR) */}
+        {/* Campo de Busca (Global) */}
         <div className="flex-1 max-w-md mx-4">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
@@ -260,7 +262,7 @@ const NavbarGestao = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          {/* Botão de notificações */}
+          {/* Botão de Notificações */}
           <button className="relative p-1 text-gray-600 hover:text-odara-primary">
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -268,7 +270,7 @@ const NavbarGestao = () => {
             <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
           </button>
 
-          {/* Dropdown do perfil */}
+          {/* Dropdown do Perfil */}
           <div className="relative">
             <button
               className="flex items-center space-x-2 focus:outline-none"
@@ -303,7 +305,7 @@ const NavbarGestao = () => {
                 <button
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={() => {
-                    // Vamos tentar programar aqui a logica do logoff
+                    navigate("/login");
                     setIsProfileDropdownOpen(false);
                   }}
                 >
@@ -315,16 +317,19 @@ const NavbarGestao = () => {
         </div>
       </div>
 
-      {/* Sidebar */}
+      {/* Barra Lateral - usa a prop 'isCollapsed' e agora reage ao hover */}
       <div className={`
         fixed top-0 left-0 inset-y-0 z-50 bg-odara-primary text-white
-      transform transition-all duration-300 ease-in-out
-      ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
-      md:translate-x-0 
-      ${isCollapsed ? 'w-20' : 'w-64'}  
-      shadow-xl flex flex-col
+        transform transition-all duration-300 ease-in-out
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
+        md:translate-x-0 
+        ${isCollapsed ? 'w-20' : 'w-64'}  
+        shadow-xl flex flex-col
         h-screen
-      `}>
+      `}
+      onMouseEnter={() => setIsCollapsed(false)} // Expandir ao passar o mouse
+      onMouseLeave={() => setIsCollapsed(true)}  // Recolher ao tirar o mouse
+      >
         <div className="p-4 border-b border-odara-secondary/30">
           <div className="flex items-center overflow-hidden">
             <img
@@ -333,7 +338,7 @@ const NavbarGestao = () => {
               className="w-8 h-8 object-contain flex-shrink-0"
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTEiIGZpbGw9IiM0YjU1NjAiLz4KPHBhdGggZD0iTTEwIDE2VjhIMTZNMTQgMTZWOEgxOCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjwvc3ZnPgo=";
+                e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZ3dCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTEiIGZpbGw9IiM0YjU1NjAiLz4KPHBhdGggZD0iTTEwIDE2VjhIMTYNTE0IDE2VjhIMTgiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4K";
               }}
             />
             <span className={`ml-2 text-xl font-bold text-white transition-opacity duration-300 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
@@ -343,24 +348,11 @@ const NavbarGestao = () => {
             </span>
           </div>
           <div className="flex items-center justify-between">
-
-            {/* Botão para recolher/expandir a sidebar (apenas em desktop) */}
-            <button
-              className="hidden md:block text-odara-white hover:text-odara-contorno"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isCollapsed ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                )}
-              </svg>
-            </button>
+            {/* O botão de alternância para desktop foi removido, pois a funcionalidade agora é baseada em hover */}
           </div>
         </div>
 
-        {/* Navegação das paginas*/}
+        {/* Links de Navegação */}
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {navigationItems.map((item) => (
             <Link
@@ -378,7 +370,7 @@ const NavbarGestao = () => {
               <span className={`${isActive(item.path) ? "text-odara-contorno" : "text-odara-white"}`}>
                 {item.icon}
               </span>
-              {!isCollapsed && <span>{item.label}</span>}
+              {!isCollapsed && <span>{item.label}</span>} {/* Mostra o rótulo apenas se não estiver recolhida */}
               {isCollapsed && (
                 <div className="absolute left-full ml-2 px-2 py-1 bg-odara-secondary text-odara-contorno text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-50">
                   {item.label}
@@ -387,7 +379,7 @@ const NavbarGestao = () => {
             </Link>
           ))}
 
-          {/* Dropdown de Registros*/}
+          {/* Dropdown de Registros */}
           <div className="relative">
             <button
               onClick={() => setIsRegistrosDropdownOpen(!isRegistrosDropdownOpen)}
@@ -409,7 +401,7 @@ const NavbarGestao = () => {
                     d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                   />
                 </svg>
-                {!isCollapsed && <span>Registros</span>}
+                {!isCollapsed && <span>Registros</span>} {/* Mostra o rótulo apenas se não estiver recolhida */}
               </div>
               {!isCollapsed && (
                 <svg
@@ -423,7 +415,7 @@ const NavbarGestao = () => {
               )}
             </button>
 
-            {(isRegistrosDropdownOpen || isCollapsed) && (
+            {(isRegistrosDropdownOpen || isCollapsed) && ( // Mostra o conteúdo do dropdown se estiver aberto OU se a barra lateral estiver recolhida (para tooltip de hover)
               <div className={`
                 mt-1 overflow-hidden transition-all duration-300
                 ${isCollapsed ? 'absolute left-full ml-2 w-64' : 'ml-0'}
@@ -433,7 +425,7 @@ const NavbarGestao = () => {
                   ${isCollapsed ? '' : 'border-l-2 border-l-odara-contorno'}
                   max-h-96 overflow-hidden flex flex-col
                 `}>
-                  {/* Campo de busca dentro do dropdown de registros */}
+                  {/* Campo de busca dentro do dropdown de registros (apenas se não estiver recolhida) */}
                   {!isCollapsed && (
                     <div className="p-2 border-b border-odara-secondary/30">
                       <div className="relative">
@@ -453,11 +445,11 @@ const NavbarGestao = () => {
                     </div>
                   )}
 
-                  {/* Lista de registros com scroll */}
+                  {/* Lista de registros com rolagem */}
                   <div className="overflow-y-auto flex-1">
                     {filteredRegistros.map((category, index) => (
                       <div key={index}>
-                        {/* Categoria (só mostra se não estiver recolhido) */}
+                        {/* Categoria (só mostra se não estiver recolhida) */}
                         {!isCollapsed && category.items.length > 0 && (
                           <div className="px-4 py-2 text-xs font-semibold text-odara-contorno uppercase tracking-wider border-t border-odara-secondary/30 first:border-t-0">
                             {category.category}
@@ -483,7 +475,7 @@ const NavbarGestao = () => {
                             <span className={`mr-2 ${isActive(item.path) ? "text-odara-contorno" : "text-odara-white"}`}>
                               {item.icon}
                             </span>
-                            {!isCollapsed && <span>{item.label}</span>}
+                            {!isCollapsed && <span>{item.label}</span>} {/* Mostra o rótulo apenas se não estiver recolhida */}
                             {isCollapsed && (
                               <div className="absolute left-full ml-2 px-2 py-1 bg-odara-secondary text-odara-contorno text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-50 whitespace-nowrap">
                                 {item.label}
@@ -516,7 +508,7 @@ const NavbarGestao = () => {
         </div>
       </div>
 
-      {/* Overlay para mobile quando sidebar está aberta */}
+      {/* Overlay para dispositivos móveis quando a barra lateral está aberta */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/20 z-20 md:hidden mt-16"
