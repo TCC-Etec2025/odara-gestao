@@ -10,21 +10,17 @@ import Dashboard from './pages/gestao/Dashboard';
 import Funcionarios from './pages/gestao/Funcionarios';
 import Residentes from './pages/gestao/Residentes';
 
+import PaginaRegistros from './pages/gestao/PaginaRegistros';
+
 import RegistroMedicamentos from './pages/gestao/RegistroMedicamentos';
 import RegistroSaudeInicial from './pages/gestao/RegistroSaudeInicial';
 import RegistroAtividades from './pages/gestao/RegistroAtividades';
-
 import RegistroOcorrencias from './pages/gestao/RegistroOcorrencias';
 import RegistroAlimentar from './pages/gestao/RegistroAlimentar';
 import RegistroComportamento from './pages/gestao/RegistroComportamento';
-
 import RegistroPreferencias from './pages/gestao/RegistroPreferencias';
-import RegistroRelacoes from './pages/gestao/RegistroRelacoes';
 import RegistroConsultas from './pages/gestao/RegistroConsultas';
-
-import PlataformaMeet from './pages/gestao/PlataformaMeet';
 import RegistroExames from './pages/gestao/RegistroExames';
-import RegistroVideos from './pages/gestao/RegistroVideos';
 
 function App() {
   return (
@@ -46,6 +42,7 @@ function App() {
           <Route path="residentes" element={<Residentes />} />
 
           {/* Novas rotas de registros */}
+          <Route path="paginaRegistros" element={<PaginaRegistros/>} />
 
           {/* Leticia */}
           <Route path="registroMedicamentos" element={<RegistroMedicamentos />} />
@@ -55,17 +52,14 @@ function App() {
           {/* Jamilly */}
           <Route path="registroOcorrencias" element={<RegistroOcorrencias />} />
           <Route path="registroAlimentar" element={<RegistroAlimentar />} />
-          <Route path="registroComportamento" element={<RegistroComportamento/>} />
+          <Route path="registroComportamento" element={<RegistroComportamento />} />
 
           {/* Nicole */}
           <Route path="registroPreferencias" element={<RegistroPreferencias />} />
-          <Route path="registroRelacoes" element={<RegistroRelacoes />} />
           <Route path="registroConsultas" element={<RegistroConsultas />} />
 
           {/* Lucas */}
-          <Route path="plataformaMeet" element={<PlataformaMeet />} />
           <Route path="registroExames" element={<RegistroExames />} />
-          <Route path="registroVideos" element={<RegistroVideos />} />
         </Route>
       </Routes>
     </BrowserRouter>
