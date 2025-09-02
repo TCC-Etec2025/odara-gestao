@@ -17,11 +17,29 @@ const Documentacao = () => {
       ]
     },
     {
-      nome: 'Registro de Atividades',
-      descricao: 'Organização e acompanhamento das atividades diárias dos residentes',
-      icone: <ClipboardList size={24} />,
+      nome: 'Registro de Exames Médicos',
+      descricao: 'Organização e resultados de exames médicos',
+      icone: <Microscope size={24} />,
       detalhes: [
-        'O Registro de Atividades é um documento fundamental que reúne todas as ações, cuidados e acontecimentos do dia a dia na instituição. Ele serve para garantir a organização, transparência e a qualidade do atendimento aos idosos. Ele permite monitorar o que foi feito com cada residente, como medicação, alimentação, atividades físicas e sociais, também ajuda a identificar rapidamente qualquer problema. ',
+        'O Registro de Exames Médicos aqui será anotado e organizado todas as informações sobre exames realizados por um paciente, seja para diagnóstico, acompanhamento ou controle de rotina.No documento deve haver controle e histórico para ser fornecido informações precisas para avaliar a evolução do paciente.',
+
+      ]
+    },
+    {
+      nome: 'Registro de Consultas Médicas',
+      descricao: 'Controle completo de consultas e acompanhamento médico',
+      icone: <Stethoscope size={24} />,
+      detalhes: [
+        'O Registro de Consultas Médicas é o documento onde serão anotadas todas as informações sobre os atendimentos médicos realizados a um paciente. No mesmo deve conter: nome completo, idade, sexo, número de prontuário data e horário da consulta, profissional responsável, motivo da consulta, histórico e evolução clínica, tratamentos indicados, encaminhamentos, exames solicitados e receitas médicas, assinatura e autenticação.',
+
+      ]
+    },
+    {
+      nome: 'Registro da Saúde Corporal',
+      descricao: 'Monitoramento contínuo do estado de saúde dos residentes',
+      icone: <Hospital size={24} />,
+      detalhes: [
+        'O Registro da Saúde Corporal Inicial se refere à investigação e registro de eventuais ferimentos e/ou questões corporais no momento da entrada inicial da pessoa idosa na Casa. Com um template anatômico prático, basta selecionar as regiões do corpo afetadas e descrever os sintomas físicos da pessoa idosa referentes a essa região, dessa forma preza-se por um acompanhamento mais completo da saúde do individuo e garante um melhor entendimento da situação da saúde dele ao entrar em seu novo lar.',
       ]
     },
     {
@@ -33,11 +51,19 @@ const Documentacao = () => {
       ]
     },
     {
-      nome: 'Registro da Saúde Corporal Inicial',
-      descricao: 'Monitoramento contínuo do estado de saúde dos residentes',
-      icone: <Hospital size={24} />,
+      nome: 'Registro de Comportamento',
+      descricao: 'Registro e análise de padrões comportamentais',
+      icone: <BarChart size={24} />,
       detalhes: [
-        'O Registro da Saúde Corporal Inicial se refere à investigação e registro de eventuais ferimentos e/ou questões corporais no momento da entrada inicial da pessoa idosa na Casa. Com um template anatômico prático, basta selecionar as regiões do corpo afetadas e descrever os sintomas físicos da pessoa idosa referentes a essa região, dessa forma preza-se por um acompanhamento mais completo da saúde do individuo e garante um melhor entendimento da situação da saúde dele ao entrar em seu novo lar.',
+        'O Registro de Comportamento esse relatório é onde será disposto informações sobre o comportamento dos residentes, seja durante exames, momento de lazer, alimentação, e de todo o seu dia a dia. Nele deverá haver conteúdo detalhado se o mesmo provocou consequências para si mesmo ou a terceiros (enfermeiros, médicos, responsáveis, ou outros residentes).',
+      ]
+    },
+    {
+      nome: 'Registro de Atividades',
+      descricao: 'Organização e acompanhamento das atividades diárias dos residentes',
+      icone: <ClipboardList size={24} />,
+      detalhes: [
+        'O Registro de Atividades é um documento fundamental que reúne todas as ações, cuidados e acontecimentos do dia a dia na instituição. Ele serve para garantir a organização, transparência e a qualidade do atendimento aos idosos. Ele permite monitorar o que foi feito com cada residente, como medicação, alimentação, atividades físicas e sociais, também ajuda a identificar rapidamente qualquer problema. ',
       ]
     },
     {
@@ -46,15 +72,7 @@ const Documentacao = () => {
       icone: <Utensils size={24} />,
       detalhes: [
         'O Registro de  Quadro Alimentar é o documento no qual serão adicionadas minuciosamente todas as informações sobre alimentação do residente, para acompanhamento e avaliação, se a nutrição está adequada e se é necessário alguma alteração para atender melhor as necessidades do idoso. Deve estar registrado quantas refeições o mesmo fez, quando foi, e o que ingeriu, se ele se queixou de algo, deixou de se alimentar e o motivo de tal decisão.',
-        
-      ]
-    },
-    {
-      nome: 'Registro de Comportamento',
-      descricao: 'Registro e análise de padrões comportamentais',
-      icone: <BarChart size={24} />,
-      detalhes: [
-        'O Registro de Comportamento esse relatório é onde será disposto informações sobre o comportamento dos residentes, seja durante exames, momento de lazer, alimentação, e de todo o seu dia a dia. Nele deverá haver conteúdo detalhado se o mesmo provocou consequências para si mesmo ou a terceiros (enfermeiros, médicos, responsáveis, ou outros residentes).',
+
       ]
     },
     {
@@ -65,48 +83,6 @@ const Documentacao = () => {
         'O Registro de Preferências é uma ficha na qual serão anotadas as preferências pessoais de cada residente, para que a equipe possa oferecer um cuidado mais humanizado. Ele é parte importante do prontuário de atendimento, garante o bem-estar do idoso respeitando seus gostos, como comidas e temperos de preferência, sua rotina diária em geral (horário que acorda, prefere tomar banho, ou praticar seus lazeres).',
       ]
     },
-    {
-      nome: 'Registro de Relações Internas',
-      descricao: 'Mapeamento das relações interpessoais na instituição',
-      icone: <Users size={24} />,
-      detalhes: [
-        'O Registro de Relações Internas o registro de relações internas é o instrumento de controle que irá  acompanhar como se dão as interações entre os residentes, funcionários e visitantes dentro da instituição, ele inclui as interações entre residentes como: participação em atividades coletivas, também o relacionamento com a equipe, observações de bem-estar social, ocorrências relevantes como situações e bullying ou discriminação e isolamento.',
-      ]
-    },
-    {
-      nome: 'Registro de Consultas Médicas',
-      descricao: 'Controle completo de consultas e acompanhamento médico',
-      icone: <Stethoscope size={24} />,
-      detalhes: [
-        'O Registro de Consultas Médicas é o documento onde serão anotadas todas as informações sobre os atendimentos médicos realizados a um paciente. No mesmo deve conter: nome completo, idade, sexo, número de prontuário data e horário da consulta, profissional responsável, motivo da consulta, histórico e evolução clínica, tratamentos indicados, encaminhamentos, exames solicitados e receitas médicas, assinatura e autenticação.',
-        
-      ]
-    },
-    {
-      nome: 'Registro de Exames Médicos',
-      descricao: 'Organização e resultados de exames médicos',
-      icone: <Microscope size={24} />,
-      detalhes: [
-        'O Registro de Exames Médicos aqui será anotado e organizado todas as informações sobre exames realizados por um paciente, seja para diagnóstico, acompanhamento ou controle de rotina.No documento deve haver controle e histórico para ser fornecido informações precisas para avaliar a evolução do paciente.',
-        
-      ]
-    },
-    {
-      nome: 'Registros de Vídeo e Fotográfico',
-      descricao: 'Armazenamento de registros fotográficos e vídeos',
-      icone: <Video size={24} />,
-      detalhes: [
-        'O Registro de Vídeos e Fotografia esses são documentoque que necessitam de grande cuidado e zelo, pois organiza e formaliza a captação de imagens e vídeos, seja para documentar, divulgar ou arquivar atividades e eventos. Ele é usado tanto para fins internos (memória institucional, acompanhamento de atividades), quanto externos (divulgação, relatórios, prestação de contas).',
-      ]
-    },
-    {
-      nome: 'Plataforma para Reuniões',
-      descricao: 'Sistema integrado de reuniões e comunicação',
-      icone: <Phone size={24} />,
-      detalhes: [
-        'A Plataforma para Reuniões é o ambiente pensado para que residentes possam se comunicar de forma remota com familiares, amigos ou profissionais de saúde, com conforto, privacidade e qualidade na conexão. Deve ser um ambiente silencioso obter uma iluminção adequada, privativo e com acessibilidades necessárias.',
-      ]
-    }
   ];
 
   // Efeito para rolar até os detalhes quando activeItem muda
@@ -182,7 +158,7 @@ const Documentacao = () => {
                   ))}
                 </ul>
               </div>
-              
+
               <div className="bg-odara-white bg-opacity-10 p-6 rounded-lg border-2 border-odara-primary">
                 <h3 className="text-lg font-semibold text-odara-accent mb-4 flex items-center">
                   <svg className="w-5 h-5 mr-2 text-odara-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,13 +167,13 @@ const Documentacao = () => {
                   Benefícios
                 </h3>
                 <p className="text-odara-dark">
-                  Esta funcionalidade foi desenvolvida para otimizar o trabalho dos cuidadores e 
-                  melhorar a qualidade de vida dos residentes, proporcionando um acompanhamento 
+                  Esta funcionalidade foi desenvolvida para otimizar o trabalho dos cuidadores e
+                  melhorar a qualidade de vida dos residentes, proporcionando um acompanhamento
                   mais preciso e personalizado.
                 </p>
               </div>
             </div>
-            
+
             <div className="mt-8 text-center">
               <button
                 onClick={() => setActiveItem(null)}
