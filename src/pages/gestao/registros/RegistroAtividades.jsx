@@ -1,45 +1,79 @@
-import React, { useState, useEffect } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle, FaChevronLeft, FaChevronRight, FaTimes, FaCheck } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle, FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 
 const RegistroAtividades = () => {
-  // Estados para gerenciar atividades, calendário e modal
-  const [events, setEvents] = useState([
+  // ===== ESTADOS DO COMPONENTE =====
+  // Estado que armazena todas as atividades cadastradas
+  const [atividades, setAtividades] = useState([
     {
       id: 1,
-      date: new Date(new Date().getFullYear(), new Date().getMonth(), 3),
-      time: "10:00 - 11:00",
-      title: "Clube do livro",
-      description: "Encontro para discutir a leitura da semana",
-      category: "criativa",
-      person: "João Silva",
-      color: "rosa",
-      completed: false
+      data: new Date(new Date().getFullYear(), new Date().getMonth(), 3),
+      horario: "10:00 - 11:00",
+      titulo: "Clube do livro",
+      descricao: "Encontro para discutir a leitura da semana",
+      categoria: "criativa",
+      residentes: "João Silva",
+      cor: "rosa",
+      concluida: false
+    },
+    {
+      id: 2,
+      data: new Date(new Date().getFullYear(), new Date().getMonth(), 5),
+      horario: "9:00 - 11:00",
+      titulo: "Fisioterapia de Emergência",
+      descricao: "Sessão de emergência para 4 residentes",
+      categoria: "fisica",
+      residentes: "Maria Catarina",
+      cor: "vermelho",
+      concluida: false
+    },
+    {
+      id: 3,
+      data: new Date(new Date().getFullYear(), new Date().getMonth(), 5),
+      horario: "14:00 - 16:00",
+      titulo: "Roda de Conversa",
+      descricao: "Roda de conversa liderada pela psicóloga Júlia",
+      categoria: "social",
+      residentes: "Rosana Ribeiro",
+      cor: "azul",
+      concluida: false
     },
   ]);
 
-  const [currentDate, setCurrentDate] = useState(new Date());
+  // Estado para controlar a data atual do calendário
+  const [dataAtual, setDataAtual] = useState(new Date());
+
+  // Estado para controlar se o modal está aberto ou fechado
   const [modalAberto, setModalAberto] = useState(false);
+
+  // Estado para armazenar os dados da nova atividade sendo criada/editada
   const [novaAtividade, setNovaAtividade] = useState({
-    title: '',
-    description: '',
-    date: '',
-    time: '',
-    person: '',
-    category: 'criativa',
-    color: 'rosa'
+    titulo: '',
+    descricao: '',
+    data: '',
+    horario: '',
+    residentes: '',
+    categoria: 'criativa',
+    cor: 'rosa'
   });
+
+  // Estados para controle de edição
   const [editando, setEditando] = useState(false);
   const [idEditando, setIdEditando] = useState(null);
+
+  // Estados para controle de filtros
   const [filtroAtivo, setFiltroAtivo] = useState('todos');
   const [filtroAberto, setFiltroAberto] = useState(false);
   const [infoVisivel, setInfoVisivel] = useState(false);
-  const [dropdownAberto, setDropdownAberto] = useState(false);
   const [filtroDia, setFiltroDia] = useState(null);
   const [filtroDiaAtivo, setFiltroDiaAtivo] = useState(false);
+  const [residenteSelecionado, setResidenteSelecionado] = useState('');
+  const [filtroResidenteAberto, setFiltroResidenteAberto] = useState(false);
 
-  // Categorias e cores
+  // ===== CONSTANTES E CONFIGURAÇÕES =====
+  // Mapeamento de categorias
   const CATEGORIAS = {
     CRIATIVA: 'criativa',
     LOGICA: 'logica',
@@ -48,7 +82,7 @@ const RegistroAtividades = () => {
     OUTRA: 'outra'
   };
 
-  const CATEGORIA_LABELS = {
+  const ROTULOS_CATEGORIAS = {
     [CATEGORIAS.CRIATIVA]: "Criativa",
     [CATEGORIAS.LOGICA]: "Lógica",
     [CATEGORIAS.FISICA]: "Física",
@@ -56,74 +90,83 @@ const RegistroAtividades = () => {
     [CATEGORIAS.OUTRA]: "Outra"
   };
 
+  // Cores disponíveis para as atividades
   const CORES = {
     ROSA: 'rosa',
     MAGENTA: 'magenta',
     AZUL: 'azul',
-    AZULDROP: 'azul claro',
+    AZUL_CLARO: 'azul claro',
     AMARELO: 'amarelo',
     VERMELHO: 'vermelho',
     NEVE: 'neve'
   };
 
-  const CORES_CLASSES = {
+  // Classes CSS correspondentes a cada cor
+  const CLASSES_CORES = {
     [CORES.ROSA]: 'bg-odara-primary/60 text-odara-dark shadow-sm',
     [CORES.MAGENTA]: 'bg-odara-accent/60 text-odara-white shadow-sm',
     [CORES.AZUL]: 'bg-odara-secondary/60 text-odara-white shadow-sm',
-    [CORES.AZULDROP]: 'bg-odara-dropdown-accent/60 text-odara-dark shadow-sm',
+    [CORES.AZUL_CLARO]: 'bg-odara-dropdown-accent/60 text-odara-dark shadow-sm',
     [CORES.AMARELO]: 'bg-odara-contorno text-odara-dark shadow-sm',
     [CORES.VERMELHO]: 'bg-odara-alerta text-odara-white shadow-sm',
     [CORES.NEVE]: 'bg-odara-offwhite text-odara-dark shadow-sm'
   };
 
+  // Opções de filtro disponíveis
   const FILTROS = [
     { id: 'todos', label: 'Todos' },
     ...Object.values(CATEGORIAS).map(cat => ({
       id: cat,
-      label: CATEGORIA_LABELS[cat]
+      label: ROTULOS_CATEGORIAS[cat]
     }))
   ];
 
-  // Funções para navegação do calendário
-  const mudarMes = (offset) => {
-    setCurrentDate(prevDate => {
-      const newDate = new Date(prevDate);
-      newDate.setMonth(prevDate.getMonth() + offset);
-      return newDate;
+  // ===== FUNÇÕES DE NAVEGAÇÃO DO CALENDÁRIO =====
+  // Altera o mês atual do calendário
+  // @param {number} deslocamento - Número de meses para avançar/retroceder
+  const alterarMes = (deslocamento) => {
+    setDataAtual(dataAnterior => {
+      const novaData = new Date(dataAnterior);
+      novaData.setMonth(dataAnterior.getMonth() + deslocamento);
+      return novaData;
     });
   };
 
+  // Retorna o calendário para o mês atual
   const irParaMesAtual = () => {
-    setCurrentDate(new Date());
+    setDataAtual(new Date());
   };
 
-  // Funções para gerenciar atividades
+  // ===== FUNÇÕES DE GERENCIAMENTO DE ATIVIDADES =====
+  // Abre o modal para adicionar uma nova atividade
   const abrirModalAdicionar = () => {
     setNovaAtividade({
-      title: '',
-      description: '',
-      date: new Date().toISOString().split('T')[0],
-      time: '',
-      person: '',
-      category: 'criativa',
-      color: 'rosa'
+      titulo: '',
+      descricao: '',
+      data: new Date().toISOString().split('T')[0],
+      horario: '',
+      residentes: '',
+      categoria: 'criativa',
+      cor: 'rosa'
     });
     setEditando(false);
     setIdEditando(null);
     setModalAberto(true);
   };
 
+  // Abre o modal para editar uma atividade existente
+  // @param {number} id - ID da atividade a ser editada
   const abrirModalEditar = (id) => {
-    const atividadeParaEditar = events.find(event => event.id === id);
+    const atividadeParaEditar = atividades.find(atividade => atividade.id === id);
     if (atividadeParaEditar) {
       setNovaAtividade({
-        title: atividadeParaEditar.title,
-        description: atividadeParaEditar.description,
-        date: atividadeParaEditar.date.toISOString().split('T')[0],
-        time: atividadeParaEditar.time.split(' - ')[0] || '',
-        person: atividadeParaEditar.person,
-        category: atividadeParaEditar.category,
-        color: atividadeParaEditar.color
+        titulo: atividadeParaEditar.titulo,
+        descricao: atividadeParaEditar.descricao,
+        data: atividadeParaEditar.data.toISOString().split('T')[0],
+        horario: atividadeParaEditar.horario.split(' - ')[0] || '',
+        residentes: atividadeParaEditar.residentes,
+        categoria: atividadeParaEditar.categoria,
+        cor: atividadeParaEditar.cor
       });
       setEditando(true);
       setIdEditando(id);
@@ -131,128 +174,137 @@ const RegistroAtividades = () => {
     }
   };
 
+  // Salva uma atividade nova ou editada
   const salvarAtividade = () => {
-    if (!novaAtividade.title || !novaAtividade.date) return;
+    if (!novaAtividade.titulo || !novaAtividade.data) return;
 
-    const dateParts = novaAtividade.date.split('-');
-    const eventDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+    const partesData = novaAtividade.data.split('-');
+    const dataAtividade = new Date(partesData[0], partesData[1] - 1, partesData[2]);
 
-    let timeText = '';
-    if (novaAtividade.time) {
-      timeText = `${novaAtividade.time}`;
+    let textoHorario = '';
+    if (novaAtividade.horario) {
+      textoHorario = `${novaAtividade.horario}`;
     }
 
     if (editando && idEditando) {
-      // Atualiza existente
-      setEvents(prev => prev.map(event =>
-        event.id === idEditando
+      // Atualiza atividade existente
+      setAtividades(anterior => anterior.map(atividade =>
+        atividade.id === idEditando
           ? {
-            ...event,
-            title: novaAtividade.title,
-            description: novaAtividade.description,
-            date: eventDate,
-            time: timeText,
-            person: novaAtividade.person,
-            category: novaAtividade.category,
-            color: novaAtividade.color
+            ...atividade,
+            titulo: novaAtividade.titulo,
+            descricao: novaAtividade.descricao,
+            data: dataAtividade,
+            horario: textoHorario,
+            residentes: novaAtividade.residentes,
+            categoria: novaAtividade.categoria,
+            cor: novaAtividade.cor
           }
-          : event
+          : atividade
       ));
-    } else {
-      // Adiciona nova atividade - CORREÇÃO AQUI: mudei o nome da variável
+    }
+    else {
+      // Adiciona nova atividade
       const novaAtividadeObj = {
         id: Date.now(),
-        title: novaAtividade.title,
-        description: novaAtividade.description,
-        date: eventDate,
-        time: timeText,
-        person: novaAtividade.person,
-        category: novaAtividade.category,
-        color: novaAtividade.color,
-        completed: false
+        titulo: novaAtividade.titulo,
+        descricao: novaAtividade.descricao,
+        data: dataAtividade,
+        horario: textoHorario,
+        residentes: novaAtividade.residentes,
+        categoria: novaAtividade.categoria,
+        cor: novaAtividade.cor,
+        concluida: false
       };
-      setEvents(prev => [...prev, novaAtividadeObj]);
+      setAtividades(anterior => [...anterior, novaAtividadeObj]);
     }
 
     setModalAberto(false);
   };
 
+  // Exclui uma atividade após confirmação
+  // @param {number} id - ID da atividade a ser excluída
   const excluirAtividade = (id) => {
     if (window.confirm('Tem certeza que deseja excluir esta atividade?')) {
-      setEvents(prev => prev.filter(event => event.id !== id));
+      setAtividades(anterior => anterior.filter(atividade => atividade.id !== id));
     }
   };
 
-  const toggleCompletado = (id) => {
-    setEvents(prev => prev.map(event =>
-      event.id === id
-        ? { ...event, completed: !event.completed }
-        : event
+  // Alterna o status de conclusão de uma atividade
+  // @param {number} id - ID da atividade
+  const alternarConclusao = (id) => {
+    setAtividades(anterior => anterior.map(atividade =>
+      atividade.id === id
+        ? { ...atividade, concluida: !atividade.concluida }
+        : atividade
     ));
 
-    // Mantém o filtro ativo após marcar como realizado
+    // Mantém o filtro ativo após marcar como concluída
     if (filtroDiaAtivo) {
-      const evento = events.find(e => e.id === id);
-      if (evento) {
-        setFiltroDia(new Date(evento.date));
+      const atividadeFiltrada = atividades.find(a => a.id === id);
+      if (atividadeFiltrada) {
+        setFiltroDia(new Date(atividadeFiltrada.data));
         setFiltroDiaAtivo(true);
       }
     }
   };
 
-  // Funções para renderizar o calendário
-  const renderCabecalhoCalendario = () => {
-    const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+  // ===== FUNÇÕES DE RENDERIZAÇÃO DO CALENDÁRIO =====
+  // Retorna o cabeçalho do calendário com mês e ano formatados
+  const renderizarCabecalhoCalendario = () => {
+    const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
       "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-    return `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+    return `${nomesMeses[dataAtual.getMonth()]} ${dataAtual.getFullYear()}`;
   };
 
-  // Função para obter atividades de um dia específico
-  const getAtividadesDoDia = (dia, mes, ano) => {
-    return events.filter(event => {
-      const eventDate = event.date;
-      return eventDate.getDate() === dia &&
-        eventDate.getMonth() === mes &&
-        eventDate.getFullYear() === ano;
+  // Obtém as atividades de um dia específico
+  // @param {number} dia - Dia do mês
+  // @param {number} mes - Mês (0-11)
+  // @param {number} ano - Ano
+  const obterAtividadesDoDia = (dia, mes, ano) => {
+    return atividades.filter(atividade => {
+      const dataAtividade = atividade.data;
+      return dataAtividade.getDate() === dia &&
+        dataAtividade.getMonth() === mes &&
+        dataAtividade.getFullYear() === ano;
     });
   };
 
-  const renderDiasCalendario = () => {
-    const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const firstDayIndex = firstDay.getDay();
-    const prevMonthLastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate();
+  // Renderiza os dias do calendário
+  const renderizarDiasCalendario = () => {
+    const primeiroDia = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 1);
+    const ultimoDia = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + 1, 0);
+    const diasNoMes = ultimoDia.getDate();
+    const indicePrimeiroDia = primeiroDia.getDay();
+    const ultimoDiaMesAnterior = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 0).getDate();
+    const hoje = new Date();
+    const dias = [];
 
-    const today = new Date();
-
-    const days = [];
-
-    // Dias do mês anterior
-    for (let i = firstDayIndex; i > 0; i--) {
-      const day = prevMonthLastDay - i + 1;
-      days.push(
-        <div key={`prev-${day}`} className="flex flex-col aspect-square p-1 bg-odara-name/10 border-r border-b border-odara-primary">
-          <span className="text-xs font-semibold text-odara-dark/40 self-end">{day}</span>
+    // Dias do mês anterior (para preencher o calendário)
+    for (let i = indicePrimeiroDia; i > 0; i--) {
+      const dia = ultimoDiaMesAnterior - i + 1;
+      dias.push(
+        <div key={`anterior-${dia}`} className="flex flex-col aspect-square p-1 bg-odara-name/10 border-r border-b border-odara-primary">
+          <span className="text-xs font-semibold text-odara-dark/40 self-end">{dia}</span>
         </div>
       );
     }
 
     // Dias do mês atual
-    for (let i = 1; i <= daysInMonth; i++) {
-      const isToday = i === today.getDate() &&
-        currentDate.getMonth() === today.getMonth() &&
-        currentDate.getFullYear() === today.getFullYear();
+    for (let i = 1; i <= diasNoMes; i++) {
+      const ehHoje = i === hoje.getDate() &&
+        dataAtual.getMonth() === hoje.getMonth() &&
+        dataAtual.getFullYear() === hoje.getFullYear();
 
-      const atividadesDoDia = getAtividadesDoDia(i, currentDate.getMonth(), currentDate.getFullYear());
+      const atividadesDoDia = obterAtividadesDoDia(i, dataAtual.getMonth(), dataAtual.getFullYear());
 
-      days.push(
+      dias.push(
         <div
-          key={`current-${i}`}
-          className={`flex flex-col aspect-square p-1 border-r border-b border-odara-primary relative ${isToday ? 'bg-odara-dropdown' : 'bg-white'} overflow-y-auto cursor-pointer ${filtroDiaAtivo && i === filtroDia.getDate() && currentDate.getMonth() === filtroDia.getMonth() && currentDate.getFullYear() === filtroDia.getFullYear() ? 'ring-2 ring-odara-accent' : ''}`}
+          key={`atual-${i}`}
+          className={`flex flex-col aspect-square p-1 border-r border-b border-odara-primary relative ${ehHoje ? 'bg-odara-dropdown' : 'bg-white'} overflow-y-auto cursor-pointer ${filtroDiaAtivo && i === filtroDia.getDate() && dataAtual.getMonth() === filtroDia.getMonth() && dataAtual.getFullYear() === filtroDia.getFullYear() ? 'ring-2 ring-odara-accent' : ''}`}
           onClick={() => {
-            const diaClicado = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
+            const diaClicado = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), i);
             if (filtroDiaAtivo && filtroDia && diaClicado.getDate() === filtroDia.getDate() && diaClicado.getMonth() === filtroDia.getMonth() && diaClicado.getFullYear() === filtroDia.getFullYear()) {
               setFiltroDiaAtivo(false); // Desativa se clicar no mesmo dia
               setFiltroDia(null);
@@ -263,7 +315,7 @@ const RegistroAtividades = () => {
           }}
         >
           <div className="flex justify-between items-start">
-            <span className={`text-xs font-semibold ${isToday ? 'text-odara-dropdown-accent font-bold' : 'text-odara-accent'} self-end`}>
+            <span className={`text-xs font-semibold ${ehHoje ? 'text-odara-dropdown-accent font-bold' : 'text-odara-accent'} self-end`}>
               {i}
             </span>
             {atividadesDoDia.length > 0 && (
@@ -273,17 +325,17 @@ const RegistroAtividades = () => {
             )}
           </div>
 
-          {/* atividades do dia */}
+          {/* Atividades do dia */}
           <div className="flex-1 mt-1 space-y-1 overflow-y-auto">
-            {atividadesDoDia.map(event => (
+            {atividadesDoDia.map(atividade => (
               <div
-                key={event.id}
-                className={`text-xs p-1 rounded ${CORES_CLASSES[event.color]} truncate`}
-                title={`${event.time} - ${event.title} - ${event.person}`}
+                key={atividade.id}
+                className={`text-xs p-1 rounded ${CLASSES_CORES[atividade.cor]} truncate`}
+                title={`${atividade.horario} - ${atividade.titulo} - ${atividade.residentes}`}
               >
-                <div className="font-medium truncate">{event.time}</div>
-                <div className="truncate">{event.title}</div>
-                <div className="truncate">{event.person}</div>
+                <div className="font-medium truncate">{atividade.horario}</div>
+                <div className="truncate">{atividade.titulo}</div>
+                <div className="truncate">{atividade.residentes}</div>
               </div>
             ))}
           </div>
@@ -291,36 +343,42 @@ const RegistroAtividades = () => {
       );
     }
 
-    // Dias do próximo mês
-    const totalCells = 42; // 6 semanas * 7 dias
-    const remainingCells = totalCells - (firstDayIndex + daysInMonth);
+    // Dias do próximo mês (para preencher o calendário)
+    const totalCelulas = 42; // 6 semanas * 7 dias
+    const celulasRestantes = totalCelulas - (indicePrimeiroDia + diasNoMes);
 
-    for (let i = 1; i <= remainingCells; i++) {
-      days.push(
-        <div key={`next-${i}`} className="flex flex-col aspect-square p-1 bg-odara-name/10 border-r border-b border-odara-primary">
+    for (let i = 1; i <= celulasRestantes; i++) {
+      dias.push(
+        <div key={`proximo-${i}`} className="flex flex-col aspect-square p-1 bg-odara-name/10 border-r border-b border-odara-primary">
           <span className="text-xs font-semibold text-odara-dark/40 self-end">{i}</span>
         </div>
       );
     }
 
-    return days;
+    return dias;
   };
 
-  // Filtrar atividades por categoria e por dia selecionado
-  const atividadesFiltradas = events.filter(event => {
-    const passaFiltroCategoria = filtroAtivo === 'todos' || event.category === filtroAtivo;
+  // ===== FILTROS =====
+  // Filtra atividades por categoria, dia selecionado e residente
+  const atividadesFiltradas = atividades.filter(atividade => {
+    const passaFiltroCategoria = filtroAtivo === 'todos' || atividade.categoria === filtroAtivo;
+
     const passaFiltroDia = !filtroDiaAtivo || (
-      event.date.getDate() === filtroDia.getDate() &&
-      event.date.getMonth() === filtroDia.getMonth() &&
-      event.date.getFullYear() === filtroDia.getFullYear()
+      atividade.data.getDate() === filtroDia.getDate() &&
+      atividade.data.getMonth() === filtroDia.getMonth() &&
+      atividade.data.getFullYear() === filtroDia.getFullYear()
     );
 
-    return passaFiltroCategoria && passaFiltroDia;
+    const passaFiltroResidente = !residenteSelecionado || atividade.residentes === residenteSelecionado;
+
+    return passaFiltroCategoria && passaFiltroDia && passaFiltroResidente;
   });
 
+  // ===== RENDERIZAÇÃO DO COMPONENTE =====
   return (
     <div className="flex min-h-screen bg-odara-offwhite">
       <div className="flex-1 p-6 lg:p-10">
+        {/* Cabeçalho */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
             <div className="flex items-center mb-1">
@@ -361,6 +419,7 @@ const RegistroAtividades = () => {
           </button>
         </div>
 
+        {/* Barra de filtros */}
         <div className="relative flex items-center gap-4 mb-6">
           {/* Botão Adicionar */}
           <button
@@ -370,14 +429,17 @@ const RegistroAtividades = () => {
             <FaPlus className="mr-2 text-odara-white" /> Nova Atividade
           </button>
 
-          {/* Filtros */}
+          {/* Filtro por Categoria */}
           <div className="relative">
             <button
-              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition"
-              onClick={() => setFiltroAberto(!filtroAberto)}
+              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition w-40 justify-center"
+              onClick={() => {
+                setFiltroAberto(!filtroAberto);
+                setFiltroResidenteAberto(false); // Fecha o outro dropdown
+              }}
             >
               <FaFilter className="text-odara-accent mr-2" />
-              Filtro
+              Categoria
             </button>
 
             {filtroAberto && (
@@ -398,28 +460,81 @@ const RegistroAtividades = () => {
             )}
           </div>
 
-          {filtroDiaAtivo && (
+          {/* Filtro por Residente */}
+          <div className="relative">
+            <button
+              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition w-40 justify-center"
+              onClick={() => {
+                setFiltroResidenteAberto(!filtroResidenteAberto);
+                setFiltroAberto(false); // Fecha o outro dropdown
+              }}
+            >
+              <FaFilter className="text-odara-accent mr-2" />
+              Residentes
+            </button>
+
+            {filtroResidenteAberto && (
+              <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                <button
+                  onClick={() => {
+                    setResidenteSelecionado('');
+                    setFiltroResidenteAberto(false);
+                  }}
+                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${!residenteSelecionado ? 'bg-indigo-100 font-semibold' : ''}`}
+                >
+                  Todos os residentes
+                </button>
+                {[...new Set(atividades.map(atividade => atividade.residentes).filter(Boolean))].map(residente => (
+                  <button
+                    key={residente}
+                    onClick={() => {
+                      setResidenteSelecionado(residente);
+                      setFiltroResidenteAberto(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${residenteSelecionado === residente ? 'bg-indigo-100 font-semibold' : ''}`}
+                  >
+                    {residente}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Botão Limpar Todos os Filtros */}
+          {(filtroDiaAtivo || residenteSelecionado || filtroAtivo !== 'todos') && (
             <button
               onClick={() => {
                 setFiltroDiaAtivo(false);
                 setFiltroDia(null);
+                setResidenteSelecionado('');
+                setFiltroAtivo('todos');
               }}
               className="flex items-center bg-odara-accent text-odara-white rounded-full px-4 py-2 shadow-sm font-medium hover:bg-odara-secondary transition"
             >
-              <FaTimes className="mr-1" /> Limpar Filtro
+              <FaTimes className="mr-1" /> Limpar Filtros
             </button>
           )}
         </div>
 
+        {/* Grid principal com atividades e calendário */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Seção de Próximas Atividades */}
           <div className="bg-odara-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-6">
-            {/* No cabeçalho da seção de próximas atividades, adicione: */}
             <h2 className="text-2xl font-bold text-odara-dark flex items-center">
               Próximas Atividades
               {filtroDiaAtivo && (
                 <span className="ml-2 text-sm bg-odara-accent text-odara-white px-2 py-1 rounded-full">
-                  Filtrado: {filtroDia.getDate()}/{filtroDia.getMonth() + 1}
+                  Dia: {filtroDia.getDate().toString().padStart(2, '0')}/{(filtroDia.getMonth() + 1).toString().padStart(2, '0')}
+                </span>
+              )}
+              {residenteSelecionado && (
+                <span className="ml-2 text-sm bg-odara-secondary text-odara-white px-2 py-1 rounded-full">
+                  Residente: {residenteSelecionado}
+                </span>
+              )}
+              {filtroAtivo !== 'todos' && (
+                <span className="ml-2 text-sm bg-odara-primary text-odara-white px-2 py-1 rounded-full">
+                  Categoria: {ROTULOS_CATEGORIAS[filtroAtivo]}
                 </span>
               )}
             </h2>
@@ -431,35 +546,35 @@ const RegistroAtividades = () => {
                   <p className="text-odara-dark/60">Nenhuma atividade agendada</p>
                 </div>
               ) : (
-                atividadesFiltradas.map(event => (
-                  <div key={event.id} className="p-4 rounded-xl bg-odara-offwhite/60 border-l-2 border-odara-primary hover:shadow-md transition-shadow duration-200">
+                atividadesFiltradas.map(atividade => (
+                  <div key={atividade.id} className="p-4 rounded-xl bg-odara-offwhite/60 border-l-2 border-odara-primary hover:shadow-md transition-shadow duration-200">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2.5">
-                        <span className={`w-2.5 h-2.5 rounded-full bg-${event.color}-600`}></span>
+                        <span className={`w-2.5 h-2.5 rounded-full bg-${atividade.cor}-600`}></span>
                         <p className="text-base font-semibold text-odara-primary">
-                          {event.date.getDate()} de {event.date.toLocaleString('pt-BR', { month: 'long' })} de {event.date.getFullYear()}
-                          {event.time && ` - ${event.time}`}
+                          {atividade.data.getDate()} de {atividade.data.toLocaleString('pt-BR', { month: 'long' })} de {atividade.data.getFullYear()}
+                          {atividade.horario && ` - ${atividade.horario}`}
                         </p>
                       </div>
                       <div className="flex items-center gap-3">
                         <label className="flex items-center gap-2 text-sm text-odara-dark">
                           <input
                             type="checkbox"
-                            className={`rounded text-${event.color}-600 focus:ring-${event.color}-300`}
-                            checked={event.completed}
-                            onChange={() => toggleCompletado(event.id)}
+                            className={`rounded text-${atividade.cor}-600 focus:ring-${atividade.cor}-300`}
+                            checked={atividade.concluida}
+                            onChange={() => alternarConclusao(atividade.id)}
                           />
                           Realizado
                         </label>
                         <div className="flex space-x-2">
                           <button
-                            onClick={() => abrirModalEditar(event.id)}
+                            onClick={() => abrirModalEditar(atividade.id)}
                             className="text-odara-secondary hover:text-odara-dropdown-accent transition-colors duration-200 p-1 rounded-full hover:bg-odara-dropdown"
                           >
                             <FaEdit />
                           </button>
                           <button
-                            onClick={() => excluirAtividade(event.id)}
+                            onClick={() => excluirAtividade(atividade.id)}
                             className="text-odara-alerta hover:text-odara-accent transition-colors duration-200 p-1 rounded-full hover:bg-odara-alerta/50"
                           >
                             <FaTrash />
@@ -468,26 +583,26 @@ const RegistroAtividades = () => {
                       </div>
                     </div>
 
-                    {/* Título da atividade recebe icone de alerta se utilizar a cor vermelha */}
+                    {/* Título da atividade com ícone de alerta se for vermelha */}
                     <h6 className="text-xl font-bold text-odara-accent mb-1 flex items-center">
-                      {event.color === 'vermelho' && (
+                      {atividade.cor === 'vermelho' && (
                         <span className="text-odara-alerta mr-2">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                           </svg>
                         </span>
                       )}
-                      {event.title}
+                      {atividade.titulo}
                     </h6>
-                    <p className="text-base text-odara-dark mb-2">{event.description}</p>
+                    <p className="text-base text-odara-dark mb-2">{atividade.descricao}</p>
                     <div className="flex items-center text-sm">
                       <span className="bg-odara-dropdown text-odara-dropdown-name/60 px-2 py-1 rounded-md text-xs">
-                        {CATEGORIA_LABELS[event.category]}
+                        {ROTULOS_CATEGORIAS[atividade.categoria]}
                       </span>
-                      {event.person && (
+                      {atividade.residentes && (
                         <>
                           <span className="mx-2 text-odara-primary">•</span>
-                          <span className="text-odara-name">{event.person}</span>
+                          <span className="text-odara-name">{atividade.residentes}</span>
                         </>
                       )}
                     </div>
@@ -501,16 +616,16 @@ const RegistroAtividades = () => {
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-5">
               <div className="flex items-center gap-4">
-                <h5 className="text-xl font-semibold text-odara-dark">{renderCabecalhoCalendario()}</h5>
+                <h5 className="text-xl font-semibold text-odara-dark">{renderizarCabecalhoCalendario()}</h5>
                 <div className="flex items-center">
                   <button
-                    onClick={() => mudarMes(-1)}
+                    onClick={() => alterarMes(-1)}
                     className="text-odara-primary p-1 rounded transition-all duration-300 hover:text-odara-secondary hover:bg-odara-dropdown"
                   >
                     <FaChevronLeft />
                   </button>
                   <button
-                    onClick={() => mudarMes(1)}
+                    onClick={() => alterarMes(1)}
                     className="text-odara-primary p-1 rounded transition-all duration-300 hover:text-odara-secondary hover:bg-odara-dropdown"
                   >
                     <FaChevronRight />
@@ -521,14 +636,14 @@ const RegistroAtividades = () => {
 
             <div className="border border-odara-primary rounded-xl shadow-sm">
               <div className="grid grid-cols-7 rounded-t-xl border-b border-odara-primary">
-                {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(day => (
-                  <div key={day} className="py-2 border-r border-odara-primary bg-odara-accent last:border-r-0 flex items-center justify-center text-sm font-medium text-odara-white">
-                    {day}
+                {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(dia => (
+                  <div key={dia} className="py-2 border-r border-odara-primary bg-odara-accent last:border-r-0 flex items-center justify-center text-sm font-medium text-odara-white">
+                    {dia}
                   </div>
                 ))}
               </div>
               <div className="grid grid-cols-7 rounded-b-xl">
-                {renderDiasCalendario()}
+                {renderizarDiasCalendario()}
               </div>
             </div>
           </div>
@@ -556,8 +671,8 @@ const RegistroAtividades = () => {
                   <input
                     type="text"
                     className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary"
-                    value={novaAtividade.title}
-                    onChange={(e) => setNovaAtividade({ ...novaAtividade, title: e.target.value })}
+                    value={novaAtividade.titulo}
+                    onChange={(e) => setNovaAtividade({ ...novaAtividade, titulo: e.target.value })}
                     placeholder="Digite o título da atividade"
                   />
                 </div>
@@ -567,8 +682,8 @@ const RegistroAtividades = () => {
                   <textarea
                     className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary"
                     rows="3"
-                    value={novaAtividade.description}
-                    onChange={(e) => setNovaAtividade({ ...novaAtividade, description: e.target.value })}
+                    value={novaAtividade.descricao}
+                    onChange={(e) => setNovaAtividade({ ...novaAtividade, descricao: e.target.value })}
                     placeholder="Digite a descrição da atividade"
                   ></textarea>
                 </div>
@@ -579,30 +694,30 @@ const RegistroAtividades = () => {
                     <input
                       type="date"
                       className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary"
-                      value={novaAtividade.date}
-                      onChange={(e) => setNovaAtividade({ ...novaAtividade, date: e.target.value })}
+                      value={novaAtividade.data}
+                      onChange={(e) => setNovaAtividade({ ...novaAtividade, data: e.target.value })}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-odara-dark font-medium mb-2">Hora</label>
+                    <label className="block text-odara-dark font-medium mb-2">Horário</label>
                     <input
                       type="time"
                       className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary"
-                      value={novaAtividade.time}
-                      onChange={(e) => setNovaAtividade({ ...novaAtividade, time: e.target.value })}
+                      value={novaAtividade.horario}
+                      onChange={(e) => setNovaAtividade({ ...novaAtividade, horario: e.target.value })}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-odara-dark font-medium mb-2">Pessoa Envolvida</label>
+                  <label className="block text-odara-dark font-medium mb-2">Residente(s)</label>
                   <input
                     type="text"
                     className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary"
-                    value={novaAtividade.person}
-                    onChange={(e) => setNovaAtividade({ ...novaAtividade, person: e.target.value })}
-                    placeholder="Nome da pessoa envolvida"
+                    value={novaAtividade.residentes}
+                    onChange={(e) => setNovaAtividade({ ...novaAtividade, residentes: e.target.value })}
+                    placeholder="Nome do(s) residente(s)"
                   />
                 </div>
 
@@ -610,11 +725,11 @@ const RegistroAtividades = () => {
                   <label className="block text-odara-dark font-medium mb-2">Categoria</label>
                   <select
                     className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary"
-                    value={novaAtividade.category}
-                    onChange={(e) => setNovaAtividade({ ...novaAtividade, category: e.target.value })}
+                    value={novaAtividade.categoria}
+                    onChange={(e) => setNovaAtividade({ ...novaAtividade, categoria: e.target.value })}
                   >
-                    {Object.entries(CATEGORIA_LABELS).map(([key, label]) => (
-                      <option key={key} value={key}>{label}</option>
+                    {Object.entries(ROTULOS_CATEGORIAS).map(([chave, rotulo]) => (
+                      <option key={chave} value={chave}>{rotulo}</option>
                     ))}
                   </select>
                 </div>
@@ -622,11 +737,11 @@ const RegistroAtividades = () => {
                 <div>
                   <label className="block text-odara-dark font-medium mb-2">Cor da Atividade</label>
                   <div className="flex space-x-2">
-                    {Object.entries(CORES_CLASSES).map(([color, className]) => (
+                    {Object.entries(CLASSES_CORES).map(([cor, classe]) => (
                       <div
-                        key={color}
-                        className={`w-8 h-8 rounded-full cursor-pointer border-2 ${className} ${novaAtividade.color === color ? 'border-odara-secondary' : 'border-transparent'}`}
-                        onClick={() => setNovaAtividade({ ...novaAtividade, color })}
+                        key={cor}
+                        className={`w-8 h-8 rounded-full cursor-pointer border-2 ${classe} ${novaAtividade.cor === cor ? 'border-odara-secondary' : 'border-transparent'}`}
+                        onClick={() => setNovaAtividade({ ...novaAtividade, cor })}
                       ></div>
                     ))}
                   </div>
@@ -643,7 +758,7 @@ const RegistroAtividades = () => {
                 <button
                   onClick={salvarAtividade}
                   className="px-4 py-2 bg-odara-accent text-odara-white rounded-lg hover:bg-odara-secondary transition-colors duration-200"
-                  disabled={!novaAtividade.title || !novaAtividade.date}
+                  disabled={!novaAtividade.titulo || !novaAtividade.data}
                 >
                   {editando ? 'Atualizar' : 'Salvar'}
                 </button>
