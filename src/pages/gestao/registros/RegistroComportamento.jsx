@@ -164,9 +164,9 @@ const RegistroComportamento = () => {
               </button>
               {infoVisivel && (
                 <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dark text-white text-sm rounded-lg shadow-lg">
-                  <h3 className="font-bold mb-2">Registro de Preferências</h3>
+                  <h3 className="font-bold mb-2">Registro de Comportamento</h3>
                   <p>
-                    O Registro de Preferências é uma ficha na qual serão anotadas as preferências pessoais de cada residente, para que a equipe possa oferecer um cuidado mais humanizado. Ele é parte importante do prontuário de atendimento, garante o bem-estar do idoso respeitando seus gostos, como comidas e temperos de preferência, sua rotina diária em geral (horário que acorda, prefere tomar banho, ou praticar seus lazeres).
+                    O Registro de Comportamento esse relatório é onde será disposto informações sobre o comportamento dos residentes, seja durante exames, momento de lazer, alimentação, e de todo o seu dia a dia. Nele deverá haver conteúdo detalhado se o mesmo provocou consequências para si mesmo ou a terceiros (enfermeiros, médicos, responsáveis, ou outros residentes).
                   </p>
                   <div className="absolute bottom-full left-4 border-4 border-transparent border-b-odara-dark"></div>
                 </div>
