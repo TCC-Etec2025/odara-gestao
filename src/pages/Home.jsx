@@ -65,11 +65,8 @@ const Home = () => {
 		{ nome: "Registro de alimentação", icon: <Utensils size={24} /> },
 		{ nome: "Registro de comportamento", icon: <BarChart size={24} /> },
 		{ nome: "Registro de preferências", icon: <Star size={24} /> },
-		{ nome: "Registro de relações internas", icon: <Users size={24} /> },
 		{ nome: "Registro de consultas médicas", icon: <Stethoscope size={24} /> },
 		{ nome: "Registro de exames médicos", icon: <Microscope size={24} /> },
-		{ nome: "Registros de vídeo e fotográfico", icon: <Video size={24} /> },
-		{ nome: "Plataforma para Reuniões", icon: <Phone size={24} /> },
 	];
 
 	return (
@@ -80,8 +77,7 @@ const Home = () => {
 				ref={heroRef}
 				className="min-h-screen w-full bg-odara-primary text-white relative overflow-hidden flex items-center justify-center"
 			>
-				{/* Imagem de fundo*/}
-				<div className="absolute inset-0 opacity-30">
+				<div className="absolute inset-0 opacity-33">
 					<img
 						src="../images/idosos.jpg"
 						alt="Logo Odara Gestão"
@@ -258,7 +254,7 @@ const Home = () => {
 									Visão
 								</h3>
 								<p className="text-odara-dark leading-relaxed">
-									Nossa visão é ser reconhecido como a principal solução digital de apoio às ILPIs, tornando-se referência em inovação, confiabilidade e humanização no cuidado à terceira idade. Almejamos transformar a forma como instituições, profissionais, idosos e familiares interagem, oferecendo uma experiência tecnológica que valorize a autonomia, a dignidade e os laços afetivos. 
+									Nossa visão é ser reconhecido como a principal solução digital de apoio às ILPIs, tornando-se referência em inovação, confiabilidade e humanização no cuidado à terceira idade. Almejamos transformar a forma como instituições, profissionais, idosos e familiares interagem, oferecendo uma experiência tecnológica que valorize a autonomia, a dignidade e os laços afetivos.
 								</p>
 							</div>
 							<div className="bg-odara-offwhite p-6 rounded-lg shadow-md border-l-4 border-odara-primary hover:scale-105 transition-transform duration-300">

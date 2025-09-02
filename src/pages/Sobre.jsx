@@ -25,9 +25,10 @@ const Sobre = () => {
   ];
 
   return (
-    <main className="flex flex-col items-center container mx-auto py-8 px-4 max-w-4xl">
+    <main className="flex flex-col bg-odara-white items-center min-h-screen w-full py-8 px-4">
+      <div className="container mx-auto max-w-4xl">
       <header className="flex flex-col text-center items-center">
-        <div className="bg-odara-white w-40 h-40 rounded-full overflow-hidden shadow-lg mb-8">
+        <div className="bg-odara-offwhite w-40 h-40 rounded-full overflow-hidden shadow-lg mb-8">
           <img
             src="../images/Logo final - Icone fundo branco redondo[1].png"
             alt="Logo Odara Gestão"
@@ -90,6 +91,7 @@ const Sobre = () => {
           ))}
         </div>
       </section>
+      </div>
     </main>
   );
 };

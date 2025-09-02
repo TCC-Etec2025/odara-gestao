@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle, FaChevronLeft, FaChevronRight, FaTimes, FaCheck } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 
 const RegistroAtividades = () => {
   // Estados para gerenciar atividades, calendário e modal
@@ -321,6 +323,14 @@ const RegistroAtividades = () => {
       <div className="flex-1 p-6 lg:p-10">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
+            <div className="flex items-center mb-1">
+              <Link
+                to="/gestao/PaginaRegistros"
+                className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 flex items-center"
+              >
+                <FaArrowLeft className="mr-1" />
+              </Link>
+            </div>
             <h1 className="text-3xl font-bold text-odara-dark mr-2">Registro de Atividades</h1>
             <div className="relative">
               <button
@@ -457,7 +467,7 @@ const RegistroAtividades = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Título da atividade recebe icone de alerta se utilizar a cor vermelha */}
                     <h6 className="text-xl font-bold text-odara-accent mb-1 flex items-center">
                       {event.color === 'vermelho' && (

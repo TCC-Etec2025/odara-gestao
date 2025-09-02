@@ -10,17 +10,17 @@ import Dashboard from './pages/gestao/Dashboard';
 import Funcionarios from './pages/gestao/Funcionarios';
 import Residentes from './pages/gestao/Residentes';
 
-import PaginaRegistros from './pages/gestao/PaginaRegistros';
+import PaginaRegistros from './pages/gestao/registros/PaginaRegistros';
 
-import RegistroMedicamentos from './pages/gestao/RegistroMedicamentos';
-import RegistroSaudeInicial from './pages/gestao/RegistroSaudeInicial';
-import RegistroAtividades from './pages/gestao/RegistroAtividades';
-import RegistroOcorrencias from './pages/gestao/RegistroOcorrencias';
-import RegistroAlimentar from './pages/gestao/RegistroAlimentar';
-import RegistroComportamento from './pages/gestao/RegistroComportamento';
-import RegistroPreferencias from './pages/gestao/RegistroPreferencias';
-import RegistroConsultas from './pages/gestao/RegistroConsultas';
-import RegistroExames from './pages/gestao/RegistroExames';
+import RegistroMedicamentos from './pages/gestao/registros/RegistroMedicamentos';
+import RegistroSaudeInicial from './pages/gestao/registros/RegistroSaudeInicial';
+import RegistroAtividades from './pages/gestao/registros/RegistroAtividades';
+import RegistroOcorrencias from './pages/gestao/registros/RegistroOcorrencias';
+import RegistroAlimentar from './pages/gestao/registros/RegistroAlimentar';
+import RegistroComportamento from './pages/gestao/registros/RegistroComportamento';
+import RegistroPreferencias from './pages/gestao/registros/RegistroPreferencias';
+import RegistroConsultas from './pages/gestao/registros/RegistroConsultas';
+import RegistroExames from './pages/gestao/registros/RegistroExames';
 
 function App() {
   return (
@@ -36,7 +36,7 @@ function App() {
         </Route>
 
         {/* Rotas de gestão com Layout Gestão */}
-        <Route path="/gestao" element={<LayoutGestao />}>
+        <Route path="gestao" element={<LayoutGestao />}>
           <Route index element={<Dashboard />} />
           <Route path="funcionarios" element={<Funcionarios />} />
           <Route path="residentes" element={<Residentes />} />
@@ -45,21 +45,21 @@ function App() {
           <Route path="paginaRegistros" element={<PaginaRegistros/>} />
 
           {/* Leticia */}
-          <Route path="registroMedicamentos" element={<RegistroMedicamentos />} />
-          <Route path="registroSaudeInicial" element={<RegistroSaudeInicial />} />
-          <Route path="registroAtividades" element={<RegistroAtividades />} />
+          <Route path="registros/medicamentos" element={<RegistroMedicamentos />} />
+          <Route path="registros/saudeInicial" element={<RegistroSaudeInicial />} />
+          <Route path="registros/atividades" element={<RegistroAtividades />} />
 
           {/* Jamilly */}
-          <Route path="registroOcorrencias" element={<RegistroOcorrencias />} />
-          <Route path="registroAlimentar" element={<RegistroAlimentar />} />
-          <Route path="registroComportamento" element={<RegistroComportamento />} />
+          <Route path="registros/ocorrencias" element={<RegistroOcorrencias />} />
+          <Route path="registros/alimentar" element={<RegistroAlimentar />} />
+          <Route path="registros/comportamento" element={<RegistroComportamento />} />
 
           {/* Nicole */}
-          <Route path="registroPreferencias" element={<RegistroPreferencias />} />
-          <Route path="registroConsultas" element={<RegistroConsultas />} />
+          <Route path="registros/preferencias" element={<RegistroPreferencias />} />
+          <Route path="registros/consultas" element={<RegistroConsultas />} />
 
           {/* Lucas */}
-          <Route path="registroExames" element={<RegistroExames />} />
+          <Route path="registros/exames" element={<RegistroExames />} />
         </Route>
       </Routes>
     </BrowserRouter>

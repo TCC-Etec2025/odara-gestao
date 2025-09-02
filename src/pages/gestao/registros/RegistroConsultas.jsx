@@ -1,39 +1,42 @@
 import React, { useState } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle, FaFileMedical, FaUserMd, FaCalendarAlt, FaFilePdf } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
+
 
 const RegistroConsultasMedicas = () => {
   const [consultas, setConsultas] = useState([
-    { 
-      id: 1, 
-      paciente: "João Silva", 
-      idade: 72, 
-      sexo: "Masculino", 
-      prontuario: "2023001", 
-      data: "15/01/2023", 
-      horario: "10:30", 
-      medico: "Dr. Carlos Mendes", 
-      motivo: "Check-up regular", 
-      historico: "Hipertensão controlada com medicamentos", 
-      tratamento: "Manter uso de Losartana 50mg", 
-      exames: "Hemograma completo, Eletrocardiograma", 
-      receitas: "Losartana 50mg - 30 comprimidos", 
-      anexos: [] 
+    {
+      id: 1,
+      paciente: "João Silva",
+      idade: 72,
+      sexo: "Masculino",
+      prontuario: "2023001",
+      data: "15/01/2023",
+      horario: "10:30",
+      medico: "Dr. Carlos Mendes",
+      motivo: "Check-up regular",
+      historico: "Hipertensão controlada com medicamentos",
+      tratamento: "Manter uso de Losartana 50mg",
+      exames: "Hemograma completo, Eletrocardiograma",
+      receitas: "Losartana 50mg - 30 comprimidos",
+      anexos: []
     },
-    { 
-      id: 2, 
-      paciente: "Maria Oliveira", 
-      idade: 68, 
-      sexo: "Feminino", 
-      prontuario: "2023002", 
-      data: "16/01/2023", 
-      horario: "14:15", 
-      medico: "Dra. Ana Santos", 
-      motivo: "Dor articular no joelho direito", 
-      historico: "Artrose diagnosticada há 5 anos", 
-      tratamento: "Fisioterapia 2x por semana, Paracetamol 500mg se necessário", 
-      exames: "Radiografia do joelho direito", 
-      receitas: "Paracetamol 500mg - 20 comprimidos", 
-      anexos: [] 
+    {
+      id: 2,
+      paciente: "Maria Oliveira",
+      idade: 68,
+      sexo: "Feminino",
+      prontuario: "2023002",
+      data: "16/01/2023",
+      horario: "14:15",
+      medico: "Dra. Ana Santos",
+      motivo: "Dor articular no joelho direito",
+      historico: "Artrose diagnosticada há 5 anos",
+      tratamento: "Fisioterapia 2x por semana, Paracetamol 500mg se necessário",
+      exames: "Radiografia do joelho direito",
+      receitas: "Paracetamol 500mg - 20 comprimidos",
+      anexos: []
     }
   ]);
 
@@ -104,6 +107,14 @@ const RegistroConsultasMedicas = () => {
       <div className="flex-1 p-6 lg:p-10">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
+            <div className="flex items-center mb-1">
+              <Link
+                to="/gestao/PaginaRegistros"
+                className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 flex items-center"
+              >
+                <FaArrowLeft className="mr-1" />
+              </Link>
+            </div>
             <h1 className="text-3xl font-bold text-odara-dark mr-2">Registro de Consultas Médicas</h1>
             <div className="relative">
               <button
@@ -125,7 +136,7 @@ const RegistroConsultasMedicas = () => {
           </div>
         </div>
 
-        <div className="mb-8">          
+        <div className="mb-8">
           <div className="relative flex items-center gap-4 mb-6">
             {/* Botão Adicionar */}
             <button
@@ -180,8 +191,8 @@ const RegistroConsultasMedicas = () => {
         <div className="bg-odara-offwhite rounded-2xl shadow-lg p-6">
           <div className="space-y-6">
             {consultasFiltradas.map(consulta => (
-              <div 
-                key={consulta.id} 
+              <div
+                key={consulta.id}
                 className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-200"
                 onClick={() => setConsultaSelecionada(consulta)}
               >

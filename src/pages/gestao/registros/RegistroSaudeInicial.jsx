@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { FaUtensils, FaWalking, FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle, FaTimes } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 
-const RegistroExames = () => {
+
+const RegistroSaudeInicial = () => {
   const [preferences, setPreferences] = useState({
     alimentar: [
       { id: 1, title: "Comida Italiana", description: "Prefere massas e pratos da culinária italiana", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
@@ -143,7 +146,15 @@ const RegistroExames = () => {
       <div className="flex-1 p-6 lg:p-10">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
-            <h1 className="text-3xl font-bold text-odara-dark mr-2">Registro de Exames Médicos</h1>
+            <div className="flex items-center mb-1">
+              <Link
+                to="/gestao/PaginaRegistros"
+                className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 flex items-center"
+              >
+                <FaArrowLeft className="mr-1" />
+              </Link>
+            </div>
+            <h1 className="text-3xl font-bold text-odara-dark mr-2">Registro de Saúde Corporal Inicial</h1>
             <div className="relative">
               <button
                 onMouseEnter={() => setInfoVisivel(true)}
@@ -205,144 +216,144 @@ const RegistroExames = () => {
             </select>
           </div>
 
-        <div className="relative">
-          <button
-            className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-odara-dark font-medium hover:bg-odara-primary/10 transition"
-            onClick={() => setFiltroAberto(!filtroAberto)}
-          >
-            <FaFilter className="text-odara-accent mr-2" />
-            Filtro
-          </button>
+          <div className="relative">
+            <button
+              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-odara-dark font-medium hover:bg-odara-primary/10 transition"
+              onClick={() => setFiltroAberto(!filtroAberto)}
+            >
+              <FaFilter className="text-odara-accent mr-2" />
+              Filtro
+            </button>
 
-          {filtroAberto && (
-            <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-              {FILTROS.map(filtro => (
-                <button
-                  key={filtro.id}
-                  onClick={() => {
-                    setFiltroAtivo(filtro.id);
-                    setFiltroAberto(false);
-                  }}
-                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/10 ${filtroAtivo === filtro.id ? 'bg-odara-primary/20 font-semibold' : ''}`}
-                >
-                  {filtro.label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="bg-odara-offwhite rounded-2xl shadow-lg p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="max-h-[calc(100vh-250px)] overflow-y-auto pr-2 lg:col-span-2 space-y-8">
-          {Object.entries(preferenciasFiltradas).map(([categoria, items]) => (
-            <div key={categoria} className="mb-8">
-              <h3 className="text-xl font-semibold text-odara-dark mb-4 flex items-center">
-                {categoria === 'alimentar' && <FaUtensils className="mr-2 text-odara-accent" />}
-                {categoria === 'atividades' && <FaWalking className="mr-2 text-odara-accent" />}
-                {categoria === 'cuidador' && <FaWalking className="mr-2 text-odara-accent" />}
-                {CATEGORIA_LABELS[categoria]}
-              </h3>
-              <ul className="space-y-4">
-                {items.map(item => (
-                  <li
-                    key={item.id}
-                    className="bg-white p-4 rounded-lg border border-gray-200 flex justify-between items-start hover:shadow-md transition-shadow duration-200"
-                    onMouseEnter={() => setResidenteAtual(item)}
+            {filtroAberto && (
+              <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                {FILTROS.map(filtro => (
+                  <button
+                    key={filtro.id}
+                    onClick={() => {
+                      setFiltroAtivo(filtro.id);
+                      setFiltroAberto(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/10 ${filtroAtivo === filtro.id ? 'bg-odara-primary/20 font-semibold' : ''}`}
                   >
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-odara-dark">{item.residente}</h4>
-                      <p className="text-odara-dark/70 text-sm mt-1">{item.description}</p>
-                    </div>
-                    <div className="flex space-x-2 ml-4">
-                      <button onClick={() => abrirModalEditar(categoria, item.id)}
-                        className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-1 rounded-full hover:bg-odara-accent/10">
-                        <FaEdit />
-                      </button>
-                      <button onClick={() => excluirPreferencia(categoria, item.id)}
-                        className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1 rounded-full hover:bg-red-50">
-                        <FaTrash />
-                      </button>
-                    </div>
-                  </li>
+                    {filtro.label}
+                  </button>
                 ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-10 bg-odara-offwhite rounded-2xl shadow-lg p-10 h-fit border-l-4 border-odara-primary">
-          <h3 className="text-xl mb-4">RESIDENTE <h3 className="text-odara-dark">{residenteAtual?.residente || 'Área para foto do paciente'}</h3></h3>
-          <div className="text-center">
-            <div className="w-50 h-50 mx-auto rounded-full flex items-center justify-center mb-2">
-              {residenteAtual?.foto ? (
-                <img src={residenteAtual.foto} alt={residenteAtual.residente} className="w-60 h-60 rounded-[30px] object-cover" />
-              ) : (
-                <span className="text-odara-primary text-4xl">👤</span>
-              )}
-            </div>
-
+              </div>
+            )}
           </div>
         </div>
+
+        <div className="bg-odara-offwhite rounded-2xl shadow-lg p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="max-h-[calc(100vh-250px)] overflow-y-auto pr-2 lg:col-span-2 space-y-8">
+            {Object.entries(preferenciasFiltradas).map(([categoria, items]) => (
+              <div key={categoria} className="mb-8">
+                <h3 className="text-xl font-semibold text-odara-dark mb-4 flex items-center">
+                  {categoria === 'alimentar' && <FaUtensils className="mr-2 text-odara-accent" />}
+                  {categoria === 'atividades' && <FaWalking className="mr-2 text-odara-accent" />}
+                  {categoria === 'cuidador' && <FaWalking className="mr-2 text-odara-accent" />}
+                  {CATEGORIA_LABELS[categoria]}
+                </h3>
+                <ul className="space-y-4">
+                  {items.map(item => (
+                    <li
+                      key={item.id}
+                      className="bg-white p-4 rounded-lg border border-gray-200 flex justify-between items-start hover:shadow-md transition-shadow duration-200"
+                      onMouseEnter={() => setResidenteAtual(item)}
+                    >
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-odara-dark">{item.residente}</h4>
+                        <p className="text-odara-dark/70 text-sm mt-1">{item.description}</p>
+                      </div>
+                      <div className="flex space-x-2 ml-4">
+                        <button onClick={() => abrirModalEditar(categoria, item.id)}
+                          className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-1 rounded-full hover:bg-odara-accent/10">
+                          <FaEdit />
+                        </button>
+                        <button onClick={() => excluirPreferencia(categoria, item.id)}
+                          className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1 rounded-full hover:bg-red-50">
+                          <FaTrash />
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 bg-odara-offwhite rounded-2xl shadow-lg p-10 h-fit border-l-4 border-odara-primary">
+            <h3 className="text-xl mb-4">RESIDENTE <h3 className="text-odara-dark">{residenteAtual?.residente || 'Área para foto do paciente'}</h3></h3>
+            <div className="text-center">
+              <div className="w-50 h-50 mx-auto rounded-full flex items-center justify-center mb-2">
+                {residenteAtual?.foto ? (
+                  <img src={residenteAtual.foto} alt={residenteAtual.residente} className="w-60 h-60 rounded-[30px] object-cover" />
+                ) : (
+                  <span className="text-odara-primary text-4xl">👤</span>
+                )}
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        {/* Modal */}
+        {modalAberto && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-odara-offwhite rounded-xl shadow-2xl max-w-md w-full p-6 border-l-4 border-odara-primary">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-odara-dark">
+                  {editando ? 'Editar' : 'Adicionar'} Preferência - {CATEGORIA_LABELS[categoriaAtual]}
+                </h2>
+                <button onClick={() => setModalAberto(false)} className="text-odara-dark hover:text-odara-accent transition-colors duration-200">✕</button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-odara-dark font-medium mb-2">Residente</label>
+                  <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+                    value={novaPreferencia.residente}
+                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, residente: e.target.value })}
+                    placeholder="Nome do residente" />
+                </div>
+                <div>
+                  <label className="block text-odara-dark font-medium mb-2">Título</label>
+                  <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+                    value={novaPreferencia.titulo}
+                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, titulo: e.target.value })}
+                    placeholder="Digite o título" />
+                </div>
+                <div>
+                  <label className="block text-odara-dark font-medium mb-2">Descrição</label>
+                  <textarea className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" rows="4"
+                    value={novaPreferencia.descricao}
+                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, descricao: e.target.value })}
+                    placeholder="Digite a descrição"></textarea>
+                </div>
+                <div>
+                  <label className="block text-odara-dark font-medium mb-2">Foto do Residente</label>
+                  <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+                    value={novaPreferencia.foto}
+                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, foto: e.target.value })}
+                    placeholder="Link da foto" />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <button onClick={() => setModalAberto(false)}
+                  className="px-4 py-2 border border-odara-primary/30 text-odara-dark rounded-lg hover:bg-white transition-colors duration-200">Cancelar</button>
+                <button onClick={salvarPreferencia}
+                  className="px-4 py-2 bg-odara-accent text-odara-contorno rounded-lg hover:bg-odara-secondary/90 transition-colors duration-200 border-2 border-odara-contorno"
+                  disabled={!novaPreferencia.titulo || !novaPreferencia.descricao}>
+                  {editando ? 'Atualizar' : 'Salvar'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Modal */}
-      {modalAberto && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-odara-offwhite rounded-xl shadow-2xl max-w-md w-full p-6 border-l-4 border-odara-primary">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-odara-dark">
-                {editando ? 'Editar' : 'Adicionar'} Preferência - {CATEGORIA_LABELS[categoriaAtual]}
-              </h2>
-              <button onClick={() => setModalAberto(false)} className="text-odara-dark hover:text-odara-accent transition-colors duration-200">✕</button>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-odara-dark font-medium mb-2">Residente</label>
-                <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-                  value={novaPreferencia.residente}
-                  onChange={(e) => setNovaPreferencia({ ...novaPreferencia, residente: e.target.value })}
-                  placeholder="Nome do residente" />
-              </div>
-              <div>
-                <label className="block text-odara-dark font-medium mb-2">Título</label>
-                <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-                  value={novaPreferencia.titulo}
-                  onChange={(e) => setNovaPreferencia({ ...novaPreferencia, titulo: e.target.value })}
-                  placeholder="Digite o título" />
-              </div>
-              <div>
-                <label className="block text-odara-dark font-medium mb-2">Descrição</label>
-                <textarea className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" rows="4"
-                  value={novaPreferencia.descricao}
-                  onChange={(e) => setNovaPreferencia({ ...novaPreferencia, descricao: e.target.value })}
-                  placeholder="Digite a descrição"></textarea>
-              </div>
-              <div>
-                <label className="block text-odara-dark font-medium mb-2">Foto do Residente</label>
-                <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-                  value={novaPreferencia.foto}
-                  onChange={(e) => setNovaPreferencia({ ...novaPreferencia, foto: e.target.value })}
-                  placeholder="Link da foto" />
-              </div>
-            </div>
-
-            <div className="flex justify-end space-x-3 mt-6">
-              <button onClick={() => setModalAberto(false)}
-                className="px-4 py-2 border border-odara-primary/30 text-odara-dark rounded-lg hover:bg-white transition-colors duration-200">Cancelar</button>
-              <button onClick={salvarPreferencia}
-                className="px-4 py-2 bg-odara-accent text-odara-contorno rounded-lg hover:bg-odara-secondary/90 transition-colors duration-200 border-2 border-odara-contorno"
-                disabled={!novaPreferencia.titulo || !novaPreferencia.descricao}>
-                {editando ? 'Atualizar' : 'Salvar'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
     </div >
   );
 };
 
-export default RegistroExames;
+export default RegistroSaudeInicial;
