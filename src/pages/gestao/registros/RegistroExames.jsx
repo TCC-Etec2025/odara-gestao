@@ -165,9 +165,9 @@ const RegistroExames = () => {
               </button>
               {infoVisivel && (
                 <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dark text-white text-sm rounded-lg shadow-lg">
-                  <h3 className="font-bold mb-2">Registro de Preferências</h3>
+                  <h3 className="font-bold mb-2">Registro de Exames Médicos</h3>
                   <p>
-                    O Registro de Preferências é uma ficha na qual serão anotadas as preferências pessoais de cada residente, para que a equipe possa oferecer um cuidado mais humanizado. Ele é parte importante do prontuário de atendimento, garante o bem-estar do idoso respeitando seus gostos, como comidas e temperos de preferência, sua rotina diária em geral (horário que acorda, prefere tomar banho, ou praticar seus lazeres).
+                    O Registro de Exames Médicos aqui será anotado e organizado todas as informações sobre exames realizados por um paciente, seja para diagnóstico, acompanhamento ou controle de rotina. No documento deve haver controle e histórico para ser fornecido informações precisas para avaliar a evolução do paciente.
                   </p>
                   <div className="absolute bottom-full left-4 border-4 border-transparent border-b-odara-dark"></div>
                 </div>
