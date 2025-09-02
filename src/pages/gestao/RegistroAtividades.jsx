@@ -34,6 +34,8 @@ const RegistroAtividades = () => {
   const [filtroAberto, setFiltroAberto] = useState(false);
   const [infoVisivel, setInfoVisivel] = useState(false);
   const [dropdownAberto, setDropdownAberto] = useState(false);
+  const [filtroDia, setFiltroDia] = useState(null);
+  const [filtroDiaAtivo, setFiltroDiaAtivo] = useState(false);
 
   // Categorias e cores
   const CATEGORIAS = {
@@ -185,6 +187,15 @@ const RegistroAtividades = () => {
         ? { ...event, completed: !event.completed }
         : event
     ));
+
+    // Mantém o filtro ativo após marcar como realizado
+    if (filtroDiaAtivo) {
+      const evento = events.find(e => e.id === id);
+      if (evento) {
+        setFiltroDia(new Date(evento.date));
+        setFiltroDiaAtivo(true);
+      }
+    }
   };
 
   // Funções para renderizar o calendário
@@ -237,11 +248,28 @@ const RegistroAtividades = () => {
       days.push(
         <div
           key={`current-${i}`}
-          className={`flex flex-col aspect-square p-1 border-r border-b border-odara-primary relative ${isToday ? 'bg-odara-dropdown' : 'bg-white'} overflow-y-auto`}
+          className={`flex flex-col aspect-square p-1 border-r border-b border-odara-primary relative ${isToday ? 'bg-odara-dropdown' : 'bg-white'} overflow-y-auto cursor-pointer ${filtroDiaAtivo && i === filtroDia.getDate() && currentDate.getMonth() === filtroDia.getMonth() && currentDate.getFullYear() === filtroDia.getFullYear() ? 'ring-2 ring-odara-accent' : ''}`}
+          onClick={() => {
+            const diaClicado = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
+            if (filtroDiaAtivo && filtroDia && diaClicado.getDate() === filtroDia.getDate() && diaClicado.getMonth() === filtroDia.getMonth() && diaClicado.getFullYear() === filtroDia.getFullYear()) {
+              setFiltroDiaAtivo(false); // Desativa se clicar no mesmo dia
+              setFiltroDia(null);
+            } else {
+              setFiltroDia(diaClicado);
+              setFiltroDiaAtivo(true);
+            }
+          }}
         >
-          <span className={`text-xs font-semibold ${isToday ? 'text-odara-dropdown-accent font-bold' : 'text-odara-accent'} self-end`}>
-            {i}
-          </span>
+          <div className="flex justify-between items-start">
+            <span className={`text-xs font-semibold ${isToday ? 'text-odara-dropdown-accent font-bold' : 'text-odara-accent'} self-end`}>
+              {i}
+            </span>
+            {atividadesDoDia.length > 0 && (
+              <span className="text-xs bg-odara-accent text-odara-white rounded-full px-1.5 py-0.5 min-w-[1rem] text-center">
+                {atividadesDoDia.length}
+              </span>
+            )}
+          </div>
 
           {/* atividades do dia */}
           <div className="flex-1 mt-1 space-y-1 overflow-y-auto">
@@ -276,10 +304,17 @@ const RegistroAtividades = () => {
     return days;
   };
 
-  // Filtrar atividades por categoria
-  const atividadesFiltradas = events.filter(event =>
-    filtroAtivo === 'todos' || event.category === filtroAtivo
-  );
+  // Filtrar atividades por categoria e por dia selecionado
+  const atividadesFiltradas = events.filter(event => {
+    const passaFiltroCategoria = filtroAtivo === 'todos' || event.category === filtroAtivo;
+    const passaFiltroDia = !filtroDiaAtivo || (
+      event.date.getDate() === filtroDia.getDate() &&
+      event.date.getMonth() === filtroDia.getMonth() &&
+      event.date.getFullYear() === filtroDia.getFullYear()
+    );
+
+    return passaFiltroCategoria && passaFiltroDia;
+  });
 
   return (
     <div className="flex min-h-screen bg-odara-offwhite">
@@ -352,12 +387,32 @@ const RegistroAtividades = () => {
               </div>
             )}
           </div>
+
+          {filtroDiaAtivo && (
+            <button
+              onClick={() => {
+                setFiltroDiaAtivo(false);
+                setFiltroDia(null);
+              }}
+              className="flex items-center bg-odara-accent text-odara-white rounded-full px-4 py-2 shadow-sm font-medium hover:bg-odara-secondary transition"
+            >
+              <FaTimes className="mr-1" /> Limpar Filtro
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Seção de Próximas Atividades */}
           <div className="bg-odara-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-odara-dark">Próximas Atividades</h2>
+            {/* No cabeçalho da seção de próximas atividades, adicione: */}
+            <h2 className="text-2xl font-bold text-odara-dark flex items-center">
+              Próximas Atividades
+              {filtroDiaAtivo && (
+                <span className="ml-2 text-sm bg-odara-accent text-odara-white px-2 py-1 rounded-full">
+                  Filtrado: {filtroDia.getDate()}/{filtroDia.getMonth() + 1}
+                </span>
+              )}
+            </h2>
             <p className="text-odara-name/60 mb-6">Não perca sua programação</p>
 
             <div className="space-y-4 max-h-[600px] overflow-y-auto">
@@ -402,7 +457,18 @@ const RegistroAtividades = () => {
                         </div>
                       </div>
                     </div>
-                    <h6 className="text-xl font-bold text-odara-accent mb-1">{event.title}</h6>
+                    
+                    {/* Título da atividade recebe icone de alerta se utilizar a cor vermelha */}
+                    <h6 className="text-xl font-bold text-odara-accent mb-1 flex items-center">
+                      {event.color === 'vermelho' && (
+                        <span className="text-odara-alerta mr-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                          </svg>
+                        </span>
+                      )}
+                      {event.title}
+                    </h6>
                     <p className="text-base text-odara-dark mb-2">{event.description}</p>
                     <div className="flex items-center text-sm">
                       <span className="bg-odara-dropdown text-odara-dropdown-name/60 px-2 py-1 rounded-md text-xs">
