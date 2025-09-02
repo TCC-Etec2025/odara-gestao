@@ -40,21 +40,16 @@ const Home = () => {
     }
   };
 
-
-
   const funcionalidades = [
     { nome: "Registro de medicamentos", icon: <Pill size={24} /> },
-    { nome: "Registro de Atividades", icon: <ClipboardList size={24} /> },
-    { nome: "Registro de Ocorrências", icon: <AlertTriangle size={24} /> },
-    { nome: "Registro da saúde corporal inicial", icon: <Hospital size={24} /> },
-    { nome: "Registro de alimentação", icon: <Utensils size={24} /> },
-    { nome: "Registro de comportamento", icon: <BarChart size={24} /> },
-    { nome: "Registro de preferências", icon: <Star size={24} /> },
-    { nome: "Registro de relações internas", icon: <Users size={24} /> },
-    { nome: "Registro de consultas médicas", icon: <Stethoscope size={24} /> },
     { nome: "Registro de exames médicos", icon: <Microscope size={24} /> },
-    { nome: "Registros de vídeo e fotográfico", icon: <Video size={24} /> },
-    { nome: "Plataforma para Reuniões", icon: <Phone size={24} /> },
+    { nome: "Registro de consultas médicas", icon: <Stethoscope size={24} /> },
+    { nome: "Registro da saúde corporal", icon: <Hospital size={24} /> },
+    { nome: "Registro de Ocorrências", icon: <AlertTriangle size={24} /> },
+    { nome: "Registro de comportamento", icon: <BarChart size={24} /> },
+    { nome: "Registro de Atividades", icon: <ClipboardList size={24} /> },
+    { nome: "Registro de alimentação", icon: <Utensils size={24} /> },
+    { nome: "Registro de preferências", icon: <Star size={24} /> },
   ]
 
   return (
