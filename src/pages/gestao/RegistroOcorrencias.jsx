@@ -3,17 +3,17 @@ import { FaUtensils, FaWalking, FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle,
 
 const RegistroOcorrencias = () => {
   const [preferences, setPreferences] = useState({
-    alimentar: [
-      { id: 1, title: "Comida Italiana", description: "Prefere massas e pratos da culinária italiana", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 2, title: "Vegetariano", description: "Prefere refeições sem carne", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
+    ocorrencias: [
+      { id: 1, title: "Caiu da Cadeira", description: "João caiu da cadeira", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
+      { id: 2, title: "Se Cortou", description: "Maria se cortou", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
     ],
-    atividades: [
-      { id: 3, title: "Leitura", description: "Gosta de ler livros no tempo livre", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 4, title: "Caminhada", description: "Prefere caminhar ao ar livre", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
+    descricoes: [
+      { id: 3, title: "Queda", description: "João caiu no horario de lazer, ao se sentar para jogar xadrez", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
+      { id: 4, title: "Corte", description: "Maria cortou sua mão ao ultilizar o garfo na hora do almoço", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
     ],
-    cuidador: [
-      { id: 5, title: "Leticia", description: "Prefere que Leticia sirva seu alimento", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 6, title: "Maria", description: "Prefere que Maria dê banho e cuide de sua higiene", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
+    consequencias: [
+      { id: 5, title: "Leticia", description: "Enfermeira Leticia checou seu sinais e o encaminhou para a enfermaria, onde foi realizado um check-up", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
+      { id: 6, title: "Livia", description: "Enfermeira Lívia encaminhou a residente para enfermaria, e fez um curativo", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
     ]
   });
 
@@ -32,22 +32,22 @@ const RegistroOcorrencias = () => {
 
 
   const CATEGORIAS = {
-    ALIMENTAR: 'alimentar',
-    ATIVIDADES: 'atividades',
-    CUIDADOR: 'cuidador'
+    OCORRENCIAS: 'ocorrencias',
+    DESCRICOES: 'descricoes',
+    CONSEQUENCIAS: 'consequencias'
   };
 
   const CATEGORIA_LABELS = {
-    [CATEGORIAS.ALIMENTAR]: "Alimentar",
-    [CATEGORIAS.ATIVIDADES]: "Atividades",
-    [CATEGORIAS.CUIDADOR]: "Cuidador"
+    [CATEGORIAS.OCORRENCIAS]: "Ocorrencias",
+    [CATEGORIAS.DESCRICOES]: "Descrições",
+    [CATEGORIAS.CONSEQUENCIAS]: "Consequências"
   };
 
   const FILTROS = [
     { id: 'todos', label: 'Todos' },
-    { id: CATEGORIAS.ALIMENTAR, label: CATEGORIA_LABELS[CATEGORIAS.ALIMENTAR] },
-    { id: CATEGORIAS.ATIVIDADES, label: CATEGORIA_LABELS[CATEGORIAS.ATIVIDADES] },
-    { id: CATEGORIAS.CUIDADOR, label: CATEGORIA_LABELS[CATEGORIAS.CUIDADOR] }
+    { id: CATEGORIAS.OCORRENCIAS, label: CATEGORIA_LABELS[CATEGORIAS.OCORRENCIAS] },
+    { id: CATEGORIAS.DESCRICOES, label: CATEGORIA_LABELS[CATEGORIAS.DESCRICOES] },
+    { id: CATEGORIAS.CONSEQUENCIAS, label: CATEGORIA_LABELS[CATEGORIAS.CONSEQUENCIAS] }
   ];
 
   const abrirModalAdicionar = (categoria) => {
