@@ -272,41 +272,61 @@ const RegistroAtividades = () => {
   };
 
   // Renderiza os dias do calendário
-  const renderizarDiasCalendario = () => {
-    const primeiroDia = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 1);
-    const ultimoDia = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + 1, 0);
-    const diasNoMes = ultimoDia.getDate();
-    const indicePrimeiroDia = primeiroDia.getDay();
-    const ultimoDiaMesAnterior = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 0).getDate();
-    const hoje = new Date();
-    const dias = [];
+  const renderDiasCalendario = () => {
+    // Altere currentDate para dataAtual em todas as ocorrências
+    const firstDay = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 1);
+    const lastDay = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const firstDayIndex = firstDay.getDay();
+    const prevMonthLastDay = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 0).getDate();
 
-    // Dias do mês anterior (para preencher o calendário)
-    for (let i = indicePrimeiroDia; i > 0; i--) {
-      const dia = ultimoDiaMesAnterior - i + 1;
-      dias.push(
-        <div key={`anterior-${dia}`} className="flex flex-col aspect-square p-1 bg-odara-name/10 border-r border-b border-odara-primary">
-          <span className="text-xs font-semibold text-odara-dark/40 self-end">{dia}</span>
+    const today = new Date();
+
+    const days = [];
+
+    // Dias do mês anterior
+    for (let i = firstDayIndex; i > 0; i--) {
+      const day = prevMonthLastDay - i + 1;
+      const cellIndex = i - 1;
+      days.push(
+        <div
+          key={`prev-${day}`}
+          className={`flex flex-col aspect-square p-1 bg-odara-name/10 
+          ${cellIndex % 7 !== 6 ? 'border-r-0' : 'border-r'} 
+          border-b-0
+          border border-odara-primary`}
+        >
+          <span className="text-xs font-semibold text-odara-dark/40 self-end">{day}</span>
         </div>
       );
     }
 
     // Dias do mês atual
-    for (let i = 1; i <= diasNoMes; i++) {
-      const ehHoje = i === hoje.getDate() &&
-        dataAtual.getMonth() === hoje.getMonth() &&
-        dataAtual.getFullYear() === hoje.getFullYear();
+    for (let i = 1; i <= daysInMonth; i++) {
+      const isToday = i === today.getDate() &&
+        dataAtual.getMonth() === today.getMonth() &&
+        dataAtual.getFullYear() === today.getFullYear();
 
       const atividadesDoDia = obterAtividadesDoDia(i, dataAtual.getMonth(), dataAtual.getFullYear());
 
-      dias.push(
+      const cellIndex = firstDayIndex + i - 1;
+      const isLastColumn = cellIndex % 7 === 6;
+      const isLastRow = cellIndex >= 35;
+
+      days.push(
         <div
-          key={`atual-${i}`}
-          className={`flex flex-col aspect-square p-1 border-r border-b border-odara-primary relative ${ehHoje ? 'bg-odara-dropdown' : 'bg-white'} overflow-y-auto cursor-pointer ${filtroDiaAtivo && i === filtroDia.getDate() && dataAtual.getMonth() === filtroDia.getMonth() && dataAtual.getFullYear() === filtroDia.getFullYear() ? 'ring-2 ring-odara-accent' : ''}`}
+          key={`current-${i}`}
+          className={`flex flex-col aspect-square p-1 relative ${isToday ? 'bg-odara-primary/20' : 'bg-white'} overflow-y-auto cursor-pointer 
+          border border-odara-primary 
+          ${!isLastColumn ? 'border-r-0' : ''} 
+          ${!isLastRow ? 'border-b-0' : ''}
+          ${filtroDiaAtivo && i === filtroDia.getDate() && dataAtual.getMonth() === filtroDia.getMonth() && dataAtual.getFullYear() === filtroDia.getFullYear()
+              ? 'outline-2 outline outline-odara-accent outline-offset-[-1px] z-10'
+              : ''}`}
           onClick={() => {
             const diaClicado = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), i);
             if (filtroDiaAtivo && filtroDia && diaClicado.getDate() === filtroDia.getDate() && diaClicado.getMonth() === filtroDia.getMonth() && diaClicado.getFullYear() === filtroDia.getFullYear()) {
-              setFiltroDiaAtivo(false); // Desativa se clicar no mesmo dia
+              setFiltroDiaAtivo(false);
               setFiltroDia(null);
             } else {
               setFiltroDia(diaClicado);
@@ -315,17 +335,17 @@ const RegistroAtividades = () => {
           }}
         >
           <div className="flex justify-between items-start">
-            <span className={`text-xs font-semibold ${ehHoje ? 'text-odara-dropdown-accent font-bold' : 'text-odara-accent'} self-end`}>
+            <span className={`text-xs font-semibold ${isToday ? 'text-odara-white bg-odara-accent rounded-full px-1.5 py-0.5 min-w-[1rem] text-center font-bold' : 'text-odara-accent'} self-end`}>
               {i}
             </span>
             {atividadesDoDia.length > 0 && (
-              <span className="text-xs bg-odara-accent text-odara-white rounded-full px-1.5 py-0.5 min-w-[1rem] text-center">
+              <span className="text-xs text-odara-dropdown-accent font-bold text-center">
                 {atividadesDoDia.length}
               </span>
             )}
           </div>
 
-          {/* Atividades do dia */}
+          {/* atividades do dia */}
           <div className="flex-1 mt-1 space-y-1 overflow-y-auto">
             {atividadesDoDia.map(atividade => (
               <div
@@ -343,19 +363,29 @@ const RegistroAtividades = () => {
       );
     }
 
-    // Dias do próximo mês (para preencher o calendário)
-    const totalCelulas = 42; // 6 semanas * 7 dias
-    const celulasRestantes = totalCelulas - (indicePrimeiroDia + diasNoMes);
+    // Dias do próximo mês
+    const totalCells = 42;
+    const remainingCells = totalCells - (firstDayIndex + daysInMonth);
 
-    for (let i = 1; i <= celulasRestantes; i++) {
-      dias.push(
-        <div key={`proximo-${i}`} className="flex flex-col aspect-square p-1 bg-odara-name/10 border-r border-b border-odara-primary">
+    for (let i = 1; i <= remainingCells; i++) {
+      const cellIndex = firstDayIndex + daysInMonth + i - 1;
+      const isLastColumn = cellIndex % 7 === 6;
+      const isLastRow = cellIndex >= 35;
+
+      days.push(
+        <div
+          key={`next-${i}`}
+          className={`flex flex-col aspect-square p-1 bg-odara-name/10 
+          ${!isLastColumn ? 'border-r-0' : ''} 
+          ${!isLastRow ? 'border-b-0' : ''}
+          border border-odara-primary`}
+        >
           <span className="text-xs font-semibold text-odara-dark/40 self-end">{i}</span>
         </div>
       );
     }
 
-    return dias;
+    return days;
   };
 
   // ===== FILTROS =====
@@ -642,8 +672,9 @@ const RegistroAtividades = () => {
                   </div>
                 ))}
               </div>
+              {/* Renderiza o calendário */}
               <div className="grid grid-cols-7 rounded-b-xl">
-                {renderizarDiasCalendario()}
+                {renderDiasCalendario()}
               </div>
             </div>
           </div>
