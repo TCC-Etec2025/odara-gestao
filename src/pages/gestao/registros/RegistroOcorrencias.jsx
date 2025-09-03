@@ -7,8 +7,24 @@ import { FaArrowLeft } from 'react-icons/fa';
 const RegistroOcorrencias = () => {
   const [preferences, setPreferences] = useState({
     ocorrencias: [
-      { id: 1, title: "Caiu da Cadeira", description: "João caiu da cadeira", residente: "João", foto: "/images/foto-idoso-joao.jpg" },
-      { id: 2, title: "Se Cortou", description: "Maria se cortou", residente: "Maria", foto: "/images/foto-idosa-maria.png" }
+      { id: 1, 
+        title: "Caiu da Cadeira", 
+        description: "João caiu da cadeira", 
+        residente: "João Silva", 
+        foto: "/images/foto-idoso-joao.jpg",
+        idade: 72,
+        sexo: "Masculino",
+        prontuario: "2023001",
+        data: new Date(2023, 0, 15), // 15 Jan 2023
+        horario: "10:30",
+        medico: "Dr. Carlos Mendes",
+         },
+
+      { id: 2, 
+        title: "Se Cortou", 
+        description: "Maria se cortou", 
+        residente: "Maria", 
+        foto: "/images/foto-idosa-maria.png" }
     ],
     descricoes: [
       { id: 3, title: "Queda", description: "João caiu no horario de lazer, ao se sentar para jogar xadrez", residente: "João", foto: "/images/foto-idoso-joao.jpg" },
@@ -41,7 +57,7 @@ const RegistroOcorrencias = () => {
   };
 
   const CATEGORIA_LABELS = {
-    [CATEGORIAS.OCORRENCIAS]: "Ocorrencias",
+    [CATEGORIAS.OCORRENCIAS]: "Ocorrências",
     [CATEGORIAS.DESCRICOES]: "Descrições",
     [CATEGORIAS.CONSEQUENCIAS]: "Consequências"
   };
@@ -55,7 +71,7 @@ const RegistroOcorrencias = () => {
 
   const abrirModalAdicionar = (categoria) => {
     setCategoriaAtual(categoria);
-    setNovaPreferencia({ titulo: '', descricao: '', residente: '', foto: '' });
+    setNovaPreferencia({ titulo: '', descricao: '', idade: '', sexo: '', prontuario: '', data: '', horario: '', medico: '',  residente: '', foto: '' });
     setEditando(false);
     setIdEditando(null);
     setModalAberto(true);
@@ -91,6 +107,12 @@ const RegistroOcorrencias = () => {
               title: novaPreferencia.titulo,
               description: novaPreferencia.descricao,
               residente: novaPreferencia.residente,
+              idade: novaPreferencia.idade,
+              sexo: novaPreferencia.sexo,
+              prontuario: novaPreferencia.prontuario,
+              data: novaPreferencia.data,
+              horario: novaPreferencia.horario,
+              medico: novaPreferencia.medico,
               foto: novaPreferencia.foto
             }
             : item
@@ -103,6 +125,12 @@ const RegistroOcorrencias = () => {
         title: novaPreferencia.titulo,
         description: novaPreferencia.descricao,
         residente: novaPreferencia.residente,
+        idade: novaPreferencia.idade,
+        sexo: novaPreferencia.sexo,
+        prontuario: novaPreferencia.prontuario,
+        data: novaPreferencia.data,
+        horario: novaPreferencia.horario,
+        medico: novaPreferencia.medico,
         foto: novaPreferencia.foto
       };
       setPreferences(prev => ({
@@ -305,7 +333,7 @@ const RegistroOcorrencias = () => {
             <div className="bg-odara-offwhite rounded-xl shadow-2xl max-w-md w-full p-6 border-l-4 border-odara-primary">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-odara-dark">
-                  {editando ? 'Editar' : 'Adicionar'} Preferência - {CATEGORIA_LABELS[categoriaAtual]}
+                  {editando ? 'Editar' : 'Adicionar'} Registros - {CATEGORIA_LABELS[categoriaAtual]}
                 </h2>
                 <button onClick={() => setModalAberto(false)} className="text-odara-dark hover:text-odara-accent transition-colors duration-200">✕</button>
               </div>
