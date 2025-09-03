@@ -7,16 +7,16 @@ import { FaArrowLeft } from 'react-icons/fa';
 const RegistroOcorrencias = () => {
   const [preferences, setPreferences] = useState({
     ocorrencias: [
-      { id: 1, title: "Caiu da Cadeira", description: "João caiu da cadeira", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 2, title: "Se Cortou", description: "Maria se cortou", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
+      { id: 1, title: "Caiu da Cadeira", description: "João caiu da cadeira", residente: "João", foto: "/images/foto-idoso-joao.jpg" },
+      { id: 2, title: "Se Cortou", description: "Maria se cortou", residente: "Maria", foto: "/images/foto-idosa-maria.png" }
     ],
     descricoes: [
-      { id: 3, title: "Queda", description: "João caiu no horario de lazer, ao se sentar para jogar xadrez", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 4, title: "Corte", description: "Maria cortou sua mão ao ultilizar o garfo na hora do almoço", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
+      { id: 3, title: "Queda", description: "João caiu no horario de lazer, ao se sentar para jogar xadrez", residente: "João", foto: "/images/foto-idoso-joao.jpg" },
+      { id: 4, title: "Corte", description: "Maria cortou sua mão ao ultilizar o garfo na hora do almoço", residente: "Maria", foto: "/images/foto-idosa-maria.png" }
     ],
     consequencias: [
-      { id: 5, title: "Leticia", description: "Enfermeira Leticia checou seu sinais e o encaminhou para a enfermaria, onde foi realizado um check-up", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 6, title: "Livia", description: "Enfermeira Lívia encaminhou a residente para enfermaria, e fez um curativo", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
+      { id: 5, title: "Leticia", description: "Enfermeira Leticia checou seu sinais e o encaminhou para a enfermaria, onde foi realizado um check-up", residente: "João", foto: "/images/foto-idoso-joao.jpg" },
+      { id: 6, title: "Livia", description: "Enfermeira Lívia encaminhou a residente para enfermaria, e fez um curativo", residente: "Maria", foto: "/images/foto-idosa-maria.png" }
     ]
   });
 
@@ -166,7 +166,7 @@ const RegistroOcorrencias = () => {
                 <FaInfoCircle size={20} />
               </button>
               {infoVisivel && (
-                <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dark text-white text-sm rounded-lg shadow-lg">
+                <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dropdown text-odara-name text-sm rounded-lg shadow-lg">
                   <h3 className="font-bold mb-2">Registro de Ocorrências</h3>
                   <p>
                     O Registro de Ocorrências ficha onde se registra qualquer situação fora do comum envolvendo os residentes, funcionários ou a rotina da casa de repouso, podendo ser clínica,  comportamental ou até mesmo relacional, esse diário ajuda a acompanhar tudo o que pode impactar o bem-estar dos idosos e na organização do local, também na ciência dos responsáveis sobre os acontecimentos do dia.

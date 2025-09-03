@@ -189,7 +189,7 @@ const NavbarGestao = ({ isCollapsed, setIsCollapsed, searchTerm, setSearchTerm }
       onMouseEnter={() => setIsCollapsed(false)} // Expandir ao passar o mouse
       onMouseLeave={() => setIsCollapsed(true)}  // Recolher ao tirar o mouse
       >
-        <div className="p-4 border-b border-odara-secondary/30">
+        <div className="p-2 border-b border-odara-secondary/30">
           <div className="flex items-center overflow-hidden">
             <img
               src="../images/Logo final - Icone fundo branco redondo[1].png"

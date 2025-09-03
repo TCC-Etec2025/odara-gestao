@@ -7,16 +7,16 @@ import { FaArrowLeft } from 'react-icons/fa';
 const RegistroPreferencias = () => {
   const [preferences, setPreferences] = useState({
     alimentar: [
-      { id: 1, title: "Comida Italiana", description: "Prefere massas e pratos da culinária italiana", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 2, title: "Vegetariano", description: "Prefere refeições sem carne", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
+      { id: 1, title: "Comida Italiana", description: "Prefere massas e pratos da culinária italiana", residente: "João", foto: "/images/foto-idoso-joao.jpg" },
+      { id: 2, title: "Vegetariano", description: "Prefere refeições sem carne", residente: "Maria", foto: "/images/foto-idosa-maria.png" }
     ],
     atividades: [
-      { id: 3, title: "Leitura", description: "Gosta de ler livros no tempo livre", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 4, title: "Caminhada", description: "Prefere caminhar ao ar livre", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
+      { id: 3, title: "Leitura", description: "Gosta de ler livros no tempo livre", residente: "João", foto: "/images/foto-idoso-joao.jpg" },
+      { id: 4, title: "Caminhada", description: "Prefere caminhar ao ar livre", residente: "Maria", foto: "/images/foto-idosa-maria.png" }
     ],
     cuidador: [
-      { id: 5, title: "Leticia", description: "Prefere que Leticia sirva seu alimento", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 6, title: "Maria", description: "Prefere que Maria dê banho e cuide de sua higiene", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
+      { id: 5, title: "Leticia", description: "Prefere que Leticia sirva seu alimento", residente: "João", foto: "/images/foto-idoso-joao.jpg" },
+      { id: 6, title: "Maria", description: "Prefere que Maria dê banho e cuide de sua higiene", residente: "Maria", foto: "/images/foto-idosa-maria.png" }
     ]
   });
 
@@ -164,7 +164,7 @@ const RegistroPreferencias = () => {
                 <FaInfoCircle size={20} />
               </button>
               {infoVisivel && (
-                <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dark text-white text-sm rounded-lg shadow-lg">
+                <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dropdown text-odara-name text-sm rounded-lg shadow-lg">
                   <h3 className="font-bold mb-2">Registro de Preferências</h3>
                   <p>
                     O Registro de Preferências é uma ficha na qual serão anotadas as preferências pessoais de cada residente, para que a equipe possa oferecer um cuidado mais humanizado. Ele é parte importante do prontuário de atendimento, garante o bem-estar do idoso respeitando seus gostos, como comidas e temperos de preferência, sua rotina diária em geral (horário que acorda, prefere tomar banho, ou praticar seus lazeres).
