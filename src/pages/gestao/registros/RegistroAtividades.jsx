@@ -432,8 +432,7 @@ const RegistroAtividades = () => {
                 <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dropdown text-odara-name text-sm rounded-lg shadow-lg">
                   <h3 className="font-bold mb-2">Registro de Atividades</h3>
                   <p>
-                    Gerencie suas atividades de forma fácil e organizada.
-                    Adicione novas atividades, marque como concluídas e filtre por categorias ou residentes.
+                    O Registro de Atividades é um documento fundamental que reúne todas as ações, cuidados e acontecimentos do dia a dia na instituição. Ele serve para garantir a organização, a transparência e a qualidade do atendimento aos idosos. Ele permite monitorar o que foi feito com cada residente, como medicação, alimentação, atividades físicas e sociais, também ajuda a identificar rapidamente qualquer problema.
                   </p>
                   <div className="absolute bottom-full left-4 border-4 border-transparent border-b-gray-800"></div>
                 </div>
