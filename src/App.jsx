@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/gestao/Dashboard';
 import Funcionarios from './pages/gestao/Funcionarios';
 import Residentes from './pages/gestao/Residentes';
+import Familiares from './pages/gestao/Familiares';
 
 import PaginaRegistros from './pages/gestao/registros/PaginaRegistros';
 
@@ -40,6 +41,7 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="funcionarios" element={<Funcionarios />} />
           <Route path="residentes" element={<Residentes />} />
+          <Route path="familiares" element={<Familiares />} />
 
           {/* Novas rotas de registros */}
           <Route path="paginaRegistros" element={<PaginaRegistros/>} />

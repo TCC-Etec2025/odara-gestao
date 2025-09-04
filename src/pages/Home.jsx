@@ -344,7 +344,7 @@ const Home = () => {
 										onClick={() => (window.location.href = "/cadastro")}
 										className="w-full bg-odara-accent border-2 bg-odara-accent hover:bg-odara-secondary/90 text-odara-contorno font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-lg"
 									>
-										Criar Conta Gratuita
+										Criar Conta
 									</button>
 									<p className="text-odara-white">
 										Configuração em minutos • Suporte incluído

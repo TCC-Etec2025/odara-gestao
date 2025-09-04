@@ -9,7 +9,7 @@ const PaginaRegistros = () => {
 
   const registrosItems = [
     {
-      category: "Saúde",
+      category: "Registros de Saúde",
       items: [
         {
           path: "/gestao/registros/medicamentos",
@@ -50,7 +50,7 @@ const PaginaRegistros = () => {
       ]
     },
     {
-      category: "Atividades",
+      category: "Rotina e Preferências",
       items: [
         {
           path: "/gestao/registros/preferencias",
@@ -82,11 +82,11 @@ const PaginaRegistros = () => {
       ]
     },
     {
-      category: "Ocorrências",
+      category: "Incidentes e Comportamento",
       items: [
         {
           path: "/gestao/registros/ocorrencias",
-          label: "Ocorrências",
+          label: "Registro de Ocorrências",
           icon: (
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -119,48 +119,16 @@ const PaginaRegistros = () => {
   return (
     <div className="flex min-h-screen from-odara-offwhite to-odara-primary/30">
       <div className="flex-1 p-6 lg:p-10">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-odara-dark">Registros do Sistema</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-odara-dark mb-1">Registros do Sistema</h1>
           <p className="text-odara-dark/60 text-sm">
             Central de gerenciamento de todos os registros da instituição
           </p>
         </div>
 
-        {/* Filtros por categoria */}
-          <div className="w-65 p-4">
-            <button
-              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-odara-dark font-medium hover:bg-odara-primary/10 transition"
-              onClick={() => setFiltroAberto(!filtroAberto)}
-            >
-              <FaFilter className="text-odara-accent mr-2" />
-              {categoriaAtiva === "Todas" ? "Todas as Categorias" : categoriaAtiva}
-            </button>
-
-            {filtroAberto && (
-              <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-                {opcoesFiltro.map(filtro => (
-                  <button
-                    key={filtro.id}
-                    onClick={() => {
-                      setCategoriaAtiva(filtro.id);
-                      setFiltroAberto(false);
-                    }}
-                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/10 transition ${categoriaAtiva === filtro.id
-                        ? 'bg-odara-primary/20 text-odara-primary font-semibold'
-                        : 'text-gray-700'
-                      }`}
-                  >
-                    {filtro.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-        {/* Indicador de filtro ativo */}
+        {/* Mensagem filtro ativo */}
         {categoriaAtiva !== "Todas" && (
-          <div className="mb-4 bg-odara-primary/10 text-odara-primary px-4 py-2 rounded-lg inline-flex items-center">
-
+          <div className="bg-odara-primary/10 text-odara-primary px-4 py-2 rounded-lg inline-flex items-center w-fit">
             <span>Filtro ativo: {categoriaAtiva}</span>
             <button
               onClick={() => setCategoriaAtiva("Todas")}
@@ -172,43 +140,107 @@ const PaginaRegistros = () => {
             </button>
           </div>
         )}
-        
-        {/* Grid de registros */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {itensFiltrados.map((item, index) => (
-            <Link
-              key={index}
-              to={item.path}
-              className="block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100"
-            >
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="p-3 rounded-lg text-odara-primary">
-                    {item.icon}
-                  </div>
-                  <h3 className="ml-4 text-xl font-semibold text-odara-dark">{item.label}</h3>
-                </div>
-                <div className="flex justify-end">
-                  <span className="text-odara-primary font-medium flex items-center">
-                    Acessar
-                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </span>
-                </div>
+
+        {/* Grid de categorias */}
+        {categoriaAtiva === "Todas" ? (
+          registrosItems.map((categoria) => (
+            <div key={categoria.category}>
+              <h2 className="mt-6 text-xl text-odara-primary/70 mb-3">{categoria.category}</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {categoria.items.map((item, index) => (
+                  <Link
+                    key={index}
+                    to={item.path}
+                    className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 p-6 flex flex-col"
+                  >
+                    <div className="flex items-center mb-4">
+                      <div className="p-3 rounded-lg bg-odara-primary/10 text-odara-primary">
+                        {item.icon}
+                      </div>
+                      <h3 className="ml-4 text-xl font-semibold text-odara-dark">{item.label}</h3>
+                    </div>
+                    <div className="flex justify-end mt-auto">
+                      <span className="text-odara-primary font-medium flex items-center">
+                        Acessar
+                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </span>
+                    </div>
+                  </Link>
+                ))}
               </div>
-            </Link>
-          ))}
-        </div>
+            </div>
+          ))
+        ) : (
+          <div>
+            <h2 className="mt-6 text-xl text-odara-primary/70 mb-3">{categoriaAtiva}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {itensFiltrados.map((item, index) => (
+                <Link
+                  key={index}
+                  to={item.path}
+                  className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100 p-6 flex flex-col"
+                >
+                  <div className="flex items-center mb-4">
+                    <div className="p-3 rounded-lg bg-odara-primary/10 text-odara-primary">
+                      {item.icon}
+                    </div>
+                    <h3 className="ml-4 text-xl font-semibold text-odara-dark">{item.label}</h3>
+                  </div>
+                  <div className="flex justify-end mt-auto">
+                    <span className="text-odara-primary font-medium flex items-center">
+                      Acessar
+                      <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Mensagem quando não há itens */}
         {itensFiltrados.length === 0 && (
-          <div className="text-center py-12 bg-white rounded-xl shadow">
+          <div className="text-center py-12 bg-white rounded-xl shadow-lg">
             <svg className="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <h3 className="mt-4 text-lg font-medium text-gray-700">Nenhum registro encontrado</h3>
             <p className="mt-2 text-gray-500">Tente selecionar outra categoria ou verificar os filtros aplicados.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Filtro */}
+      <div className="mt-10 w-48 sticky top-10 ml-auto">
+        <button
+          className="flex items-center justify-between w-full bg-white rounded-full px-2 py-2 shadow-md border border-gray-200 text-odara-dark font-medium hover:bg-odara-primary/10 transition"
+          onClick={() => setFiltroAberto(!filtroAberto)}
+        >
+          <span>{categoriaAtiva === "Todas" ? "Todas as Categorias" : categoriaAtiva}</span>
+          <FaFilter className="text-odara-accent ml-2" />
+        </button>
+
+        {filtroAberto && (
+          <div className="mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-10 overflow-hidden">
+            {opcoesFiltro.map(filtro => (
+              <button
+                key={filtro.id}
+                onClick={() => {
+                  setCategoriaAtiva(filtro.id);
+                  setFiltroAberto(false);
+                }}
+                className={`block w-full text-left px-4 py-2 text-sm hover:bg-odara-primary/10 transition ${categoriaAtiva === filtro.id
+                  ? 'bg-odara-primary/20 text-odara-primary font-semibold'
+                  : 'text-gray-700'
+                  }`}
+              >
+                {filtro.label}
+              </button>
+            ))}
           </div>
         )}
       </div>

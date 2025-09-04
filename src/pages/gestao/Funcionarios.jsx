@@ -33,7 +33,7 @@ const Funcionarios = () => {
           </div>
           <button className="bg-odara-accent hover:bg-odara-secondary text-white font-medium py-2 px-4 rounded-lg flex items-center transition">
             <FaPlus className="mr-2" />
-            Novo Funcionário
+            Cadastrar Funcionário
           </button>
         </div>
 
