@@ -17,22 +17,70 @@ const RegistroOcorrencias = () => {
         prontuario: "2023001",
         data: new Date(2023, 0, 15), // 15 Jan 2023
         horario: "10:30",
-        medico: "Dr. Carlos Mendes",
+        medico: "Atendimento com efermeiros",
          },
 
       { id: 2, 
         title: "Se Cortou", 
-        description: "Maria se cortou", 
-        residente: "Maria", 
-        foto: "/images/foto-idosa-maria.png" }
+        description: "Maria se cortou com um garfo", 
+        residente: "Maria Oliveira", 
+        foto: "/images/foto-idosa-maria.png",
+        idade: 85,
+        sexo: "Feminino",
+        prontuario: "2045001",
+        data: new Date(2023, 0, 15), // 15 Jan 2023
+        horario: "16:00",
+        medico: "Dr. Mirian Souza",
+       }
     ],
     descricoes: [
-      { id: 3, title: "Queda", description: "João caiu no horario de lazer, ao se sentar para jogar xadrez", residente: "João", foto: "/images/foto-idoso-joao.jpg" },
-      { id: 4, title: "Corte", description: "Maria cortou sua mão ao ultilizar o garfo na hora do almoço", residente: "Maria", foto: "/images/foto-idosa-maria.png" }
+      { id: 3, title: "Queda",
+         description: "João caiu no horario de lazer, ao se sentar para jogar xadrez",
+          residente: "João Silva", 
+          foto: "/images/foto-idoso-joao.jpg",
+          idade: 72,
+          sexo: "Masculino",
+          prontuario: "2023001",
+          data: new Date(2023, 0, 15), // 15 Jan 2023
+          horario: "10:30",
+          medico: "Atendimento com efermeiros",
+        
+        },
+      { id: 4, title: "Corte", 
+        description: "Maria cortou sua mão ao ultilizar o garfo na hora do almoço",
+        residente: "Maria Oliveira",
+        foto: "/images/foto-idosa-maria.png",
+        idade: 85,
+        sexo: "Feminino",
+        prontuario: "2045001",
+        data: new Date(2023, 0, 15), // 15 Jan 2023
+        horario: "16:00",
+        medico: "Dr. Mirian Souza",
+      }
     ],
     consequencias: [
-      { id: 5, title: "Leticia", description: "Enfermeira Leticia checou seu sinais e o encaminhou para a enfermaria, onde foi realizado um check-up", residente: "João", foto: "/images/foto-idoso-joao.jpg" },
-      { id: 6, title: "Livia", description: "Enfermeira Lívia encaminhou a residente para enfermaria, e fez um curativo", residente: "Maria", foto: "/images/foto-idosa-maria.png" }
+      { id: 5, title: "Leticia", 
+        description: "Enfermeira Leticia checou seus sinais e o encaminhou para a enfermaria, onde foi realizado um check-up",
+        residente: "João Silva", 
+        foto: "/images/foto-idoso-joao.jpg",
+        idade: 72,
+        sexo: "Masculino",
+        prontuario: "2023001",
+        data: new Date(2023, 0, 15), // 15 Jan 2023
+        horario: "10:30",
+        medico: "Atendimento com enfermeiros",
+       },
+      { id: 6, title: "Livia", 
+        description: "Enfermeira Lívia encaminhou a residente para enfermaria, realizou um curativo temporário até a mesma ser atendida pela Dr. Mirian Souza, onde a mesma realizou um curativo mais adequado e receitou um anti-séptico tópico para evitar infecções.",
+         residente: "Maria Oliveira", 
+         foto: "/images/foto-idosa-maria.png",
+         idade: 85,
+        sexo: "Feminino",
+        prontuario: "2045001",
+        data: new Date(2023, 0, 15), // 15 Jan 2023
+        horario: "16:00",
+        medico: "Dr. Mirian Souza",
+         }
     ]
   });
 
@@ -348,59 +396,167 @@ const RegistroOcorrencias = () => {
         </div>
 
         {/* Modal */}
-        {modalAberto && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-odara-offwhite rounded-xl shadow-2xl max-w-md w-full p-6 border-l-4 border-odara-primary">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-odara-dark">
-                  {editando ? 'Editar' : 'Adicionar'} Registros - {CATEGORIA_LABELS[categoriaAtual]}
-                </h2>
-                <button onClick={() => setModalAberto(false)} className="text-odara-dark hover:text-odara-accent transition-colors duration-200">✕</button>
-              </div>
+{modalAberto && (
+  <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto">
+    {/* Backdrop */}
+    <div
+      className="fixed inset-0 bg-black/50"
+      onClick={() => setModalAberto(false)}
+    />
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-odara-dark font-medium mb-2">Residente</label>
-                  <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-                    value={novaPreferencia.residente}
-                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, residente: e.target.value })}
-                    placeholder="Nome do residente" />
-                </div>
-                <div>
-                  <label className="block text-odara-dark font-medium mb-2">Título</label>
-                  <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-                    value={novaPreferencia.titulo}
-                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, titulo: e.target.value })}
-                    placeholder="Digite o título" />
-                </div>
-                <div>
-                  <label className="block text-odara-dark font-medium mb-2">Descrição</label>
-                  <textarea className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" rows="4"
-                    value={novaPreferencia.descricao}
-                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, descricao: e.target.value })}
-                    placeholder="Digite a descrição"></textarea>
-                </div>
-                <div>
-                  <label className="block text-odara-dark font-medium mb-2">Foto do Residente</label>
-                  <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-                    value={novaPreferencia.foto}
-                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, foto: e.target.value })}
-                    placeholder="Link da foto" />
-                </div>
-              </div>
+    {/* Painel do Modal */}
+    <div className="relative bg-odara-offwhite rounded-xl shadow-2xl max-w-md w-full p-6 border-l-4 border-odara-primary max-h-[90vh] overflow-y-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-odara-dark">
+          {editando ? 'Editar' : 'Adicionar'} Registros - {CATEGORIA_LABELS[categoriaAtual]}
+        </h2>
+        <button
+          onClick={() => setModalAberto(false)}
+          className="text-odara-dark hover:text-odara-accent transition-colors duration-200"
+        >
+          ✕
+        </button>
+      </div>
 
-              <div className="flex justify-end space-x-3 mt-6">
-                <button onClick={() => setModalAberto(false)}
-                  className="px-4 py-2 border border-odara-primary/30 text-odara-dark rounded-lg hover:bg-white transition-colors duration-200">Cancelar</button>
-                <button onClick={salvarPreferencia}
-                  className="px-4 py-2 bg-odara-accent text-odara-contorno rounded-lg hover:bg-odara-secondary/90 transition-colors duration-200 border-2 border-odara-contorno"
-                  disabled={!novaPreferencia.titulo || !novaPreferencia.descricao}>
-                  {editando ? 'Atualizar' : 'Salvar'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+      <div className="space-y-4">
+        {/* Residente */}
+        <div>
+          <label className="block text-odara-dark font-medium mb-2">Residente</label>
+          <input
+            type="text"
+            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+            value={novaPreferencia.residente}
+            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, residente: e.target.value })}
+            placeholder="Nome do residente"
+          />
+        </div>
+
+        {/* Título */}
+        <div>
+          <label className="block text-odara-dark font-medium mb-2">Título</label>
+          <input
+            type="text"
+            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+            value={novaPreferencia.titulo}
+            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, titulo: e.target.value })}
+            placeholder="Digite o título"
+          />
+        </div>
+
+        {/* Idade */}
+        <div>
+          <label className="block text-odara-dark font-medium mb-2">Idade</label>
+          <input
+            type="number"
+            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+            value={novaPreferencia.idade}
+            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, idade: e.target.value })}
+            placeholder="Digite a idade"
+          />
+        </div>
+
+        {/* Sexo */}
+        <div>
+          <label className="block text-odara-dark font-medium mb-2">Sexo</label>
+          <input
+            type="text"
+            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+            value={novaPreferencia.sexo}
+            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, sexo: e.target.value })}
+            placeholder="Digite o sexo"
+          />
+        </div>
+
+        {/* data */}
+        <div>
+          <label className="block text-odara-dark font-medium mb-2">Data</label>
+          <input
+            type="date"
+            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+            value={novaPreferencia.data}
+            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, data: e.target.value })}
+          />
+        </div>
+
+        {/* Horário */}
+        <div>
+          <label className="block text-odara-dark font-medium mb-2">Horário</label>
+          <input
+            type="time"
+            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+            value={novaPreferencia.horario}
+            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, horario: e.target.value })}
+          />
+        </div>
+
+        {/* Médico */}
+        <div>
+          <label className="block text-odara-dark font-medium mb-2">Médico</label>
+          <input
+            type="text"
+            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+            value={novaPreferencia.medico}
+            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, medico: e.target.value })}
+            placeholder="Nome do médico"
+          />
+        </div>
+
+        {/* Prontuário */}
+        <div>
+          <label className="block text-odara-dark font-medium mb-2">Prontuário</label>
+          <input
+            type="text"
+            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+            value={novaPreferencia.prontuario}
+            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, prontuario: e.target.value })}
+            placeholder="Número do prontuário"
+          />
+        </div>
+        {/* Descrição */}
+        <div>
+          <label className="block text-odara-dark font-medium mb-2">Descrição</label>
+          <textarea
+            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+            rows={4}
+            value={novaPreferencia.descricao}
+            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, descricao: e.target.value })}
+            placeholder="Digite a descrição"
+          />
+        </div>
+
+        {/* Foto */}
+        <div>
+          <label className="block text-odara-dark font-medium mb-2">Foto do Residente</label>
+          <input
+            type="text"
+            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
+            value={novaPreferencia.foto}
+            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, foto: e.target.value })}
+            placeholder="Link da foto"
+          />
+        </div>
+      </div>
+
+      {/* Botões */}
+      <div className="flex justify-end space-x-3 mt-6">
+        <button
+          onClick={() => setModalAberto(false)}
+          className="px-4 py-2 border border-odara-primary/30 text-odara-dark rounded-lg hover:bg-white transition-colors duration-200"
+        >
+          Cancelar
+        </button>
+        <button
+          onClick={salvarPreferencia}
+          className="px-4 py-2 bg-odara-accent text-odara-contorno rounded-lg hover:bg-odara-secondary/90 transition-colors duration-200 border-2 border-odara-contorno"
+          disabled={!novaPreferencia.titulo || !novaPreferencia.descricao}
+        >
+          {editando ? 'Atualizar' : 'Salvar'}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
       </div>
     </div >
   );
