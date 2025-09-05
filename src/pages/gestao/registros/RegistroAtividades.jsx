@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle, FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle, FaChevronLeft, FaChevronRight, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa';
 
 const RegistroAtividades = () => {
   // ===== ESTADOS DO COMPONENTE =====
@@ -14,7 +13,7 @@ const RegistroAtividades = () => {
       titulo: "Clube do livro",
       descricao: "Encontro para discutir a leitura da semana",
       categoria: "criativa",
-      residentes: "João Silva",
+      residentes: "João Santos",
       cor: "rosa",
       concluida: true
     },
@@ -25,18 +24,18 @@ const RegistroAtividades = () => {
       titulo: "Fisioterapia de Emergência",
       descricao: "Sessão de emergência para 4 residentes",
       categoria: "fisica",
-      residentes: "Maria Catarina",
+      residentes: "Maria Oliveira",
       cor: "vermelho",
       concluida: false
     },
     {
       id: 3,
-      data: new Date(new Date().getFullYear(), new Date().getMonth(), 5),
+      data: new Date(new Date().getFullYear(), new Date().getMonth(), 6),
       horario: "14:00",
       titulo: "Roda de Conversa",
       descricao: "Roda de conversa liderada pela psicóloga Júlia",
       categoria: "social",
-      residentes: "Rosana Ribeiro",
+      residentes: "Ana Costa",
       cor: "azul",
       concluida: false
     },
