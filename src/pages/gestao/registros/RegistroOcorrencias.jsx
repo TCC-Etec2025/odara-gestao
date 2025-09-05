@@ -39,7 +39,7 @@ const RegistroOcorrencias = () => {
   const [modalAberto, setModalAberto] = useState(false);
   const [categoriaAtual, setCategoriaAtual] = useState('');
   const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
-  const [novaPreferencia, setNovaPreferencia] = useState({ titulo: '', descricao: '', residente: '', foto: '' });
+  const [novaPreferencia, setNovaPreferencia] = useState({ titulo: '', descricao: '', residente: '', foto: '', idade: '', sexo: '', prontuario: '', data: '', horario: '', medico: '' });
   const [filtroAtivo, setFiltroAtivo] = useState('todos');
   const [filtroAberto, setFiltroAberto] = useState(false);
   const [editando, setEditando] = useState(false);
@@ -85,7 +85,13 @@ const RegistroOcorrencias = () => {
         titulo: preferenciaParaEditar.title,
         descricao: preferenciaParaEditar.description,
         residente: preferenciaParaEditar.residente,
-        foto: preferenciaParaEditar.foto
+        foto: preferenciaParaEditar.foto,
+        idade: preferenciaParaEditar.idade,
+        sexo: preferenciaParaEditar.sexo,
+        prontuario: preferenciaParaEditar.prontuario,
+        data: preferenciaParaEditar.data,
+        horario: preferenciaParaEditar.horario,
+        medico: preferenciaParaEditar.medico
       });
       setEditando(true);
       setIdEditando(id);
@@ -292,8 +298,22 @@ const RegistroOcorrencias = () => {
                       onMouseEnter={() => setResidenteAtual(item)}
                     >
                       <div className="flex-1">
-                        <h4 className="font-semibold text-odara-dark">{item.residente}</h4>
-                        <p className="text-odara-dark/70 text-sm mt-1">{item.description}</p>
+                        <h4 className="font-semibold text-odara-dark">Residente: {item.residente}</h4>
+                        <p className="text-odara-dark/70 text-sm mt-1">Descrição: {item.description}</p>
+                        <p className="text-odara-dark/70 text-sm mt-1">Idade: {item.idade}</p>
+                        <p className="text-odara-dark/50 text-xs mt-1">Sexo:  {item.sexo}</p>
+                        <p className="text-odara-dark/50 text-xs mt-1"> Data: {new Date(item.data).toLocaleDateString()}</p>
+                        <p className="text-odara-dark/50 text-xs mt-1">Horário: {item.horario}</p>
+                        <p className="text-odara-dark/50 text-xs mt-1">Médico: {item.medico}</p>
+                        <p className="text-odara-dark/70 text-sm mt-1"> Prontuario: {item.prontuario}</p>
+                        
+                      </div>
+                      <div className="w-16 h-16 ml-4">
+                        {item.foto ? (
+                          <img src={item.foto} alt={item.residente} className="w-full h-full rounded-lg object-cover" />
+                        ) : (
+                          <span className="text-odara-primary text-4xl">👤</span>
+                        )}
                       </div>
                       <div className="flex space-x-2 ml-4">
                         <button onClick={() => abrirModalEditar(categoria, item.id)}
