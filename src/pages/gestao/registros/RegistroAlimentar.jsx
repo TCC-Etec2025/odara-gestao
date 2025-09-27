@@ -1,74 +1,73 @@
 import React, { useState } from 'react';
-import { FaUtensils, FaWalking, FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaArrowLeft, FaTimes, FaChevronLeft, FaChevronRight, FaInfoCircle } from 'react-icons/fa';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import { Link } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa';
 
 const RegistroAlimentar = () => {
-  const [preferences, setPreferences] = useState({
-    alimentar: [
-      { id: 1, title: "Comida Italiana", description: "Prefere massas e pratos da culinária italiana", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 2, title: "Vegetariano", description: "Prefere refeições sem carne", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
-    ],
-    atividades: [
-      { id: 3, title: "Leitura", description: "Gosta de ler livros no tempo livre", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 4, title: "Caminhada", description: "Prefere caminhar ao ar livre", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
-    ],
-    cuidador: [
-      { id: 5, title: "Leticia", description: "Prefere que Leticia sirva seu alimento", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 6, title: "Maria", description: "Prefere que Maria dê banho e cuide de sua higiene", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
-    ]
-  });
+  const [registros, setRegistros] = useState([
+    {
+      id: 1,
+      data: new Date(),
+      horario: '08:00',
+      refeicao: 'Café da Manhã',
+      alimento: 'Pão, leite, fruta',
+      residentes: 'João Santos',
+      concluido: true
+    },
+    {
+      id: 2,
+      data: new Date(),
+      horario: '12:00',
+      refeicao: 'Almoço',
+      alimento: 'Arroz, feijão, frango',
+      residentes: 'Maria Oliveira',
+      concluido: false
+    },
+  ]);
 
   const [modalAberto, setModalAberto] = useState(false);
-  const [categoriaAtual, setCategoriaAtual] = useState('');
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
-  const [novaPreferencia, setNovaPreferencia] = useState({ titulo: '', descricao: '', residente: '', foto: '' });
-  const [filtroAtivo, setFiltroAtivo] = useState('todos');
-  const [filtroAberto, setFiltroAberto] = useState(false);
+  const [novoRegistro, setNovoRegistro] = useState({
+    data: new Date().toISOString().split('T')[0],
+    horario: '',
+    refeicao: 'Café da Manhã',
+    alimento: '',
+    residentes: ''
+  });
   const [editando, setEditando] = useState(false);
   const [idEditando, setIdEditando] = useState(null);
+  const [dataAtual, setDataAtual] = useState(new Date());
+  const [filtroDia, setFiltroDia] = useState(null);
+  const [filtroDiaAtivo, setFiltroDiaAtivo] = useState(false);
+  const [mostrarArquivados, setMostrarArquivados] = useState(false);
   const [infoVisivel, setInfoVisivel] = useState(false);
-  const [residenteSelecionado, setResidenteSelecionado] = useState('');
-  const [residenteAtual, setResidenteAtual] = useState(null);
-  const [dropdownAberto, setDropdownAberto] = useState(false);
 
+  const REFEICOES = ['Café da Manhã', 'Almoço', 'Lanche', 'Jantar'];
 
-  const CATEGORIAS = {
-    ALIMENTAR: 'alimentar',
-    ATIVIDADES: 'atividades',
-    CUIDADOR: 'cuidador'
-  };
-
-  const CATEGORIA_LABELS = {
-    [CATEGORIAS.ALIMENTAR]: "Alimentar",
-    [CATEGORIAS.ATIVIDADES]: "Atividades",
-    [CATEGORIAS.CUIDADOR]: "Cuidador"
-  };
-
-  const FILTROS = [
-    { id: 'todos', label: 'Todos' },
-    { id: CATEGORIAS.ALIMENTAR, label: CATEGORIA_LABELS[CATEGORIAS.ALIMENTAR] },
-    { id: CATEGORIAS.ATIVIDADES, label: CATEGORIA_LABELS[CATEGORIAS.ATIVIDADES] },
-    { id: CATEGORIAS.CUIDADOR, label: CATEGORIA_LABELS[CATEGORIAS.CUIDADOR] }
-  ];
-
-  const abrirModalAdicionar = (categoria) => {
-    setCategoriaAtual(categoria);
-    setNovaPreferencia({ titulo: '', descricao: '', residente: '', foto: '' });
+  // Abrir modal adicionar
+  const abrirModalAdicionar = () => {
+    setNovoRegistro({
+      data: new Date().toISOString().split('T')[0],
+      horario: '',
+      refeicao: 'Café da Manhã',
+      alimento: '',
+      residentes: ''
+    });
     setEditando(false);
     setIdEditando(null);
     setModalAberto(true);
   };
 
-  const abrirModalEditar = (categoria, id) => {
-    const preferenciaParaEditar = preferences[categoria].find(item => item.id === id);
-    if (preferenciaParaEditar) {
-      setCategoriaAtual(categoria);
-      setNovaPreferencia({
-        titulo: preferenciaParaEditar.title,
-        descricao: preferenciaParaEditar.description,
-        residente: preferenciaParaEditar.residente,
-        foto: preferenciaParaEditar.foto
+  // Abrir modal editar
+  const abrirModalEditar = (id) => {
+    const registro = registros.find(r => r.id === id);
+    if (registro) {
+      setNovoRegistro({
+        data: registro.data.toISOString().split('T')[0],
+        horario: registro.horario,
+        refeicao: registro.refeicao,
+        alimento: registro.alimento,
+        residentes: registro.residentes
       });
       setEditando(true);
       setIdEditando(id);
@@ -76,282 +75,242 @@ const RegistroAlimentar = () => {
     }
   };
 
-  const salvarPreferencia = () => {
-    if (!novaPreferencia.titulo || !novaPreferencia.descricao) return;
+  // Salvar registro
+  const salvarRegistro = () => {
+    const dataObj = new Date(novoRegistro.data);
 
     if (editando && idEditando) {
-      // Atualiza existente
-      setPreferences(prev => ({
-        ...prev,
-        [categoriaAtual]: prev[categoriaAtual].map(item =>
-          item.id === idEditando
-            ? {
-              ...item,
-              title: novaPreferencia.titulo,
-              description: novaPreferencia.descricao,
-              residente: novaPreferencia.residente,
-              foto: novaPreferencia.foto
-            }
-            : item
-        )
-      }));
+      setRegistros(prev =>
+        prev.map(r => r.id === idEditando ? { ...r, ...novoRegistro, data: dataObj } : r)
+      );
     } else {
-      // Adiciona novo 
-      const novoItem = {
+      const novo = {
         id: Date.now(),
-        title: novaPreferencia.titulo,
-        description: novaPreferencia.descricao,
-        residente: novaPreferencia.residente,
-        foto: novaPreferencia.foto
+        ...novoRegistro,
+        data: dataObj,
+        concluido: false
       };
-      setPreferences(prev => ({
-        ...prev,
-        [categoriaAtual]: [...prev[categoriaAtual], novoItem]
-      }));
+      setRegistros(prev => [...prev, novo]);
     }
-
     setModalAberto(false);
   };
 
-
-  const excluirPreferencia = (categoria, id) => {
-    if (window.confirm('Tem certeza que deseja excluir esta preferência?')) {
-      setPreferences(prev => ({
-        ...prev,
-        [categoria]: prev[categoria].filter(item => item.id !== id)
-      }));
+  // Excluir registro
+  const excluirRegistro = (id) => {
+    if (window.confirm('Deseja excluir este registro?')) {
+      setRegistros(prev => prev.filter(r => r.id !== id));
     }
   };
 
-  const residentes = Array.from(new Set(
-    [...preferences.alimentar, ...preferences.atividades, ...preferences.cuidador]
-      .map(item => item.residente)
-      .filter(Boolean)
-  ));
+  // Alternar conclusão
+  const alternarConclusao = (id) => {
+    setRegistros(prev =>
+      prev.map(r => r.id === id ? { ...r, concluido: !r.concluido } : r)
+    );
+  };
 
-  // Filtrar preferências por categoria e residente
-  const preferenciasFiltradas = Object.fromEntries(
-    Object.entries(preferences).map(([cat, items]) => [
-      cat,
-      items.filter(item =>
-        (filtroAtivo === 'todos' || filtroAtivo === cat) &&
-        (!residenteSelecionado || item.residente === residenteSelecionado)
-      )
-    ])
-  );
+  // Filtro registros
+  const registrosFiltrados = registros.filter(r => {
+    const passaDia = !filtroDiaAtivo || (
+      filtroDia && r.data.toDateString() === filtroDia.toDateString()
+    );
+    const passaConcluido = mostrarArquivados ? r.concluido : !r.concluido;
+    return passaDia && passaConcluido;
+  }).sort((a, b) => a.data - b.data || a.horario.localeCompare(b.horario));
+
+  // Funções calendário
+  const handleDayClick = (value) => {
+    if (filtroDiaAtivo && filtroDia && value.toDateString() === filtroDia.toDateString()) {
+      setFiltroDiaAtivo(false);
+      setFiltroDia(null);
+    } else {
+      setFiltroDia(value);
+      setFiltroDiaAtivo(true);
+    }
+  };
+
+  const irParaHoje = () => {
+    const hoje = new Date();
+    setDataAtual(hoje);
+    setFiltroDia(hoje);
+    setFiltroDiaAtivo(true);
+  };
+
+  const getTileClassName = ({ date, view }) => {
+    const classes = [];
+    const hoje = new Date();
+
+    if (date.toDateString() === hoje.toDateString()) {
+      classes.push('!bg-odara-primary/20 font-bold');
+    }
+
+    if (filtroDiaAtivo && filtroDia && date.toDateString() === filtroDia.toDateString()) {
+      classes.push('outline-2 outline outline-odara-accent outline-offset-[-1px]');
+    }
+
+    return classes.join(' ');
+  };
+
+  const getTileContent = ({ date, view }) => {
+    if (view !== 'month') return null;
+
+    const registrosDoDia = registros.filter(r =>
+      r.data.toDateString() === date.toDateString() && !r.concluido
+    );
+
+    return (
+      <div className="mt-1 flex justify-center gap-1 flex-wrap">
+        {registrosDoDia.map((r, i) => (
+          <div
+            key={i}
+            className="w-2 h-2 rounded-full bg-odara-accent"
+            title={`${r.refeicao} - ${r.horario}`}
+          />
+        ))}
+      </div>
+    );
+  };
 
   return (
-    <div className="flex min-h-screen from-odara-offwhite to-odara-primary/30">
+    <div className="flex min-h-screen bg-odara-offwhite">
       <div className="flex-1 p-6 lg:p-10">
-        <div className="flex justify-between items-center mb-6">
+         {/* Cabeçalho */}
+        <div className="flex justify-start items-center mb-6">
           <div className="flex items-center">
-            <div className="flex items-center mb-1">
-              <Link
-                to="/gestao/PaginaRegistros"
-                className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 flex items-center"
-              >
-                <FaArrowLeft className="mr-1" />
-              </Link>
-            </div>
-            <h1 className="text-3xl font-bold text-odara-dark mr-2">Registro de Quadro Alimentar</h1>
-            <div className="relative">
-              <button
-                onMouseEnter={() => setInfoVisivel(true)}
-                onMouseLeave={() => setInfoVisivel(false)}
-                className="text-odara-accent hover:text-odara-secondary transition-colors duration-200"
-              >
-                <FaInfoCircle size={20} />
-              </button>
-              {infoVisivel && (
-                <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dark text-white text-sm rounded-lg shadow-lg">
-                  <h3 className="font-bold mb-2">Registro de Preferências</h3>
-                  <p>
-                    O Registro de Preferências é uma ficha na qual serão anotadas as preferências pessoais de cada residente, para que a equipe possa oferecer um cuidado mais humanizado. Ele é parte importante do prontuário de atendimento, garante o bem-estar do idoso respeitando seus gostos, como comidas e temperos de preferência, sua rotina diária em geral (horário que acorda, prefere tomar banho, ou praticar seus lazeres).
-                  </p>
-                  <div className="absolute bottom-full left-4 border-4 border-transparent border-b-odara-dark"></div>
-                </div>
-              )}
-            </div>
+            <div className="flex items-center mb-1"></div>
+          
+          <Link to="/gestao/PaginaRegistros" className="flex items-center text-odara-dark">
+            <FaArrowLeft className="mr-1"/>
+          </Link>
           </div>
-        </div>
-
-        <div className="relative flex items-center gap-4 mb-6">
-          {/* Botão Adicionar */}
-          <button
-            onClick={() => setDropdownAberto(!dropdownAberto)}
-            className="bg-odara-accent hover:bg-odara-secondary/90 text-odara-contorno font-medium py-2 px-4 rounded-lg flex items-center transition duration-200 border-2 border-odara-contorno"
-          >
-            <FaPlus className="mr-2" /> Adicionar
-          </button>
-
-          {/* Dropdown */}
-          {dropdownAberto && (
-            <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50">
-              {Object.values(CATEGORIAS).map(categoria => (
-                <button
-                  key={categoria}
-                  className="block w-full text-left px-4 py-2 text-sm hover:bg-odara-primary/10"
-                  onClick={() => {
-                    setCategoriaSelecionada(categoria);
-                    abrirModalAdicionar(categoria); // abre o modal
-                    setDropdownAberto(false);
-                  }}
-                >
-                  {CATEGORIA_LABELS[categoria]}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Selecionando por residentes */}
-          <div className="relative">
-            <select
-              className="border border-gray-300 rounded-lg px-3 py-2"
-              value={residenteSelecionado || ''}
-              onChange={(e) => setResidenteSelecionado(e.target.value)}
-            >
-              <option value="">Todos os residentes</option>
-              {residentes.map(r => <option key={r} value={r}>{r}</option>)}
-            </select>
-          </div>
-
-          <div className="relative">
+            <h1 className="text-3xl font-bold text-odara-dark mr-2">Registro Alimentar</h1>
+             <div className="relative">
             <button
-              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-odara-dark font-medium hover:bg-odara-primary/10 transition"
-              onClick={() => setFiltroAberto(!filtroAberto)}
+              onMouseEnter={() => setInfoVisivel(true)}
+              onMouseLeave={() => setInfoVisivel(false)}
+              className="text-odara-dark hover:text-odara-secondary transition-colors duration-200"
             >
-              <FaFilter className="text-odara-accent mr-2" />
-              Filtro
+              <FaInfoCircle size={20} className='text-odara-accent hover:text-odara-secondary' />
             </button>
-
-            {filtroAberto && (
-              <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-                {FILTROS.map(filtro => (
-                  <button
-                    key={filtro.id}
-                    onClick={() => {
-                      setFiltroAtivo(filtro.id);
-                      setFiltroAberto(false);
-                    }}
-                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/10 ${filtroAtivo === filtro.id ? 'bg-odara-primary/20 font-semibold' : ''}`}
-                  >
-                    {filtro.label}
-                  </button>
-                ))}
+            {infoVisivel && (
+              <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dropdown text-odara-name text-sm rounded-lg shadow-lg">
+                <h3 className="font-bold mb-2">Registro Alimentar</h3>
+                <p>
+                  O Registro de Quadro Alimentar é o documento no qual serão adicionadas as informações sobre as refeições oferecidas aos residentes, incluindo detalhes como horário, tipo de refeição, alimentos servidos e os residentes que participaram. Esse registro é essencial para monitorar a nutrição e garantir que as necessidades alimentares de cada residente sejam atendidas adequadamente.
+                </p>
+                <div className="absolute bottom-full left-4 border-4 border-transparent border-b-gray-800"></div>
               </div>
             )}
           </div>
         </div>
 
-        <div className="bg-odara-offwhite rounded-2xl shadow-lg p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="max-h-[calc(100vh-250px)] overflow-y-auto pr-2 lg:col-span-2 space-y-8">
-            {Object.entries(preferenciasFiltradas).map(([categoria, items]) => (
-              <div key={categoria} className="mb-8">
-                <h3 className="text-xl font-semibold text-odara-dark mb-4 flex items-center">
-                  {categoria === 'alimentar' && <FaUtensils className="mr-2 text-odara-accent" />}
-                  {categoria === 'atividades' && <FaWalking className="mr-2 text-odara-accent" />}
-                  {categoria === 'cuidador' && <FaWalking className="mr-2 text-odara-accent" />}
-                  {CATEGORIA_LABELS[categoria]}
-                </h3>
-                <ul className="space-y-4">
-                  {items.map(item => (
-                    <li
-                      key={item.id}
-                      className="bg-white p-4 rounded-lg border border-gray-200 flex justify-between items-start hover:shadow-md transition-shadow duration-200"
-                      onMouseEnter={() => setResidenteAtual(item)}
-                    >
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-odara-dark">{item.residente}</h4>
-                        <p className="text-odara-dark/70 text-sm mt-1">{item.description}</p>
-                      </div>
-                      <div className="flex space-x-2 ml-4">
-                        <button onClick={() => abrirModalEditar(categoria, item.id)}
-                          className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-1 rounded-full hover:bg-odara-accent/10">
-                          <FaEdit />
-                        </button>
-                        <button onClick={() => excluirPreferencia(categoria, item.id)}
-                          className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1 rounded-full hover:bg-red-50">
-                          <FaTrash />
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+        <div className="flex gap-2 mb-4">
+          <button onClick={abrirModalAdicionar} className="bg-odara-accent hover:bg-odara-secondary text-white px-4 py-2 rounded flex items-center">
+            <FaPlus className="mr-2"/> Novo Registro
+          </button>
+          <button onClick={() => setMostrarArquivados(!mostrarArquivados)} className="bg-odara-white text-odara-dark px-4 py-2 rounded">
+            {mostrarArquivados ? 'Mostrar Próximos' : 'Mostrar Arquivados'}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+          {/* Lista registros */}
+          <div className="bg-white rounded-xl shadow p-4 max-h-[600px] overflow-y-auto">
+            {registrosFiltrados.length === 0 ? (
+              <p className="text-gray-500 text-center">Nenhum registro encontrado</p>
+            ) : registrosFiltrados.map(r => (
+              <div key={r.id} className="p-4 mb-4 rounded-xl border-l-4 border-odara-primary bg-odara-offwhite">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="font-semibold">{r.refeicao} - {r.horario}</p>
+                  <div className="flex gap-2">
+                    <button onClick={() => abrirModalEditar(r.id)}><FaEdit/></button>
+                    <button onClick={() => excluirRegistro(r.id)}><FaTrash/></button>
+                  </div>
+                </div>
+                <p><strong>Alimento:</strong> {r.alimento}</p>
+                <p><strong>Residente(s):</strong> {r.residentes}</p>
+                <label className="flex items-center gap-2 mt-2">
+                  <input type="checkbox" checked={r.concluido} onChange={() => alternarConclusao(r.id)} />
+                  {r.concluido ? 'Concluído' : 'Pendente'}
+                </label>
               </div>
             ))}
           </div>
 
-          <div className="mt-10 bg-odara-offwhite rounded-2xl shadow-lg p-10 h-fit border-l-4 border-odara-primary">
-            <h3 className="text-xl mb-4">RESIDENTE <h3 className="text-odara-dark">{residenteAtual?.residente || 'Área para foto do paciente'}</h3></h3>
-            <div className="text-center">
-              <div className="w-50 h-50 mx-auto rounded-full flex items-center justify-center mb-2">
-                {residenteAtual?.foto ? (
-                  <img src={residenteAtual.foto} alt={residenteAtual.residente} className="w-60 h-60 rounded-[30px] object-cover" />
-                ) : (
-                  <span className="text-odara-primary text-4xl">👤</span>
-                )}
-              </div>
-
+          {/* Calendário */}
+          <div className="bg-white rounded-xl shadow p-4 max-w-md mx-auto">
+             <div className="mt-4 flex justify-center">
+              <button
+                onClick={irParaHoje}
+                className="bg-odara-accent hover:bg-odara-secondary text-white px-4 py-2 rounded-lg transition mb-4"
+              >
+                Hoje
+              </button>
             </div>
+            <Calendar
+              value={dataAtual}
+              onChange={setDataAtual}
+              onClickDay={handleDayClick}
+              tileClassName={getTileClassName}
+              tileContent={getTileContent}
+              locale="pt-BR"
+              nextLabel={<FaChevronRight />}
+              prevLabel={<FaChevronLeft />}
+              next2Label={null}
+              prev2Label={null}
+              showNeighboringMonth={false}
+            />
           </div>
         </div>
 
         {/* Modal */}
         {modalAberto && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-odara-offwhite rounded-xl shadow-2xl max-w-md w-full p-6 border-l-4 border-odara-primary">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-odara-dark">
-                  {editando ? 'Editar' : 'Adicionar'} Preferência - {CATEGORIA_LABELS[categoriaAtual]}
-                </h2>
-                <button onClick={() => setModalAberto(false)} className="text-odara-dark hover:text-odara-accent transition-colors duration-200">✕</button>
+          <div className="fixed inset-0 bg-black/30 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl p-6 w-full max-w-md">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">{editando ? 'Editar' : 'Adicionar'} Registro</h2>
+                <button onClick={() => setModalAberto(false)}><FaTimes/></button>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-odara-dark font-medium mb-2">Residente</label>
-                  <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-                    value={novaPreferencia.residente}
-                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, residente: e.target.value })}
-                    placeholder="Nome do residente" />
+                  <label className="block font-medium">Data *</label>
+                  <input type="date" className="w-full border p-2 rounded" value={novoRegistro.data} onChange={e => setNovoRegistro({...novoRegistro, data:e.target.value})}/>
                 </div>
+
                 <div>
-                  <label className="block text-odara-dark font-medium mb-2">Título</label>
-                  <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-                    value={novaPreferencia.titulo}
-                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, titulo: e.target.value })}
-                    placeholder="Digite o título" />
+                  <label className="block font-medium">Horário</label>
+                  <input type="time" className="w-full border p-2 rounded" value={novoRegistro.horario} onChange={e => setNovoRegistro({...novoRegistro, horario:e.target.value})}/>
                 </div>
+
                 <div>
-                  <label className="block text-odara-dark font-medium mb-2">Descrição</label>
-                  <textarea className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" rows="4"
-                    value={novaPreferencia.descricao}
-                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, descricao: e.target.value })}
-                    placeholder="Digite a descrição"></textarea>
+                  <label className="block font-medium">Refeição *</label>
+                  <select className="w-full border p-2 rounded" value={novoRegistro.refeicao} onChange={e => setNovoRegistro({...novoRegistro, refeicao:e.target.value})}>
+                    {REFEICOES.map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
                 </div>
+
                 <div>
-                  <label className="block text-odara-dark font-medium mb-2">Foto do Residente</label>
-                  <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-                    value={novaPreferencia.foto}
-                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, foto: e.target.value })}
-                    placeholder="Link da foto" />
+                  <label className="block font-medium">Alimento *</label>
+                  <input type="text" className="w-full border p-2 rounded" value={novoRegistro.alimento} onChange={e => setNovoRegistro({...novoRegistro, alimento:e.target.value})}/>
+                </div>
+
+                <div>
+                  <label className="block font-medium">Residente(s)</label>
+                  <input type="text" className="w-full border p-2 rounded" value={novoRegistro.residentes} onChange={e => setNovoRegistro({...novoRegistro, residentes:e.target.value})}/>
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-3 mt-6">
-                <button onClick={() => setModalAberto(false)}
-                  className="px-4 py-2 border border-odara-primary/30 text-odara-dark rounded-lg hover:bg-white transition-colors duration-200">Cancelar</button>
-                <button onClick={salvarPreferencia}
-                  className="px-4 py-2 bg-odara-accent text-odara-contorno rounded-lg hover:bg-odara-secondary/90 transition-colors duration-200 border-2 border-odara-contorno"
-                  disabled={!novaPreferencia.titulo || !novaPreferencia.descricao}>
-                  {editando ? 'Atualizar' : 'Salvar'}
-                </button>
+              <div className="flex justify-end gap-2 mt-4">
+                <button className="px-4 py-2 border rounded" onClick={() => setModalAberto(false)}>Cancelar</button>
+                <button className="px-4 py-2 bg-green-600 text-white rounded" onClick={salvarRegistro}>Salvar</button>
               </div>
             </div>
           </div>
         )}
+
       </div>
-    </div >
+    </div>
   );
 };
 
