@@ -1,145 +1,159 @@
 import React, { useState } from 'react';
-import { FaUtensils, FaWalking, FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle, FaTimes, FaArrowLeft, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa';
-
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 const RegistroOcorrencias = () => {
-  const [preferences, setPreferences] = useState({
-    ocorrencias: [
-      { id: 1, 
-        title: "Caiu da Cadeira", 
-        description: "João caiu da cadeira", 
-        residente: "João Silva", 
-        foto: "/images/foto-idoso-joao.jpg",
-        idade: 72,
-        sexo: "Masculino",
-        prontuario: "2023001",
-        data: new Date(2023, 0, 15), // 15 Jan 2023
-        horario: "10:30",
-        medico: "Atendimento com efermeiros",
-         },
+  // ===== ESTADOS DO COMPONENTE =====
+  const [ocorrencias, setOcorrencias] = useState([
+    {
+      id: 1,
+      data: new Date(new Date().getFullYear(), new Date().getMonth(), 2),
+      horario: "14:30",
+      titulo: "Queda no banheiro",
+      descricao: "Residente escorregou no banheiro. Sem ferimentos graves.",
+      providencias: "Monitoramento médico.",
+      categoria: "acidente",
+      residente: "Maria Oliveira",
+      funcionario: "João Santos",
+      resolvido: false
+    },
+    {
+      id: 2,
+      data: new Date(new Date().getFullYear(), new Date().getMonth(), 3),
+      horario: "09:15",
+      titulo: "Febre",
+      descricao: "Residente apresentou febre de 38.5°C.",
+      providencias: "Medicamento prescrito.",
+      categoria: "saude",
+      residente: "José Silva",
+      funcionario: "Ana Costa",
+      resolvido: true
+    }
+  ]);
 
-      { id: 2, 
-        title: "Se Cortou", 
-        description: "Maria se cortou com um garfo", 
-        residente: "Maria Oliveira", 
-        foto: "/images/foto-idosa-maria.png",
-        idade: 85,
-        sexo: "Feminino",
-        prontuario: "2045001",
-        data: new Date(2023, 0, 15), // 15 Jan 2023
-        horario: "16:00",
-        medico: "Dr. Mirian Souza",
-       }
-    ],
-    descricoes: [
-      { id: 3, title: "Queda",
-         description: "João caiu no horario de lazer, ao se sentar para jogar xadrez",
-          residente: "João Silva", 
-          foto: "/images/foto-idoso-joao.jpg",
-          idade: 72,
-          sexo: "Masculino",
-          prontuario: "2023001",
-          data: new Date(2023, 0, 15), // 15 Jan 2023
-          horario: "10:30",
-          medico: "Atendimento com efermeiros",
-        
-        },
-      { id: 4, title: "Corte", 
-        description: "Maria cortou sua mão ao ultilizar o garfo na hora do almoço",
-        residente: "Maria Oliveira",
-        foto: "/images/foto-idosa-maria.png",
-        idade: 85,
-        sexo: "Feminino",
-        prontuario: "2045001",
-        data: new Date(2023, 0, 15), // 15 Jan 2023
-        horario: "16:00",
-        medico: "Dr. Mirian Souza",
-      }
-    ],
-    consequencias: [
-      { id: 5, title: "Leticia", 
-        description: "Enfermeira Leticia checou seus sinais e o encaminhou para a enfermaria, onde foi realizado um check-up",
-        residente: "João Silva", 
-        foto: "/images/foto-idoso-joao.jpg",
-        idade: 72,
-        sexo: "Masculino",
-        prontuario: "2023001",
-        data: new Date(2023, 0, 15), // 15 Jan 2023
-        horario: "10:30",
-        medico: "Atendimento com enfermeiros",
-       },
-      { id: 6, title: "Livia", 
-        description: "Enfermeira Lívia encaminhou a residente para enfermaria, realizou um curativo temporário até a mesma ser atendida pela Dr. Mirian Souza, onde a mesma realizou um curativo mais adequado e receitou um anti-séptico tópico para evitar infecções.",
-         residente: "Maria Oliveira", 
-         foto: "/images/foto-idosa-maria.png",
-         idade: 85,
-        sexo: "Feminino",
-        prontuario: "2045001",
-        data: new Date(2023, 0, 15), // 15 Jan 2023
-        horario: "16:00",
-        medico: "Dr. Mirian Souza",
-         }
-    ]
-  });
-
+  const [dataAtual, setDataAtual] = useState(new Date());
   const [modalAberto, setModalAberto] = useState(false);
-  const [categoriaAtual, setCategoriaAtual] = useState('');
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
-  const [novaPreferencia, setNovaPreferencia] = useState({ titulo: '', descricao: '', residente: '', foto: '', idade: '', sexo: '', prontuario: '', data: '', horario: '', medico: '' });
-  const [filtroAtivo, setFiltroAtivo] = useState('todos');
-  const [filtroAberto, setFiltroAberto] = useState(false);
+  const [novaOcorrencia, setNovaOcorrencia] = useState({
+    titulo: '',
+    descricao: '',
+    providencias: '',
+    data: '',
+    horario: '',
+    residente: '',
+    funcionario: '',
+    categoria: 'outro'
+  });
   const [editando, setEditando] = useState(false);
   const [idEditando, setIdEditando] = useState(null);
+  const [filtroAtivo, setFiltroAtivo] = useState('todos');
+  const [filtroAberto, setFiltroAberto] = useState(false);
   const [infoVisivel, setInfoVisivel] = useState(false);
+  const [filtroDia, setFiltroDia] = useState(null);
+  const [filtroDiaAtivo, setFiltroDiaAtivo] = useState(false);
   const [residenteSelecionado, setResidenteSelecionado] = useState('');
-  const [residenteAtual, setResidenteAtual] = useState(null);
-  const [dropdownAberto, setDropdownAberto] = useState(false);
+  const [filtroResidenteAberto, setFiltroResidenteAberto] = useState(false);
+  const [mostrarResolvidas, setMostrarResolvidas] = useState(false);
 
-
+  // ===== CONSTANTES =====
   const CATEGORIAS = {
-    OCORRENCIAS: 'ocorrencias',
-    DESCRICOES: 'descricoes',
-    CONSEQUENCIAS: 'consequencias'
+    ACIDENTE: 'acidente',
+    SAUDE: 'saude',
+    COMPORTAMENTAL: 'comportamental',
+    ESTRUTURAL: 'estrutural',
+    OUTRO: 'outro'
   };
 
-  const CATEGORIA_LABELS = {
-    [CATEGORIAS.OCORRENCIAS]: "Ocorrências",
-    [CATEGORIAS.DESCRICOES]: "Descrições",
-    [CATEGORIAS.CONSEQUENCIAS]: "Consequências"
+  const ROTULOS_CATEGORIAS = {
+    [CATEGORIAS.ACIDENTE]: "Acidente",
+    [CATEGORIAS.SAUDE]: "Saúde",
+    [CATEGORIAS.COMPORTAMENTAL]: "Comportamental",
+    [CATEGORIAS.ESTRUTURAL]: "Estrutural",
+    [CATEGORIAS.OUTRO]: "Outro"
+  };
+
+  const CORES_CATEGORIAS = {
+    [CATEGORIAS.ACIDENTE]: 'bg-red-400/60 text-white',
+    [CATEGORIAS.SAUDE]: 'bg-green-400/60 text-white',
+    [CATEGORIAS.COMPORTAMENTAL]: 'bg-yellow-400/60 text-white',
+    [CATEGORIAS.ESTRUTURAL]: 'bg-blue-400/60 text-white',
+    [CATEGORIAS.OUTRO]: 'bg-gray-400/60 text-white'
+  };
+
+  const CORES_CALENDARIO = {
+    [CATEGORIAS.ACIDENTE]: 'bg-red-400',
+    [CATEGORIAS.SAUDE]: 'bg-green-400',
+    [CATEGORIAS.COMPORTAMENTAL]: 'bg-yellow-400',
+    [CATEGORIAS.ESTRUTURAL]: 'bg-blue-400',
+    [CATEGORIAS.OUTRO]: 'bg-gray-400'
   };
 
   const FILTROS = [
     { id: 'todos', label: 'Todos' },
-    { id: CATEGORIAS.OCORRENCIAS, label: CATEGORIA_LABELS[CATEGORIAS.OCORRENCIAS] },
-    { id: CATEGORIAS.DESCRICOES, label: CATEGORIA_LABELS[CATEGORIAS.DESCRICOES] },
-    { id: CATEGORIAS.CONSEQUENCIAS, label: CATEGORIA_LABELS[CATEGORIAS.CONSEQUENCIAS] }
+    ...Object.values(CATEGORIAS).map(cat => ({
+      id: cat,
+      label: ROTULOS_CATEGORIAS[cat]
+    }))
   ];
 
-  const abrirModalAdicionar = (categoria) => {
-    setCategoriaAtual(categoria);
-    setNovaPreferencia({ titulo: '', descricao: '', idade: '', sexo: '', prontuario: '', data: '', horario: '', medico: '',  residente: '', foto: '' });
+  // ===== FUNÇÕES =====
+  const obterOcorrenciasDoDia = (data) => {
+    return ocorrencias.filter(o => {
+      return o.data.getDate() === data.getDate() &&
+             o.data.getMonth() === data.getMonth() &&
+             o.data.getFullYear() === data.getFullYear();
+    });
+  };
+
+  const handleDayClick = (value) => {
+    if (filtroDiaAtivo && filtroDia &&
+        value.getDate() === filtroDia.getDate() &&
+        value.getMonth() === filtroDia.getMonth() &&
+        value.getFullYear() === filtroDia.getFullYear()) {
+      setFiltroDiaAtivo(false);
+      setFiltroDia(null);
+    } else {
+      setFiltroDia(value);
+      setFiltroDiaAtivo(true);
+    }
+  };
+
+  const irParaHoje = () => {
+    const hoje = new Date();
+    setDataAtual(hoje);
+    setFiltroDia(hoje);
+    setFiltroDiaAtivo(true);
+  };
+
+  const abrirModalAdicionar = () => {
+    setNovaOcorrencia({
+      titulo: '',
+      descricao: '',
+      providencias: '',
+      data: new Date().toISOString().split('T')[0],
+      horario: '',
+      residente: '',
+      funcionario: '',
+      categoria: 'outro'
+    });
     setEditando(false);
     setIdEditando(null);
     setModalAberto(true);
   };
 
-  const abrirModalEditar = (categoria, id) => {
-    const preferenciaParaEditar = preferences[categoria].find(item => item.id === id);
-    if (preferenciaParaEditar) {
-      setCategoriaAtual(categoria);
-      setNovaPreferencia({
-        titulo: preferenciaParaEditar.title,
-        descricao: preferenciaParaEditar.description,
-        residente: preferenciaParaEditar.residente,
-        foto: preferenciaParaEditar.foto,
-        idade: preferenciaParaEditar.idade,
-        sexo: preferenciaParaEditar.sexo,
-        prontuario: preferenciaParaEditar.prontuario,
-        data: preferenciaParaEditar.data,
-        horario: preferenciaParaEditar.horario,
-        medico: preferenciaParaEditar.medico
+  const abrirModalEditar = (id) => {
+    const ocorrencia = ocorrencias.find(o => o.id === id);
+    if (ocorrencia) {
+      setNovaOcorrencia({
+        titulo: ocorrencia.titulo,
+        descricao: ocorrencia.descricao,
+        providencias: ocorrencia.providencias,
+        data: ocorrencia.data.toISOString().split('T')[0],
+        horario: ocorrencia.horario,
+        residente: ocorrencia.residente,
+        funcionario: ocorrencia.funcionario,
+        categoria: ocorrencia.categoria
       });
       setEditando(true);
       setIdEditando(id);
@@ -147,418 +161,203 @@ const RegistroOcorrencias = () => {
     }
   };
 
-  const salvarPreferencia = () => {
-    if (!novaPreferencia.titulo || !novaPreferencia.descricao) return;
+  const salvarOcorrencia = () => {
+    if (!novaOcorrencia.titulo || !novaOcorrencia.data) return;
+
+    const partesData = novaOcorrencia.data.split('-');
+    const dataObj = new Date(partesData[0], partesData[1] - 1, partesData[2]);
 
     if (editando && idEditando) {
-      // Atualiza existente
-      setPreferences(prev => ({
-        ...prev,
-        [categoriaAtual]: prev[categoriaAtual].map(item =>
-          item.id === idEditando
-            ? {
-              ...item,
-              title: novaPreferencia.titulo,
-              description: novaPreferencia.descricao,
-              residente: novaPreferencia.residente,
-              idade: novaPreferencia.idade,
-              sexo: novaPreferencia.sexo,
-              prontuario: novaPreferencia.prontuario,
-              data: novaPreferencia.data,
-              horario: novaPreferencia.horario,
-              medico: novaPreferencia.medico,
-              foto: novaPreferencia.foto
-            }
-            : item
-        )
-      }));
+      setOcorrencias(prev => prev.map(o =>
+        o.id === idEditando
+          ? { ...o, ...novaOcorrencia, data: dataObj }
+          : o
+      ));
     } else {
-      // Adiciona novo 
-      const novoItem = {
+      const novaObj = {
         id: Date.now(),
-        title: novaPreferencia.titulo,
-        description: novaPreferencia.descricao,
-        residente: novaPreferencia.residente,
-        idade: novaPreferencia.idade,
-        sexo: novaPreferencia.sexo,
-        prontuario: novaPreferencia.prontuario,
-        data: novaPreferencia.data,
-        horario: novaPreferencia.horario,
-        medico: novaPreferencia.medico,
-        foto: novaPreferencia.foto
+        ...novaOcorrencia,
+        data: dataObj,
+        resolvido: false
       };
-      setPreferences(prev => ({
-        ...prev,
-        [categoriaAtual]: [...prev[categoriaAtual], novoItem]
-      }));
+      setOcorrencias(prev => [...prev, novaObj]);
     }
 
     setModalAberto(false);
   };
 
-
-  const excluirPreferencia = (categoria, id) => {
-    if (window.confirm('Tem certeza que deseja excluir esta preferência?')) {
-      setPreferences(prev => ({
-        ...prev,
-        [categoria]: prev[categoria].filter(item => item.id !== id)
-      }));
+  const excluirOcorrencia = (id) => {
+    if (window.confirm('Deseja realmente excluir esta ocorrência?')) {
+      setOcorrencias(prev => prev.filter(o => o.id !== id));
     }
   };
 
+  const alternarResolvido = (id) => {
+    setOcorrencias(prev => prev.map(o =>
+      o.id === id ? { ...o, resolvido: !o.resolvido } : o
+    ));
+  };
 
-  const residentes = Array.from(new Set(
-    [...preferences.ocorrencias, ...preferences.descricoes, ...preferences.consequencias]
-      .map(item => item.residente)
-      .filter(Boolean)
-  ));
+  const ocorrenciasFiltradas = ocorrencias
+    .filter(o => {
+      const passaFiltroCategoria = filtroAtivo === 'todos' || o.categoria === filtroAtivo;
+      const passaFiltroDia = !filtroDiaAtivo || (
+        o.data.getDate() === filtroDia.getDate() &&
+        o.data.getMonth() === filtroDia.getMonth() &&
+        o.data.getFullYear() === filtroDia.getFullYear()
+      );
+      const passaFiltroResidente = !residenteSelecionado || o.residente === residenteSelecionado;
+      const passaFiltroResolvido = mostrarResolvidas ? o.resolvido : !o.resolvido;
 
+      return passaFiltroCategoria && passaFiltroDia && passaFiltroResidente && passaFiltroResolvido;
+    })
+    .sort((a, b) => {
+      const comparacaoData = new Date(a.data) - new Date(b.data);
+      if (comparacaoData === 0) return (a.horario || '').localeCompare(b.horario || '');
+      return comparacaoData;
+    });
 
-  // Filtrar preferências por categoria e residente
-  const preferenciasFiltradas = Object.fromEntries(
-    Object.entries(preferences).map(([cat, items]) => [
-      cat,
-      items.filter(item =>
-        (filtroAtivo === 'todos' || filtroAtivo === cat) &&
-        (!residenteSelecionado || item.residente === residenteSelecionado)
-      )
-    ])
-  );
+  const getTileContent = ({ date, view }) => {
+    if (view !== 'month') return null;
+    const categoriasDia = [...new Set(obterOcorrenciasDoDia(date).map(o => o.categoria))];
+    return (
+      <div className="mt-1 flex justify-center gap-1 flex-wrap">
+        {categoriasDia.map(c => (
+          <div key={c} className={`w-2 h-2 rounded-full ${CORES_CALENDARIO[c]}`} title={ROTULOS_CATEGORIAS[c]} />
+        ))}
+      </div>
+    );
+  };
 
+  const getTileClassName = ({ date, view }) => {
+    let classes = [];
+    const hoje = new Date();
+    if (date.toDateString() === hoje.toDateString()) classes.push('!bg-odara-primary/20 font-bold');
+    if (filtroDiaAtivo && filtroDia && date.toDateString() === filtroDia.toDateString()) classes.push('outline-2 outline outline-odara-accent outline-offset-[-1px]');
+    return classes.join(' ');
+  };
+
+  // ===== RENDER =====
   return (
-    <div className="flex min-h-screen from-odara-offwhite to-odara-primary/30">
+    <div className="flex min-h-screen bg-odara-offwhite">
       <div className="flex-1 p-6 lg:p-10">
+        {/* Cabeçalho */}
         <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center">
-            <div className="flex items-center mb-1">
-              <Link
-                to="/gestao/PaginaRegistros"
-                className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 flex items-center"
-              >
-                <FaArrowLeft className="mr-1" />
-              </Link>
-            </div>
-            <h1 className="text-3xl font-bold text-odara-dark mr-2">Registro de Ocorrências</h1>
+          <div className="flex items-center gap-2">
+            <Link to="/gestao/PaginaRegistros" className="text-odara-accent hover:text-odara-secondary flex items-center">
+              <FaArrowLeft className="mr-1" />
+            </Link>
+            <h1 className="text-3xl font-bold text-odara-dark">Registro de Ocorrências</h1>
             <div className="relative">
-              <button
-                onMouseEnter={() => setInfoVisivel(true)}
-                onMouseLeave={() => setInfoVisivel(false)}
-                className="text-odara-accent hover:text-odara-secondary transition-colors duration-200"
-              >
-                <FaInfoCircle size={20} />
+              <button onMouseEnter={() => setInfoVisivel(true)} onMouseLeave={() => setInfoVisivel(false)}>
+                <FaInfoCircle className="ml-2 text-odara-accent" size={20} />
               </button>
               {infoVisivel && (
                 <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dropdown text-odara-name text-sm rounded-lg shadow-lg">
                   <h3 className="font-bold mb-2">Registro de Ocorrências</h3>
-                  <p>
-                    O Registro de Ocorrências ficha onde se registra qualquer situação fora do comum envolvendo os residentes, funcionários ou a rotina da casa de repouso, podendo ser clínica,  comportamental ou até mesmo relacional, esse diário ajuda a acompanhar tudo o que pode impactar o bem-estar dos idosos e na organização do local, também na ciência dos responsáveis sobre os acontecimentos do dia.
-                  </p>
-                  <div className="absolute bottom-full left-4 border-4 border-transparent border-b-odara-dark"></div>
+                  <p>O registro de ocorrências serve para documentar todos os incidentes, acidentes, problemas de saúde ou situações relevantes envolvendo residentes e funcionários. Isso garante acompanhamento, prevenção e transparência.</p>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="relative flex items-center gap-4 mb-6">
-          {/* Botão Adicionar */}
-          <button
-            onClick={() => setDropdownAberto(!dropdownAberto)}
-            className="bg-odara-accent hover:bg-odara-secondary/90 text-odara-contorno font-medium py-2 px-4 rounded-lg flex items-center transition duration-200 border-2 border-odara-contorno"
-          >
-            <FaPlus className="mr-2" /> Adicionar
+        {/* Barra de ações e filtros */}
+        <div className="flex flex-wrap gap-4 mb-6">
+          <button onClick={abrirModalAdicionar} className="bg-odara-accent hover:bg-odara-secondary text-white px-4 py-2 rounded-lg flex items-center">
+            <FaPlus className="mr-2" /> Nova Ocorrência
           </button>
-
-          {/* Dropdown */}
-          {dropdownAberto && (
-            <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50">
-              {Object.values(CATEGORIAS).map(categoria => (
-                <button
-                  key={categoria}
-                  className="block w-full text-left px-4 py-2 text-sm hover:bg-odara-primary/10"
-                  onClick={() => {
-                    setCategoriaSelecionada(categoria);
-                    abrirModalAdicionar(categoria); // abre o modal
-                    setDropdownAberto(false);
-                  }}
-                >
-                  {CATEGORIA_LABELS[categoria]}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Selecionando por residentes */}
-          <div className="relative">
-            <select
-              className="border border-gray-300 rounded-lg px-3 py-2"
-              value={residenteSelecionado || ''}
-              onChange={(e) => setResidenteSelecionado(e.target.value)}
-            >
-              <option value="">Todos os residentes</option>
-              {residentes.map(r => <option key={r} value={r}>{r}</option>)}
-            </select>
-          </div>
-
-          <div className="relative">
-            <button
-              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-odara-dark font-medium hover:bg-odara-primary/10 transition"
-              onClick={() => setFiltroAberto(!filtroAberto)}
-            >
-              <FaFilter className="text-odara-accent mr-2" />
-              Filtro
-            </button>
-
-            {filtroAberto && (
-              <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-                {FILTROS.map(filtro => (
-                  <button
-                    key={filtro.id}
-                    onClick={() => {
-                      setFiltroAtivo(filtro.id);
-                      setFiltroAberto(false);
-                    }}
-                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/10 ${filtroAtivo === filtro.id ? 'bg-odara-primary/20 font-semibold' : ''}`}
-                  >
-                    {filtro.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <button onClick={() => setMostrarResolvidas(!mostrarResolvidas)} className="bg-odara-offwhite text-odara-dark border px-4 py-2 rounded-lg ">
+            {mostrarResolvidas ? 'Ocorrências Pendentes' : 'Ocorrências Resolvidas'}
+          </button>
         </div>
 
-        <div className="bg-odara-offwhite rounded-2xl shadow-lg p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="max-h-[calc(100vh-250px)] overflow-y-auto pr-2 lg:col-span-2 space-y-8">
-            {Object.entries(preferenciasFiltradas).map(([categoria, items]) => (
-              <div key={categoria} className="mb-8">
-                <h3 className="text-xl font-semibold text-odara-dark mb-4 flex items-center">
-                  {categoria === 'alimentar' && <FaUtensils className="mr-2 text-odara-accent" />}
-                  {categoria === 'atividades' && <FaWalking className="mr-2 text-odara-accent" />}
-                  {categoria === 'cuidador' && <FaWalking className="mr-2 text-odara-accent" />}
-                  {CATEGORIA_LABELS[categoria]}
-                </h3>
-                <ul className="space-y-4">
-                  {items.map(item => (
-                    <li
-                      key={item.id}
-                      className="bg-white p-4 rounded-lg border border-gray-200 flex justify-between items-start hover:shadow-md transition-shadow duration-200"
-                      onMouseEnter={() => setResidenteAtual(item)}
-                    >
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-odara-dark">Residente: {item.residente}</h4>
-                        <p className="text-odara-dark/70 text-sm mt-1">Descrição: {item.description}</p>
-                        <p className="text-odara-dark/70 text-sm mt-1">Idade: {item.idade}</p>
-                        <p className="text-odara-dark/50 text-xs mt-1">Sexo:  {item.sexo}</p>
-                        <p className="text-odara-dark/50 text-xs mt-1"> Data: {new Date(item.data).toLocaleDateString()}</p>
-                        <p className="text-odara-dark/50 text-xs mt-1">Horário: {item.horario}</p>
-                        <p className="text-odara-dark/50 text-xs mt-1">Médico: {item.medico}</p>
-                        <p className="text-odara-dark/70 text-sm mt-1"> Prontuario: {item.prontuario}</p>
-                        
+        {/* Grid de Ocorrências e Calendário */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Lista de Ocorrências */}
+          <div className="bg-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold mb-4">{mostrarResolvidas ? 'Ocorrências Resolvidas' : 'Ocorrências Pendentes'}</h2>
+            <div className="space-y-4 max-h-[600px] overflow-y-auto">
+              {ocorrenciasFiltradas.length === 0 ? (
+                <p className="text-center text-gray-500">Nenhuma ocorrência encontrada</p>
+              ) : (
+                ocorrenciasFiltradas.map(o => (
+                  <div key={o.id} className={`p-4 rounded-xl ${CORES_CATEGORIAS[o.categoria]}`}>
+                    <div className="flex justify-between items-center mb-2">
+                      <div>
+                        <span className="font-semibold">{o.data.getDate()}/{o.data.getMonth()+1}/{o.data.getFullYear()}</span>
+                        {o.horario && ` - ${o.horario}`}
                       </div>
-                      <div className="w-16 h-16 ml-4">
-                        {item.foto ? (
-                          <img src={item.foto} alt={item.residente} className="w-full h-full rounded-lg object-cover" />
-                        ) : (
-                          <span className="text-odara-primary text-4xl">👤</span>
-                        )}
-                      </div>
-                      <div className="flex space-x-2 ml-4">
-                        <button onClick={() => abrirModalEditar(categoria, item.id)}
-                          className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-1 rounded-full hover:bg-odara-accent/10">
-                          <FaEdit />
-                        </button>
-                        <button onClick={() => excluirPreferencia(categoria, item.id)}
-                          className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1 rounded-full hover:bg-red-50">
-                          <FaTrash />
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+                      <label className="flex items-center gap-2 text-sm">
+                        <input type="checkbox" checked={o.resolvido} onChange={() => alternarResolvido(o.id)} />
+                        {o.resolvido ? 'Resolvido' : 'Pendente'}
+                      </label>
+                    </div>
+                    <h3 className="text-lg font-bold">{o.titulo}</h3>
+                    <p className="text-sm mb-1">{o.descricao}</p>
+                    {o.providencias && <p className="text-sm italic mb-1">Providências: {o.providencias}</p>}
+                    <p className="text-xs"><strong>Residente:</strong> {o.residente} | <strong>Funcionário:</strong> {o.funcionario}</p>
+                    <div className="flex justify-end gap-2 mt-2">
+                      <button onClick={() => abrirModalEditar(o.id)} className="p-1 text-white bg-blue-500 rounded"><FaEdit /></button>
+                      <button onClick={() => excluirOcorrencia(o.id)} className="p-1 text-white bg-red-500 rounded"><FaTrash /></button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
 
-          <div className="mt-10 bg-odara-offwhite rounded-2xl shadow-lg p-10 h-fit border-l-4 border-odara-primary">
-            <h3 className="text-xl mb-4">RESIDENTE <h3 className="text-odara-dark">{residenteAtual?.residente || 'Área para foto do paciente'}</h3></h3>
-            <div className="text-center">
-              <div className="w-50 h-50 mx-auto rounded-full flex items-center justify-center mb-2">
-                {residenteAtual?.foto ? (
-                  <img src={residenteAtual.foto} alt={residenteAtual.residente} className="w-60 h-60 rounded-[30px] object-cover" />
-                ) : (
-                  <span className="text-odara-primary text-4xl">👤</span>
-                )}
-              </div>
-
+          {/* Calendário */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="flex justify-center mb-4">
+              <button onClick={irParaHoje} className="bg-odara-accent hover:bg-odara-secondary text-white px-4 py-2 rounded-lg">Hoje</button>
             </div>
+            <Calendar
+              value={dataAtual}
+              onChange={setDataAtual}
+              onClickDay={handleDayClick}
+              tileClassName={getTileClassName}
+              tileContent={getTileContent}
+              nextLabel={<FaChevronRight />}
+              prevLabel={<FaChevronLeft />}
+              next2Label={null}
+              prev2Label={null}
+              className="border-0"
+            />
           </div>
         </div>
 
         {/* Modal */}
-{modalAberto && (
-  <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 overflow-y-auto">
-    {/* Backdrop */}
-    <div
-      className="fixed inset-0 bg-black/50"
-      onClick={() => setModalAberto(false)}
-    />
-
-    {/* Painel do Modal */}
-    <div className="relative bg-odara-offwhite rounded-xl shadow-2xl max-w-md w-full p-6 border-l-4 border-odara-primary max-h-[90vh] overflow-y-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-odara-dark">
-          {editando ? 'Editar' : 'Adicionar'} Registros - {CATEGORIA_LABELS[categoriaAtual]}
-        </h2>
-        <button
-          onClick={() => setModalAberto(false)}
-          className="text-odara-dark hover:text-odara-accent transition-colors duration-200"
-        >
-          ✕
-        </button>
-      </div>
-
-      <div className="space-y-4">
-        {/* Residente */}
-        <div>
-          <label className="block text-odara-dark font-medium mb-2">Residente</label>
-          <input
-            type="text"
-            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-            value={novaPreferencia.residente}
-            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, residente: e.target.value })}
-            placeholder="Nome do residente"
-          />
-        </div>
-
-        {/* Título */}
-        <div>
-          <label className="block text-odara-dark font-medium mb-2">Título</label>
-          <input
-            type="text"
-            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-            value={novaPreferencia.titulo}
-            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, titulo: e.target.value })}
-            placeholder="Digite o título"
-          />
-        </div>
-
-        {/* Idade */}
-        <div>
-          <label className="block text-odara-dark font-medium mb-2">Idade</label>
-          <input
-            type="number"
-            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-            value={novaPreferencia.idade}
-            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, idade: e.target.value })}
-            placeholder="Digite a idade"
-          />
-        </div>
-
-        {/* Sexo */}
-        <div>
-          <label className="block text-odara-dark font-medium mb-2">Sexo</label>
-          <input
-            type="text"
-            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-            value={novaPreferencia.sexo}
-            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, sexo: e.target.value })}
-            placeholder="Digite o sexo"
-          />
-        </div>
-
-        {/* data */}
-        <div>
-          <label className="block text-odara-dark font-medium mb-2">Data</label>
-          <input
-            type="date"
-            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-            value={novaPreferencia.data}
-            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, data: e.target.value })}
-          />
-        </div>
-
-        {/* Horário */}
-        <div>
-          <label className="block text-odara-dark font-medium mb-2">Horário</label>
-          <input
-            type="time"
-            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-            value={novaPreferencia.horario}
-            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, horario: e.target.value })}
-          />
-        </div>
-
-        {/* Médico */}
-        <div>
-          <label className="block text-odara-dark font-medium mb-2">Médico</label>
-          <input
-            type="text"
-            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-            value={novaPreferencia.medico}
-            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, medico: e.target.value })}
-            placeholder="Nome do médico"
-          />
-        </div>
-
-        {/* Prontuário */}
-        <div>
-          <label className="block text-odara-dark font-medium mb-2">Prontuário</label>
-          <input
-            type="text"
-            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-            value={novaPreferencia.prontuario}
-            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, prontuario: e.target.value })}
-            placeholder="Número do prontuário"
-          />
-        </div>
-        {/* Descrição */}
-        <div>
-          <label className="block text-odara-dark font-medium mb-2">Descrição</label>
-          <textarea
-            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-            rows={4}
-            value={novaPreferencia.descricao}
-            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, descricao: e.target.value })}
-            placeholder="Digite a descrição"
-          />
-        </div>
-
-        {/* Foto */}
-        <div>
-          <label className="block text-odara-dark font-medium mb-2">Foto do Residente</label>
-          <input
-            type="text"
-            className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-            value={novaPreferencia.foto}
-            onChange={(e) => setNovaPreferencia({ ...novaPreferencia, foto: e.target.value })}
-            placeholder="Link da foto"
-          />
-        </div>
-      </div>
-
-      {/* Botões */}
-      <div className="flex justify-end space-x-3 mt-6">
-        <button
-          onClick={() => setModalAberto(false)}
-          className="px-4 py-2 border border-odara-primary/30 text-odara-dark rounded-lg hover:bg-white transition-colors duration-200"
-        >
-          Cancelar
-        </button>
-        <button
-          onClick={salvarPreferencia}
-          className="px-4 py-2 bg-odara-accent text-odara-contorno rounded-lg hover:bg-odara-secondary/90 transition-colors duration-200 border-2 border-odara-contorno"
-          disabled={!novaPreferencia.titulo || !novaPreferencia.descricao}
-        >
-          {editando ? 'Atualizar' : 'Salvar'}
-        </button>
+        {modalAberto && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl p-6 max-w-md w-full border-l-4 border-odara-primary shadow-xl">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">{editando ? 'Editar' : 'Adicionar'} Ocorrência</h2>
+                <button onClick={() => setModalAberto(false)}><FaTimes /></button>
+              </div>
+              <div className="space-y-3">
+                <input type="text" placeholder="Título" className="w-full p-2 border rounded" value={novaOcorrencia.titulo} onChange={e => setNovaOcorrencia({...novaOcorrencia, titulo: e.target.value})} />
+                <textarea placeholder="Descrição" className="w-full p-2 border rounded" rows={3} value={novaOcorrencia.descricao} onChange={e => setNovaOcorrencia({...novaOcorrencia, descricao: e.target.value})} />
+                <textarea placeholder="Providências" className="w-full p-2 border rounded" rows={2} value={novaOcorrencia.providencias} onChange={e => setNovaOcorrencia({...novaOcorrencia, providencias: e.target.value})} />
+                <div className="grid grid-cols-2 gap-2">
+                  <input type="date" value={novaOcorrencia.data} onChange={e => setNovaOcorrencia({...novaOcorrencia, data: e.target.value})} className="p-2 border rounded" />
+                  <input type="time" value={novaOcorrencia.horario} onChange={e => setNovaOcorrencia({...novaOcorrencia, horario: e.target.value})} className="p-2 border rounded" />
+                </div>
+                <input type="text" placeholder="Residente" className="w-full p-2 border rounded" value={novaOcorrencia.residente} onChange={e => setNovaOcorrencia({...novaOcorrencia, residente: e.target.value})} />
+                <input type="text" placeholder="Funcionário Responsável" className="w-full p-2 border rounded" value={novaOcorrencia.funcionario} onChange={e => setNovaOcorrencia({...novaOcorrencia, funcionario: e.target.value})} />
+                <select className="w-full p-2 border rounded" value={novaOcorrencia.categoria} onChange={e => setNovaOcorrencia({...novaOcorrencia, categoria: e.target.value})}>
+                  {Object.entries(ROTULOS_CATEGORIAS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+                </select>
+                <div className="flex justify-end gap-2 mt-4">
+                  <button onClick={() => setModalAberto(false)} className="px-4 py-2 border rounded">Cancelar</button>
+                  <button onClick={salvarOcorrencia} className="px-4 py-2 bg-odara-accent text-white rounded">{editando ? 'Atualizar' : 'Salvar'}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
-  </div>
-)}
-
-      </div>
-    </div >
   );
 };
 
