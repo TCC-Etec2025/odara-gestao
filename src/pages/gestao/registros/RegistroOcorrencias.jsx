@@ -74,19 +74,19 @@ const RegistroOcorrencias = () => {
   };
 
   const CORES_CATEGORIAS = {
-    [CATEGORIAS.ACIDENTE]: 'bg-red-400/60 text-white',
-    [CATEGORIAS.SAUDE]: 'bg-green-400/60 text-white',
-    [CATEGORIAS.COMPORTAMENTAL]: 'bg-yellow-400/60 text-white',
-    [CATEGORIAS.ESTRUTURAL]: 'bg-blue-400/60 text-white',
-    [CATEGORIAS.OUTRO]: 'bg-gray-400/60 text-white'
+    [CATEGORIAS.ACIDENTE]: 'bg-odara-alert text-white',
+    [CATEGORIAS.SAUDE]: 'bg-odara-primary text-white',
+    [CATEGORIAS.COMPORTAMENTAL]: 'bg-odara-accent text-white',
+    [CATEGORIAS.ESTRUTURAL]: 'bg-odara-dropdown-accent text-white',
+    [CATEGORIAS.OUTRO]: 'bg-odara-secondary text-white'
   };
 
   const CORES_CALENDARIO = {
-    [CATEGORIAS.ACIDENTE]: 'bg-red-400',
-    [CATEGORIAS.SAUDE]: 'bg-green-400',
-    [CATEGORIAS.COMPORTAMENTAL]: 'bg-yellow-400',
-    [CATEGORIAS.ESTRUTURAL]: 'bg-blue-400',
-    [CATEGORIAS.OUTRO]: 'bg-gray-400'
+    [CATEGORIAS.ACIDENTE]: 'bg-odara-alert',
+    [CATEGORIAS.SAUDE]: 'bg-odara-primary',
+    [CATEGORIAS.COMPORTAMENTAL]: 'bg-odara-accent',
+    [CATEGORIAS.ESTRUTURAL]: 'bg-odara-dropdown-accent',
+    [CATEGORIAS.OUTRO]: 'bg-odara-secondary'
   };
 
   const FILTROS = [
@@ -267,9 +267,13 @@ const RegistroOcorrencias = () => {
           <button onClick={abrirModalAdicionar} className="bg-odara-accent hover:bg-odara-secondary text-white px-4 py-2 rounded-lg flex items-center">
             <FaPlus className="mr-2" /> Nova Ocorrência
           </button>
-          <button onClick={() => setMostrarResolvidas(!mostrarResolvidas)} className="bg-odara-offwhite text-odara-dark border px-4 py-2 rounded-lg ">
+          <button
+          onClick={() => setMostrarResolvidas(!mostrarResolvidas)}
+          className="bg-odara-offwhite text-odara-dark border px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-100 transition">
+            <FaFilter className="text-odara-accent" />
             {mostrarResolvidas ? 'Ocorrências Pendentes' : 'Ocorrências Resolvidas'}
-          </button>
+            </button>
+
         </div>
 
         {/* Grid de Ocorrências e Calendário */}
