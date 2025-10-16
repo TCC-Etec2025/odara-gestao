@@ -1,23 +1,45 @@
 import React, { useState } from "react";
-import { FaUsers, FaUserTie, FaExclamationTriangle, FaClipboardList, FaBell, } from "react-icons/fa";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, } from "recharts";
+import { 
+  FaUsers, 
+  FaUserTie, 
+  FaExclamationTriangle, 
+  FaClipboardList, 
+  FaBell,
+  FaArrowUp,
+  FaArrowDown,
+  FaPlus,
+  FaFileAlt,
+  FaUserCheck,
+  FaChartLine,
+  FaEye,
+  FaTimes,
+  FaInfoCircle
+} from "react-icons/fa";
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
+} from "recharts";
 
 const Dashboard = () => {
-  // Defindo / simulando estatisticas
+  const [timeRange, setTimeRange] = useState("month");
+  const [modalAberto, setModalAberto] = useState(false);
+  const [itemSelecionado, setItemSelecionado] = useState(null);
+
   const stats = {
-    residentes: 45,
-    funcionarios: 18,
-    alertas: 3,
-    acoes: 12,
+    residentes: { valor: 45, tendencia: "+2", cor: "blue" },
+    funcionarios: { valor: 18, tendencia: "+1", cor: "green" },
+    alertas: { valor: 3, tendencia: "-1", cor: "red" },
   };
 
-  const atividadesRecentes = [
-    { id: 1, atividade: "Banho realizado", horario: "08:00", responsavel: "Maria" },
-    { id: 2, atividade: "Medicamento entregue", horario: "09:30", responsavel: "João" },
-    { id: 3, atividade: "Café da manhã servido", horario: "07:30", responsavel: "Leticia" },
-  ];
-
-  // Estatísticas para simulação de dados mensais
+  // Simulação de Gráfico de Coluna
   const dadosMensais = [
     { mes: "Jan", residentes: 40, funcionarios: 15 },
     { mes: "Fev", residentes: 42, funcionarios: 16 },
@@ -25,112 +47,500 @@ const Dashboard = () => {
     { mes: "Abr", residentes: 45, funcionarios: 18 },
   ];
 
-  // informações definidas para simulação de notificações
-  const notificacoes = [
-    { id: 1, texto: "Consulta médica coletiva amanhã às 14h", tipo: "info" },
-    { id: 2, texto: "Alerta: 2 residentes com medicação atrasada", tipo: "alert" },
-    { id: 3, texto: "Reunião administrativa sexta às 10h", tipo: "admin" },
+  // Simulação de Gráfico de Pizza - Informações sobre os residentes da casa
+  const dadosDistribuicao = [
+    { name: "Ativos", value: 38 },
+    { name: "Em tratamento", value: 5 },
+    { name: "Alta recente", value: 2 },
   ];
 
+  const CORES = ["#2D5B78", "#D8A4AA", "#FFEFDF"];
+
+  const alertas = [
+    { 
+      id: 1, 
+      texto: "Checklist pendente para 3 funcionários", 
+      tipo: "alerta", 
+      hora: "09:30",
+      icon: <FaExclamationTriangle size={20} />,
+      detalhes: {
+        titulo: "Checklists Pendentes - Detalhes",
+        descricao: "Existem 3 funcionários com checklists pendentes para hoje:",
+        lista: [
+          "João Silva - Checklist de segurança",
+          "Maria Santos - Checklist de equipamentos", 
+          "Pedro Oliveira - Checklist de limpeza"
+        ],
+        acaoRecomendada: "Verificar com a equipe a conclusão dos checklists até o final do expediente."
+      }
+    },
+    { 
+      id: 3, 
+      texto: "5 novos checklists atribuídos", 
+      tipo: "alerta", 
+      hora: "07:45",
+      icon: <FaExclamationTriangle size={20} />,
+      detalhes: {
+        titulo: "Novos Checklists Atribuídos",
+        descricao: "Foram atribuídos 5 novos checklists para sua equipe:",
+        lista: [
+          "Checklist de segurança - Área A",
+          "Checklist de equipamentos - Turno manhã",
+          "Checklist de qualidade - Produto X",
+          "Checklist de limpeza - Cozinha",
+          "Checklist de manutenção - Equipamento Y"
+        ],
+        acaoRecomendada: "Distribuir os checklists entre os funcionários disponíveis."
+      }
+    },
+  ];
+
+  const notificacoes = [
+    { 
+      id: 2, 
+      texto: "Reunião de equipe às 14:00", 
+      tipo: "info", 
+      hora: "08:15",
+      icon: <FaInfoCircle size={20} />,
+      detalhes: {
+        titulo: "Reunião de Equipe",
+        descricao: "Reunião agendada para hoje às 14:00 na sala de reuniões principal.",
+        lista: [
+          "Horário: 14:00 - 15:30",
+          "Local: Sala de Reuniões Principal", 
+          "Pauta: Revisão mensal de métricas",
+          "Participantes: Equipe completa"
+        ],
+        acaoRecomendada: "Confirmar presença e preparar relatórios solicitados."
+      }
+    },
+    { 
+      id: 4, 
+      texto: "Relatório mensal devido sexta-feira", 
+      tipo: "info", 
+      hora: "Ontem",
+      icon: <FaInfoCircle size={20} />,
+      detalhes: {
+        titulo: "Relatório Mensal - Prazo",
+        descricao: "O relatório mensal de atividades está com prazo para sexta-feira.",
+        lista: [
+          "Tipo: Relatório Mensal de Atividades",
+          "Prazo: Sexta-feira, 17:00",
+          "Formato: Planilha padrão",
+          "Envio: Sistema interno"
+        ],
+        acaoRecomendada: "Iniciar a compilação dos dados com antecedência."
+      }
+    },
+    { 
+      id: 5, 
+      texto: "Atualização no sistema de checklist", 
+      tipo: "info", 
+      hora: "10:00",
+      icon: <FaInfoCircle size={20} />,
+      detalhes: {
+        titulo: "Atualização do Sistema",
+        descricao: "O sistema de checklist foi atualizado com novas funcionalidades:",
+        lista: [
+          "Nova interface de usuário",
+          "Relatórios em tempo real", 
+          "Exportação em PDF",
+          "Notificações push"
+        ],
+        acaoRecomendada: "Familiarizar-se com as novas funcionalidades."
+      }
+    },
+  ];
+
+  // Ações rápidas
+  const acoesRapidas = [
+    { id: 1, nome: "Novo Residente", icone: <FaPlus />, cor: "blue", acao: () => console.log("Novo residente") },
+    { id: 2, nome: "Gerar Relatório", icone: <FaFileAlt />, cor: "green", acao: () => console.log("Gerar relatório") },
+    { id: 3, nome: "Novo Funcionário", icone: <FaPlus />, cor: "purple", acao: () => console.log("Agendar atividade") },
+    { id: 4, nome: "Ver Métricas", icone: <FaChartLine />, cor: "orange", acao: () => console.log("Ver métricas") },
+  ];
+
+  // Funções do modais
+  const abrirModal = (item) => {
+    setItemSelecionado(item);
+    setModalAberto(true);
+  };
+
+  const fecharModal = () => {
+    setModalAberto(false);
+    setItemSelecionado(null);
+  };
+
   return (
-    <div className="flex min-h-screen bg-odara-offwhite">
-      <div className="flex-1 p-6 lg:p-10">
-        <header className="mb-10">
-          <h1 className="text-3xl font-bold text-odara-dark">Dashboard Administrativo
-          </h1>
-          <p className="text-odara-dark/60 text-sm">
-            Visão geral da gestão do sistema
-          </p>
-        </header>
-
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <Card titulo="Residentes" valor={stats.residentes} icone={<FaUsers />} cor="blue" />
-          <Card titulo="Funcionários" valor={stats.funcionarios} icone={<FaUserTie />} cor="green" />
-          <Card titulo="Alertas Críticos" valor={stats.alertas} icone={<FaExclamationTriangle />} cor="red" />
-          <Card titulo="Ações" valor={stats.acoes} icone={<FaClipboardList />} cor="purple" />
-        </section>
-
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Atividades recentes */}
-          <div className="bg-white rounded-2xl shadow p-5">
-            <h2 className="text-lg font-semibold text-odara-dark mb-4">
-              Atividades Recentes
-            </h2>
-            <ul className="divide-y divide-gray-100">
-              {atividadesRecentes.map((a) => (
-                <li key={a.id} className="py-2 flex justify-between text-sm">
-                  <span>{a.atividade} <b>({a.horario})</b></span>
-                  <span className="text-odara-dark/60">{a.responsavel}</span>
-                </li>
-              ))}
-            </ul>
+    <div className="min-h-screen bg-odara-offwhite p-6 lg:p-8">
+      <header className="mb-8">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-odara-dark">Dashboard Administrativo</h1>
+            <p className="text-odara-dark/60 text-sm">Visão geral da gestão do sistema</p>
           </div>
+          <select 
+            className="bg-white rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-odara-primary shadow-sm"
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value)}
+          >
+            <option value="week">Esta Semana</option>
+            <option value="month">Este Mês</option>
+            <option value="quarter">Este Trimestre</option>
+            <option value="year">Este Ano</option>
+          </select>
+        </div>
+      </header>
 
-          {/* Grafico mensal */}
-          <div className="bg-white rounded-2xl shadow p-5">
-            <h2 className="text-lg font-semibold text-odara-dark mb-4">
-              Estatísticas Mensais - Funcionarios & Residentes
-            </h2>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={dadosMensais}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="mes" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="residentes" fill="#D8A4AA" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="funcionarios" fill="#2D5B78" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </section>
-
-        {/* Notificações */}
-        <section className="mt-10 bg-white rounded-2xl shadow p-5">
-          <h2 className="text-lg font-semibold text-odara-dark mb-4">
-            Notificações
-          </h2>
-          <div className="space-y-3">
-            {notificacoes.map((n) => (
-              <div
-                key={n.id}
-                className={`p-3 rounded-xl flex items-center gap-3 text-sm ${n.tipo === "alert"
-                    ? "bg-red-50 text-red-700"
-                    : n.tipo === "admin"
-                      ? "bg-odara-primary/30 text-odara-accent"
-                      : "bg-odara-secondary/30 text-odara-name"
-                  }`}
-              >
-                <FaBell className="flex-shrink-0" />
-                <span>{n.texto}</span>
-              </div>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="lg:col-span-3 space-y-6">
+          
+          {/* Cards de estatísticas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {Object.entries(stats).map(([key, stat]) => (
+              <Card 
+                key={key}
+                titulo={key.charAt(0).toUpperCase() + key.slice(1)}
+                valor={stat.valor}
+                tendencia={stat.tendencia}
+                icone={getIcone(key)}
+                cor={stat.cor}
+              />
             ))}
           </div>
-        </section>
+
+          {/* Gráfico de Barra */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-lg font-semibold text-odara-dark">
+                  Estatísticas Mensais
+                </h2>
+                <div className="flex gap-4 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-odara-primary rounded"></div>
+                    <span className="text-odara-dark/70">Residentes</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-odara-name rounded"></div>
+                    <span className="text-odara-dark/70">Funcionários</span>
+                  </div>
+                </div>
+              </div>
+              <ResponsiveContainer width="100%" height={450}>
+                <BarChart data={dadosMensais}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f8fafc" />
+                  <XAxis 
+                    dataKey="mes" 
+                    tick={{ fill: '#6B7280' }}
+                    axisLine={{ stroke: '#E5E7EB' }}
+                  />
+                  <YAxis 
+                    tick={{ fill: '#6B7280' }}
+                    axisLine={{ stroke: '#E5E7EB' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                  />
+                  <Bar 
+                    dataKey="residentes" 
+                    fill="#D8A4AA" 
+                    radius={[8, 8, 0, 0]}
+                    className="hover:opacity-80 transition-opacity"
+                  />
+                  <Bar 
+                    dataKey="funcionarios" 
+                    fill="#2D5B78" 
+                    radius={[8, 8, 0, 0]}
+                    className="hover:opacity-80 transition-opacity"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Gráfico de Pizza e ações rápidas */}
+            <div className="space-y-6">
+              {/* Gráfico de Pizza */}
+              <div className="bg-white rounded-2xl shadow-sm p-6">
+                <h2 className="text-lg font-semibold text-odara-dark mb-4">
+                  Distribuição
+                </h2>
+                <ResponsiveContainer width="100%" height={120}>
+                  <PieChart>
+                    <Pie
+                      data={dadosDistribuicao}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={30}
+                      outerRadius={50}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {dadosDistribuicao.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={CORES[index % CORES.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="flex flex-col gap-2 mt-4 text-xs">
+                  {dadosDistribuicao.map((item, index) => (
+                    <div key={item.name} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-3 h-3 rounded"
+                          style={{ backgroundColor: CORES[index] }}
+                        ></div>
+                        <span className="text-odara-dark/70">{item.name}</span>
+                      </div>
+                      <span className="font-medium text-odara-dark">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ações rápidas */}
+              <div className="bg-white rounded-2xl shadow-sm p-6">
+                <h2 className="text-lg font-semibold text-odara-dark mb-4">
+                  Ações Rápidas - Atalhos
+                </h2>
+                <div className="grid grid-cols-2 gap-3">
+                  {acoesRapidas.map((acao) => (
+                    <button
+                      key={acao.id}
+                      onClick={acao.acao}
+                      className={`p-3 rounded-xl flex flex-col items-center gap-2 transition-all hover:scale-105 ${
+                        acao.cor === 'blue' ? 'bg-blue-50 hover:bg-blue-100 text-blue-600' :
+                        acao.cor === 'green' ? 'bg-green-50 hover:bg-green-100 text-green-600' :
+                        acao.cor === 'purple' ? 'bg-purple-50 hover:bg-purple-100 text-purple-600' :
+                        'bg-orange-50 hover:bg-orange-100 text-orange-600'
+                      }`}
+                    >
+                      <div className="text-lg">{acao.icone}</div>
+                      <span className="text-xs font-medium text-center">{acao.nome}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Coluna de notificações */}
+        <div className="lg:col-span-1">
+          <div className="bg-white rounded-2xl shadow p-6 h-full sticky top-6">
+            <div className="flex items-center gap-2 mb-4">
+              <FaBell className="text-odara-dark" size={24} />
+              <h2 className="text-xl font-semibold text-odara-dark">Alertas e Notificações</h2>
+            </div>
+            
+            {/* Seção de Alertas */}
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="font-medium text-odara-dark">Alertas</h3>
+                <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">
+                  {alertas.length}
+                </span>
+              </div>
+              <div className="space-y-3">
+                {alertas.map((alerta) => (
+                  <div key={alerta.id} className="p-3 rounded-lg border-l-4 border-red-500 bg-red-50">
+                    <div className="flex items-start gap-2">
+                      <div className="mt-0.5 text-red-600">
+                        {alerta.icon}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-odara-dark">{alerta.texto}</p>
+                        <p className="text-xs text-gray-500 mt-1">{alerta.hora}</p>
+                      </div>
+                      <button
+                        onClick={() => abrirModal(alerta)}
+                        className="text-gray-400 hover:text-odara-dark transition-colors"
+                        title="Ver detalhes"
+                      >
+                        <FaEye size={16} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Linha divisória */}
+            <div className="border-t border-gray-200 my-4"></div>
+
+            {/* Seção de Notificações */}
+            <div>
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="font-medium text-odara-dark">Notificações</h3>
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                  {notificacoes.length}
+                </span>
+              </div>
+              <div className="space-y-3">
+                {notificacoes.map((notificacao) => (
+                  <div key={notificacao.id} className="p-3 rounded-lg border-l-4 border-blue-500 bg-blue-50">
+                    <div className="flex items-start gap-2">
+                      <div className="mt-0.5 text-blue-600">
+                        {notificacao.icon}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-odara-dark">{notificacao.texto}</p>
+                        <p className="text-xs text-gray-500 mt-1">{notificacao.hora}</p>
+                      </div>
+                      <button
+                        onClick={() => abrirModal(notificacao)}
+                        className="text-gray-400 hover:text-odara-dark transition-colors"
+                        title="Ver detalhes"
+                      >
+                        <FaEye size={16} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Modal de Detalhes */}
+      {modalAberto && itemSelecionado && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b">
+              <h3 className="text-xl font-semibold text-odara-dark">
+                {itemSelecionado.detalhes.titulo}
+              </h3>
+              <button
+                onClick={fecharModal}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <FaTimes size={24} />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <div className="flex items-start gap-3 mb-4">
+                <div className={`p-2 rounded-full ${
+                  itemSelecionado.tipo === 'alerta' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'
+                }`}>
+                  {itemSelecionado.icon}
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">{itemSelecionado.detalhes.descricao}</p>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="font-medium text-odara-dark mb-2">Detalhes:</h4>
+                <ul className="space-y-2">
+                  {itemSelecionado.detalhes.lista.map((item, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className={`w-1.5 h-1.5 rounded-full mt-2 ${
+                        itemSelecionado.tipo === 'alerta' ? 'bg-red-500' : 'bg-blue-500'
+                      }`}></div>
+                      <span className="text-sm text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className={`p-3 rounded-lg ${
+                itemSelecionado.tipo === 'alerta' ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'
+              }`}>
+                <h4 className={`font-medium text-sm mb-1 ${
+                  itemSelecionado.tipo === 'alerta' ? 'text-red-800' : 'text-blue-800'
+                }`}>
+                  Ação Recomendada:
+                </h4>
+                <p className={`text-sm ${
+                  itemSelecionado.tipo === 'alerta' ? 'text-red-700' : 'text-blue-700'
+                }`}>
+                  {itemSelecionado.detalhes.acaoRecomendada}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 p-6 border-t">
+              <button
+                onClick={fecharModal}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Fechar
+              </button>
+              <button
+                onClick={() => {
+                  console.log(`Ação tomada para: ${itemSelecionado.texto}`);
+                  fecharModal();
+                }}
+                className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors ${
+                  itemSelecionado.tipo === 'alerta' 
+                    ? 'bg-red-500 hover:bg-red-600' 
+                    : 'bg-blue-500 hover:bg-blue-600'
+                }`}
+              >
+                Marcar como Lida
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Card 
+const Card = ({ titulo, valor, tendencia, icone, cor }) => {
+  const estilos = {
+    blue: { bg: "bg-blue-50", text: "text-blue-600", tendencia: "text-blue-600" },
+    green: { bg: "bg-green-50", text: "text-green-600", tendencia: "text-green-600" },
+    red: { bg: "bg-red-50", text: "text-red-600", tendencia: "text-red-600" },
+    purple: { bg: "bg-purple-50", text: "text-purple-600", tendencia: "text-purple-600" },
+  };
+
+  const estilo = estilos[cor];
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm p-4 hover:shadow-md transition-shadow">
+      <div className="flex justify-between items-start">
+        <div>
+          <p className="text-sm text-odara-dark/60 mb-1">{titulo}</p>
+          <h3 className="text-2xl font-bold text-odara-dark mb-2">{valor}</h3>
+          <div className={`flex items-center gap-1 text-xs ${estilo.tendencia}`}>
+            {tendencia.startsWith('+') ? <FaArrowUp size={10} /> : <FaArrowDown size={10} />}
+            <span>{tendencia}</span>
+          </div>
+        </div>
+        <div className={`${estilo.bg} p-3 rounded-xl`}>
+          <div className={estilo.text}>
+            {icone}
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-// Card de estatísticas
-const Card = ({ titulo, valor, icone, cor }) => {
-  const estilos = {
-    blue: "bg-blue-50 text-blue-600",
-    green: "bg-green-50 text-green-600",
-    red: "bg-red-50 text-red-600",
-    purple: "bg-purple-50 text-purple-600",
-  };
-
-  return (
-    <div className="bg-white rounded-2xl shadow p-5 flex justify-between items-center">
-      <div>
-        <p className="text-sm text-odara-dark/60">{titulo}</p>
-        <h3 className="text-2xl font-bold text-odara-dark">{valor}</h3>
-      </div>
-      <div className={`${estilos[cor]} p-3 rounded-full text-xl`}>
-        {icone}
-      </div>
-    </div>
-  );
+// Funções auxiliares para os ícones
+const getIcone = (tipo) => {
+  switch (tipo) {
+    case "residentes":
+      return <FaUsers />;
+    case "funcionarios":
+      return <FaUserTie />;
+    case "alertas":
+      return <FaExclamationTriangle />;
+    case "ocupacao":
+      return <FaUserCheck />;
+    default:
+      return <FaClipboardList />;
+  }
 };
 
 export default Dashboard;
