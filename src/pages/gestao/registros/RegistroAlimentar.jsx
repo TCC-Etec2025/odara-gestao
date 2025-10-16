@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaArrowLeft, FaTimes, FaChevronLeft, FaChevronRight, FaInfoCircle } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaFilter, FaTrash, FaArrowLeft, FaTimes, FaChevronLeft, FaChevronRight, FaInfoCircle } from 'react-icons/fa';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { Link } from 'react-router-dom';
@@ -174,17 +174,17 @@ const RegistroAlimentar = () => {
   return (
     <div className="flex min-h-screen bg-odara-offwhite">
       <div className="flex-1 p-6 lg:p-10">
-         {/* Cabeçalho */}
+        {/* Cabeçalho */}
         <div className="flex justify-start items-center mb-6">
           <div className="flex items-center">
             <div className="flex items-center mb-1"></div>
-          
-          <Link to="/gestao/PaginaRegistros" className="flex items-center text-odara-dark">
-            <FaArrowLeft className="mr-1"/>
-          </Link>
+
+            <Link to="/gestao/PaginaRegistros" className="flex items-center text-odara-dark">
+              <FaArrowLeft className="mr-1" />
+            </Link>
           </div>
-            <h1 className="text-3xl font-bold text-odara-dark mr-2">Registro Alimentar</h1>
-             <div className="relative">
+          <h1 className="text-3xl font-bold text-odara-dark mr-2">Registro Alimentar</h1>
+          <div className="relative">
             <button
               onMouseEnter={() => setInfoVisivel(true)}
               onMouseLeave={() => setInfoVisivel(false)}
@@ -206,11 +206,16 @@ const RegistroAlimentar = () => {
 
         <div className="flex gap-2 mb-4">
           <button onClick={abrirModalAdicionar} className="bg-odara-accent hover:bg-odara-secondary text-white px-4 py-2 rounded flex items-center">
-            <FaPlus className="mr-2"/> Novo Registro
+            <FaPlus className="mr-2" /> Novo Registro
           </button>
-          <button onClick={() => setMostrarArquivados(!mostrarArquivados)} className="bg-odara-white text-odara-dark px-4 py-2 rounded">
-            {mostrarArquivados ? 'Mostrar Próximos' : 'Mostrar Arquivados'}
+          <button
+            onClick={() => setMostrarArquivados(!mostrarArquivados)}
+            className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition w-40 justify-center"
+          >
+            <FaFilter className="text-odara-accent mr-2" />
+            {mostrarArquivados ? 'Próximos' : 'Arquivados'}
           </button>
+
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
@@ -223,8 +228,8 @@ const RegistroAlimentar = () => {
                 <div className="flex justify-between items-center mb-2">
                   <p className="font-semibold">{r.refeicao} - {r.horario}</p>
                   <div className="flex gap-2">
-                    <button onClick={() => abrirModalEditar(r.id)}><FaEdit/></button>
-                    <button onClick={() => excluirRegistro(r.id)}><FaTrash/></button>
+                    <button onClick={() => abrirModalEditar(r.id)} className="p-1 text-white bg-blue-500 rounded"><FaEdit /></button>
+                    <button onClick={() => excluirRegistro(r.id)} className="p-1 text-white bg-red-500 rounded"><FaTrash /></button>
                   </div>
                 </div>
                 <p><strong>Alimento:</strong> {r.alimento}</p>
@@ -239,7 +244,7 @@ const RegistroAlimentar = () => {
 
           {/* Calendário */}
           <div className="bg-white rounded-xl shadow p-4 max-w-md mx-auto">
-             <div className="mt-4 flex justify-center">
+            <div className="mt-4 flex justify-center">
               <button
                 onClick={irParaHoje}
                 className="bg-odara-accent hover:bg-odara-secondary text-white px-4 py-2 rounded-lg transition mb-4"
@@ -259,6 +264,7 @@ const RegistroAlimentar = () => {
               next2Label={null}
               prev2Label={null}
               showNeighboringMonth={false}
+              className="border-0 mx-auto max-w-[350px]  rounded-xl shadow-sm p-2"
             />
           </div>
         </div>
@@ -269,35 +275,35 @@ const RegistroAlimentar = () => {
             <div className="bg-white rounded-xl p-6 w-full max-w-md">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">{editando ? 'Editar' : 'Adicionar'} Registro</h2>
-                <button onClick={() => setModalAberto(false)}><FaTimes/></button>
+                <button onClick={() => setModalAberto(false)}><FaTimes /></button>
               </div>
 
               <div className="space-y-4">
                 <div>
                   <label className="block font-medium">Data *</label>
-                  <input type="date" className="w-full border p-2 rounded" value={novoRegistro.data} onChange={e => setNovoRegistro({...novoRegistro, data:e.target.value})}/>
+                  <input type="date" className="w-full border p-2 rounded" value={novoRegistro.data} onChange={e => setNovoRegistro({ ...novoRegistro, data: e.target.value })} />
                 </div>
 
                 <div>
                   <label className="block font-medium">Horário</label>
-                  <input type="time" className="w-full border p-2 rounded" value={novoRegistro.horario} onChange={e => setNovoRegistro({...novoRegistro, horario:e.target.value})}/>
+                  <input type="time" className="w-full border p-2 rounded" value={novoRegistro.horario} onChange={e => setNovoRegistro({ ...novoRegistro, horario: e.target.value })} />
                 </div>
 
                 <div>
                   <label className="block font-medium">Refeição *</label>
-                  <select className="w-full border p-2 rounded" value={novoRegistro.refeicao} onChange={e => setNovoRegistro({...novoRegistro, refeicao:e.target.value})}>
+                  <select className="w-full border p-2 rounded" value={novoRegistro.refeicao} onChange={e => setNovoRegistro({ ...novoRegistro, refeicao: e.target.value })}>
                     {REFEICOES.map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
                 </div>
 
                 <div>
                   <label className="block font-medium">Alimento *</label>
-                  <input type="text" className="w-full border p-2 rounded" value={novoRegistro.alimento} onChange={e => setNovoRegistro({...novoRegistro, alimento:e.target.value})}/>
+                  <input type="text" className="w-full border p-2 rounded" value={novoRegistro.alimento} onChange={e => setNovoRegistro({ ...novoRegistro, alimento: e.target.value })} />
                 </div>
 
                 <div>
                   <label className="block font-medium">Residente(s)</label>
-                  <input type="text" className="w-full border p-2 rounded" value={novoRegistro.residentes} onChange={e => setNovoRegistro({...novoRegistro, residentes:e.target.value})}/>
+                  <input type="text" className="w-full border p-2 rounded" value={novoRegistro.residentes} onChange={e => setNovoRegistro({ ...novoRegistro, residentes: e.target.value })} />
                 </div>
               </div>
 
