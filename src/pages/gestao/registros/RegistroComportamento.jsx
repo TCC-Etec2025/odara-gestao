@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaPlus, FaEdit, FaTrash, FaInfoCircle, FaTimes, FaArrowLeft } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrash, FaInfoCircle, FaTimes, FaArrowLeft, FaFilter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const RegistroComportamento = () => {
@@ -43,11 +43,23 @@ const RegistroComportamento = () => {
   const [idEditando, setIdEditando] = useState(null);
   const [mostrarInfo, setMostrarInfo] = useState(false);
 
+  const [mostrarConcluidos, setMostrarConcluidos] = useState(false);
+  const [filtroAberto, setFiltroAberto] = useState(false);
+  const [filtroResidenteAberto, setFiltroResidenteAberto] = useState(false);
+  const [filtroAtivo, setFiltroAtivo] = useState("todos");
+
   const CATEGORIAS = {
     positivo: "bg-odara-primary/60 text-odara-dark",
     negativo: "bg-odara-dropdown-accent/60 text-odara-dark",
     neutro: "bg-odara-secondary/60 text-odara-white"
   };
+
+  const FILTROS = [
+    { id: "todos", label: "Todos" },
+    { id: "positivo", label: "Positivo" },
+    { id: "negativo", label: "Negativo" },
+    { id: "neutro", label: "Neutro" },
+  ];
 
   const salvarEntrada = () => {
     if (!novaEntrada.titulo || !novaEntrada.data) return;
@@ -94,11 +106,21 @@ const RegistroComportamento = () => {
 
   const abrirDetalhes = c => setResidenteSelecionado(c);
 
+  // Aplicando filtros antes de renderizar
+  const comportamentosFiltrados = comportamentos.filter(c => {
+    if (filtroAtivo !== "todos" && c.categoria !== filtroAtivo) return false;
+    if (mostrarConcluidos && c.concluido === false) return false;
+    if (!mostrarConcluidos && c.concluido === true) return false;
+    if (residenteSelecionado && c.residentes !== residenteSelecionado) return false;
+    return true;
+  });
+
   return (
-    <div className="flex min-h-screen  bg-gray-50 p-6">
-      <div className="grid  grid-cols-3 gap-6 w-full">
+    <div className="flex min-h-screen bg-gray-50 p-6">
+      <div className="grid grid-cols-3 gap-6 w-full">
+
         {/* COLUNA ESQUERDA - REGISTROS */}
-        <div className="col-span-2 border-4 border-odara-primary flex flex-col  rounded-2xl shadow p-6">
+        <div className="col-span-2 border-4 border-odara-primary flex flex-col rounded-2xl shadow p-6">
 
           {/* Cabeçalho */}
           <div className="flex justify-between items-center mb-6">
@@ -117,11 +139,16 @@ const RegistroComportamento = () => {
                 />
                 {mostrarInfo && (
                   <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dropdown text-odara-name text-sm rounded-lg shadow-lg">
-                  O Registro de Comportamento esse relatório é onde será disposto informações sobre o comportamento dos residentes, seja durante exames, momento de lazer, alimentação, e de todo o seu dia a dia. Nele deverá haver conteúdo detalhado se o mesmo provocou consequências para si mesmo ou a terceiros (enfermeiros, médicos, responsáveis, ou outros residentes).
+                    O Registro de Comportamento é onde são dispostas informações sobre o comportamento dos residentes...
                   </div>
                 )}
               </div>
             </div>
+          </div>
+
+          {/* Barra de ações e filtros */}
+          <div className="flex gap-4 mb-6 items-center">
+            {/* Botão Novo Registro */}
             <button
               onClick={() => {
                 setModalAberto(true);
@@ -136,18 +163,104 @@ const RegistroComportamento = () => {
                   foto: ""
                 });
               }}
-              className="bg-odara-accent hover:bg-odara-secondary text-white px-4 py-2 rounded-lg flex items-center gap-2"
+              className="flex items-center justify-center bg-odara-accent hover:bg-odara-secondary text-white px-4 py-2 rounded-full h-10 transition"
             >
-              <FaPlus /> Novo Registro
+              <FaPlus className="mr-2" /> Novo Registro
             </button>
+
+            {/* Filtro Concluídos */}
+            <button
+              onClick={() => setMostrarConcluidos(!mostrarConcluidos)}
+              className="flex items-center justify-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition h-10"
+            >
+              <FaFilter className="text-odara-accent mr-2" />
+              {mostrarConcluidos ? "Pendentes" : "Concluídos"}
+            </button>
+
+            {/* Filtro Categoria */}
+            <div className="relative">
+              <button
+                className="flex items-center justify-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition h-10"
+                onClick={() => {
+                  setFiltroAberto(!filtroAberto);
+                  setFiltroResidenteAberto(false);
+                }}
+              >
+                <FaFilter className="text-odara-accent mr-2" />
+                Categoria
+              </button>
+              {filtroAberto && (
+                <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                  {FILTROS.map((filtro) => (
+                    <button
+                      key={filtro.id}
+                      onClick={() => {
+                        setFiltroAtivo(filtro.id);
+                        setFiltroAberto(false);
+                      }}
+                      className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${
+                        filtroAtivo === filtro.id ? "bg-indigo-100 font-semibold" : ""
+                      }`}
+                    >
+                      {filtro.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Filtro Residente */}
+            <div className="relative">
+              <button
+                className="flex items-center justify-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition h-10"
+                onClick={() => {
+                  setFiltroResidenteAberto(!filtroResidenteAberto);
+                  setFiltroAberto(false);
+                }}
+              >
+                <FaFilter className="text-odara-accent mr-2" />
+                Residentes
+              </button>
+              {filtroResidenteAberto && (
+                <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                  <button
+                    onClick={() => {
+                      setResidenteSelecionado("");
+                      setFiltroResidenteAberto(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${
+                      !residenteSelecionado ? "bg-indigo-100 font-semibold" : ""
+                    }`}
+                  >
+                    Todos
+                  </button>
+                  {[...new Set(comportamentos.map((c) => c.residentes).filter(Boolean))].map(
+                    (residente) => (
+                      <button
+                        key={residente}
+                        onClick={() => {
+                          setResidenteSelecionado(residente);
+                          setFiltroResidenteAberto(false);
+                        }}
+                        className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${
+                          residenteSelecionado === residente ? "bg-indigo-100 font-semibold" : ""
+                        }`}
+                      >
+                        {residente}
+                      </button>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Lista de registros */}
           <div className="space-y-4 overflow-y-auto max-h-[70vh] pr-2">
-            {comportamentos.length === 0 && (
+            {comportamentosFiltrados.length === 0 && (
               <p className="text-gray-500 text-center">Nenhum registro</p>
             )}
-            {comportamentos.map(c => (
+            {comportamentosFiltrados.map(c => (
               <div
                 key={c.id}
                 onClick={() => abrirDetalhes(c)}
@@ -202,17 +315,13 @@ const RegistroComportamento = () => {
         <div className="bg-white rounded-2xl shadow p-6 border-l-4 border-odara-primary flex flex-col items-center justify-center text-center">
           {residenteSelecionado ? (
             <>
-              <h2 className="text-xl font-semibold mb-4 text-gray-700">
-                RESIDENTE
-              </h2>
+              <h2 className="text-xl font-semibold mb-4 text-gray-700">RESIDENTE</h2>
               <img
                 src={residenteSelecionado.foto}
                 alt={residenteSelecionado.residentes}
                 className="w-32 h-32 rounded-full object-cover mb-3 shadow-md"
               />
-              <h3 className="text-lg font-bold text-gray-800">
-                {residenteSelecionado.residentes}
-              </h3>
+              <h3 className="text-lg font-bold text-gray-800">{residenteSelecionado.residentes}</h3>
               <p className="text-gray-600 mt-2">{residenteSelecionado.titulo}</p>
               <p className="text-sm text-gray-500 mt-1">{residenteSelecionado.descricao}</p>
             </>
@@ -240,7 +349,7 @@ const RegistroComportamento = () => {
                 <label className="block text-odara-dark mb-1">Título *</label>
                 <input
                   type="text"
-                  className="w-full  border border-odara-primary rounded-lg p-2"
+                  className="w-full border border-odara-primary rounded-lg p-2"
                   value={novaEntrada.titulo}
                   onChange={e => setNovaEntrada({ ...novaEntrada, titulo: e.target.value })}
                 />
@@ -266,7 +375,7 @@ const RegistroComportamento = () => {
                     onChange={e => setNovaEntrada({ ...novaEntrada, data: e.target.value })}
                   />
                 </div>
-                <div classname="text-odara-dark">
+                <div className="text-odara-dark">
                   <label>Horário</label>
                   <input
                     type="time"
@@ -314,7 +423,7 @@ const RegistroComportamento = () => {
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setModalAberto(false)}
-                className="px-4 py-2 border-2 border-odara-primary hover:bg-odara-primary text-odara-primary hover:text-odara-white rounded-lg"
+                className="px-4 py-2 border-2 border-odara-primary hover:bg-odara-primary text-odara-primary hover:text-white rounded-lg"
               >
                 Cancelar
               </button>
