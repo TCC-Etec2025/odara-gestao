@@ -47,3 +47,15 @@ body {
   font-weight: bold;
   color: var(--color-odara-name);
 }
+
+/* === Forçando a remoção do contorno padrão do calendário === */
+.react-calendar {
+  border: none !important;
+  width: 100% !important;
+}
+
+/* === Forçando a remoção do active-state padrão do calendário === */
+.react-calendar__tile--active {
+  background: none !important;
+  color: inherit !important;
+}
