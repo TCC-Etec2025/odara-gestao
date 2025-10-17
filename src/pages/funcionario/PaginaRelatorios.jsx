@@ -4,7 +4,33 @@ import { FaFileAlt, FaSearch, FaEye, FaEdit, FaDownload, FaClock, FaCheckCircle,
 const PaginaRelatorios = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filtroStatus, setFiltroStatus] = useState('todos');
-  
+
+  const ActionButton = ({ icon: Icon, label, onClick }) => {
+    const [isHovered, setIsHovered] = useState(false);
+
+    return (
+      <div className="relative">
+        <button
+          className="p-2 rounded-full bg-odara-primary text-white transition-all duration-200 transform hover:scale-110 hover:bg-odara-primary/90"
+          onClick={onClick}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <Icon size={16} />
+        </button>
+        
+        {isHovered && (
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-10">
+            <div className="bg-gray-800 text-white text-xs py-1 px-2 rounded whitespace-nowrap">
+              {label}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const [relatorios, setRelatorios] = useState([
     {
       id: 1,
@@ -286,34 +312,31 @@ const PaginaRelatorios = () => {
                      relatorio.prioridade === 'media' ? 'Média' : 'Baixa'}
                   </span>
                 </td>
-                <td className="p-4">
-                  <div className="flex space-x-2">
-                    {relatorio.status !== 'concluido' ? (
-                      <button 
-                        className="text-green-500 hover:text-green-700 transition p-2 bg-green-50 rounded-lg"
-                        onClick={() => handlePreencherRelatorio(relatorio)}
-                        title="Preencher relatório"
-                      >
-                        <FaEdit />
-                      </button>
-                    ) : (
-                      <button 
-                        className="text-blue-500 hover:text-blue-700 transition p-2 bg-blue-50 rounded-lg"
-                        onClick={() => handleVisualizar(relatorio)}
-                        title="Visualizar relatório"
-                      >
-                        <FaEye />
-                      </button>
-                    )}
-                    <button 
-                      className="text-purple-500 hover:text-purple-700 transition p-2 bg-purple-50 rounded-lg"
-                      onClick={() => handleDownload(relatorio)}
-                      title="Download"
-                    >
-                      <FaDownload />
-                    </button>
-                  </div>
-                </td>
+                  <td className="p-4">
+                    <div className="flex justify-center gap-2">
+                      {relatorio.status !== 'concluido' ? (
+                        <ActionButton
+                          icon={FaEdit}
+                          label="Preencher"
+                          color="green"
+                          onClick={() => handlePreencherRelatorio(relatorio)}
+                        />
+                      ) : (
+                        <ActionButton
+                          icon={FaEye}
+                          label="Visualizar"
+                          color="blue"
+                          onClick={() => handleVisualizar(relatorio)}
+                        />
+                      )}
+                      <ActionButton
+                        icon={FaDownload}
+                        label="Download"
+                        color="purple"
+                        onClick={() => handleDownload(relatorio)}
+                      />
+                    </div>
+                  </td>
               </tr>
             ))}
           </tbody>

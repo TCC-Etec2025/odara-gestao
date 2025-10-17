@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Pill,
   Microscope,
@@ -22,6 +23,7 @@ import {
 } from "lucide-react";
 
 const DashboardFuncionario = () => {
+  const navigate = useNavigate();
   const [funcionalidadeSelecionada, setFuncionalidadeSelecionada] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
   const [itemSelecionado, setItemSelecionado] = useState(null);
@@ -31,16 +33,82 @@ const DashboardFuncionario = () => {
     funcionariosAtribuidos: 8,
   };
 
+  const funcionalidadesRegistro = [
+    { 
+      id: 1, 
+      nome: "Medicamentos", 
+      icon: Pill,
+      consultarUrl: "/funcionario/checklist/medicamentos/check",
+      editarUrl: "/funcionario/checklist/medicamentos/check"
+    },
+    { 
+      id: 2, 
+      nome: "Exames médicos", 
+      icon: Microscope,
+      consultarUrl: "/funcionario/checklist/exames/medicos",
+      editarUrl: "/funcionario/checklist/exames/medicos"
+    },
+    { 
+      id: 3, 
+      nome: "Consultas médicas", 
+      icon: Stethoscope,
+      consultarUrl: "/funcionario/checklist/consultas/medicas",
+      editarUrl: "/funcionario/checklist/consultas/medicas"
+    },
+    { 
+      id: 4, 
+      nome: "Atividades", 
+      icon: ClipboardList,
+      consultarUrl: "/funcionario/checklist/atividades",
+      editarUrl: "/funcionario/checklist/atividades"
+    },
+    { 
+      id: 5, 
+      nome: "Alimentação", 
+      icon: Utensils,
+      consultarUrl: "/funcionario/checklist/alimentacao",
+      editarUrl: "/funcionario/checklist/alimentacao"
+    },
+  ];
+
+  const funcionalidadesCheck = [
+    { 
+      id: 6, 
+      nome: "Registro de ocorrências", 
+      icon: AlertTriangle,
+      consultarUrl: "/funcionario/checklist/ocorrencias",
+      editarUrl: "/funcionario/checklist/ocorrencias",
+      registrarUrl: "/funcionario/checklist/ocorrencias"
+    },
+    { 
+      id: 7, 
+      nome: "Registro de preferências", 
+      icon: Star,
+      consultarUrl: "/funcionario/checklist/preferencias",
+      editarUrl: "/funcionario/checklist/preferencias",
+      registrarUrl: "/funcionario/checklist/preferencias"
+    },
+    { 
+      id: 8, 
+      nome: "Registro de comportamento", 
+      icon: BarChartIcon,
+      consultarUrl: "/funcionario/checklist/comportamento",
+      editarUrl: "/funcionario/checklist/comportamento",
+      registrarUrl: "/funcionario/checklist/comportamento"
+    },
+    { 
+      id: 9, 
+      nome: "Registro da saúde corporal", 
+      icon: Hospital,
+      consultarUrl: "/funcionario/saude/corporal",
+      editarUrl: "/funcionario/saude/corporal",
+      registrarUrl: "/funcionario/saude/corporal"
+    },
+  ];
+
   const funcionalidades = [
-    { id: 1, nome: "Registro de medicamentos", icon: Pill },
-    { id: 2, nome: "Registro de exames médicos", icon: Microscope },
-    { id: 3, nome: "Registro de consultas médicas", icon: Stethoscope },
-    { id: 4, nome: "Registro da saúde corporal", icon: Hospital },
-    { id: 5, nome: "Registro de Ocorrências", icon: AlertTriangle },
-    { id: 6, nome: "Registro de comportamento", icon: BarChartIcon },
-    { id: 7, nome: "Registro de Atividades", icon: ClipboardList },
-    { id: 8, nome: "Registro de alimentação", icon: Utensils },
-    { id: 9, nome: "Registro de preferências", icon: Star },
+    ...funcionalidadesRegistro,
+    ...funcionalidadesCheck,
   ];
 
   const alertas = [
@@ -134,14 +202,23 @@ const DashboardFuncionario = () => {
     },
   ];
 
-  const ActionButton = ({ icon: Icon, label, onClick }) => {
+  const ActionButton = ({ icon: Icon, label, onClick, url }) => {
     const [isHovered, setIsHovered] = useState(false);
+
+    const handleClick = (e) => {
+      e.stopPropagation();
+      if (url) {
+        navigate(url);
+      } else if (onClick) {
+        onClick();
+      }
+    };
 
     return (
       <div className="relative">
         <button
           className="p-2 rounded-full bg-odara-primary text-white transition-all duration-200 transform hover:scale-110 hover:bg-odara-primary/90"
-          onClick={onClick}
+          onClick={handleClick}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -192,7 +269,8 @@ const DashboardFuncionario = () => {
                     <p className="text-3xl font-bold text-odara-dark mt-2">
                       {dadosDashboard.checklistDia}
                     </p>
-                    <p className="text-sm text-green-600 mt-1">+2 desde ontem</p>
+
+                      <p className="text-sm font-medium text-yellow-400">+5 Checklists Pendentes</p>
                   </div>
                   <div className="p-3 rounded-full">
                     <IconWrapper icon={FileText} size={32} />
@@ -216,57 +294,92 @@ const DashboardFuncionario = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow p-6">
-              <h2 className="text-xl font-semibold text-odara-dark mb-6">Funcionalidades</h2>
+            <div className="bg-white rounded-2xl shadow p-5">
+            <h2 className="text-xl font-semibold text-odara-dark mb-4">CHECKLISTS</h2>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {funcionalidades.map((func) => (
-                  <div 
-                    key={func.id} 
-                    className={`border  border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 ${
-                      funcionalidadeSelecionada?.id === func.id ? 'ring-2 ring-odara-primary shadow-lg' : 'hover:border-odara-primary/30'
-                    }`}
-                    onClick={() => setFuncionalidadeSelecionada(func)}
-                  >
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-3 rounded-lg bg-odara-primary/10">
-                        <IconWrapper icon={func.icon} />
-                      </div>
-                      <span className="text-sm font-medium text-odara-dark flex-1">{func.nome}</span>
+            {/* Checklists */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
+              {funcionalidadesRegistro.map((func) => (
+                <div
+                  key={func.id}
+                  className={`border border-gray-200 rounded-md p-3 hover:shadow-sm transition-all duration-200 ${
+                    funcionalidadeSelecionada?.id === func.id
+                      ? "ring-2 ring-odara-primary shadow-sm"
+                      : "hover:border-odara-primary/30"
+                  }`}
+                  onClick={() => setFuncionalidadeSelecionada(func)}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-2 rounded-md bg-odara-primary/10">
+                      <IconWrapper icon={func.icon} />
                     </div>
-                    
-                    <div className="flex justify-center gap-3 pt-3 border-t border-gray-100">
-                      <ActionButton
-                        icon={Eye}
-                        label="Consultar"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log(`Consultar ${func.nome}`);
-                        }}
-                      />
-                      
-                      <ActionButton
-                        icon={Edit}
-                        label="Editar"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log(`Editar ${func.nome}`);
-                        }}
-                      />
-                      
-                      <ActionButton
-                        icon={Plus}
-                        label="Registrar"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log(`Registrar ${func.nome}`);
-                        }}
-                      />
-                    </div>
+                    <span className="text-sm font-medium text-odara-dark flex-1 truncate">
+                      {func.nome}
+                    </span>
                   </div>
-                ))}
-              </div>
+
+                  <div className="flex justify-center gap-2 pt-2 border-t border-gray-100">
+                    <ActionButton
+                      icon={Eye}
+                      label="Consultar"
+                      url={func.consultarUrl}
+                    />
+                    <ActionButton
+                      icon={Edit}
+                      label="Editar"
+                      url={func.editarUrl}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
+
+            {/* Linha separadora */}
+            <hr className="border-gray-200 my-4" />
+
+            {/* Registros */}
+            <h2 className="text-xl font-semibold text-odara-dark mb-4">REGISTROS</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {funcionalidadesCheck.map((func) => (
+                <div
+                  key={func.id}
+                  className={`border border-gray-200 rounded-md p-3 hover:shadow-sm transition-all duration-200 ${
+                    funcionalidadeSelecionada?.id === func.id
+                      ? "ring-2 ring-odara-primary shadow-sm"
+                      : "hover:border-odara-primary/30"
+                  }`}
+                  onClick={() => setFuncionalidadeSelecionada(func)}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-2 rounded-md bg-odara-primary/10">
+                      <IconWrapper icon={func.icon} />
+                    </div>
+                    <span className="text-sm font-medium text-odara-dark flex-1 truncate">
+                      {func.nome}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-center gap-2 pt-2 border-t border-gray-100">
+                    <ActionButton
+                      icon={Eye}
+                      label="Consultar"
+                      url={func.consultarUrl}
+                    />
+                    <ActionButton
+                      icon={Edit}
+                      label="Editar"
+                      url={func.editarUrl}
+                    />
+                    <ActionButton
+                      icon={Plus}
+                      label="Registrar"
+                      url={func.registrarUrl}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
           </div>
 
           <div className="lg:col-span-1">

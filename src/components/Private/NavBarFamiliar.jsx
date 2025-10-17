@@ -16,41 +16,17 @@ const NavbarFamiliar = ({ isCollapsed, setIsCollapsed, searchTerm, setSearchTerm
     <>
       {/* Barra de Navegação Superior */}
       <div className="fixed top-0 left-0 right-0 h-13 bg-white shadow-md z-40 flex items-center justify-between px-4">
-        <div className="h-13 flex items-center px-4 border-b border-odara-secondary/30 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
-          <div className="flex items-center overflow-hidden">
-            <img
-              src="../images/Logo final - Icone fundo branco redondo[1].png"
-              alt="Logo Odara Gestão"
-              className="w-8 h-8 object-contain flex-shrink-0"
-            />
-            <span className={`ml-2 text-xl font-bold text-white transition-opacity duration-300 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
-              <h1 className="text-xl font-bold text-white">
-                Área do <span className="font-normal">Responsável</span>
-              </h1>
-            </span>
-          </div>
-        </div>
         <div className="flex items-center">
-          {/* Botão de alternância da barra lateral para dispositivos móveis */}
-          <button
-            className="md:hidden p-2 rounded-md text-odara-primary mr-2"
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          
           {/* Logo na navbar superior para mobile */}
-          <div className="flex items-center space-x-2 md:hidden">
-            <div className="w-8 h-8 bg-odara-accent rounded-full flex items-center justify-center overflow-hidden">
+          <div className="flex items-center space-x-2">
+            <div className="ml-5 w-10 h-10 flex items-center justify-center overflow-hidden">
               <img
-                src="../images/Logo final - Icone fundo branco redondo[1].png"
+                src="../images/Logo_final_-_sem fundo.png"
                 alt="Logo Odara Gestão"
-                className="w-full h-full object-cover"
+                className="w-full h-full"
               />
             </div>
-            <span className="text-sm font-bold text-odara-primary">Área do Funcionário</span>
+            <span className="text-sm font-bold text-odara-primary">Área do Responsável</span>
           </div>
         </div>
 

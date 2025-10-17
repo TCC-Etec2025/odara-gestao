@@ -1,9 +1,36 @@
 import React, { useState } from 'react';
 import { FaUserInjured, FaSearch, FaEye, FaNotesMedical, FaClipboardList } from 'react-icons/fa';
+import { Eye, Edit } from 'lucide-react';
+
+  const ActionButton = ({ icon: Icon, label, onClick }) => {
+    const [isHovered, setIsHovered] = useState(false);
+
+    return (
+      <div className="relative">
+        <button
+          className="p-2 rounded-full bg-odara-primary text-white transition-all duration-200 transform hover:scale-110 hover:bg-odara-primary/90"
+          onClick={onClick}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <Icon size={16} />
+        </button>
+        
+        {isHovered && (
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-10">
+            <div className="bg-gray-800 text-white text-xs py-1 px-2 rounded whitespace-nowrap">
+              {label}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
 const PaginaResidentes = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [residentesAtribuidos, setResidentesAtribuidos] = useState([
+  const [residentesAtribuidos] = useState([
     { 
       id: 1, 
       nome: "Carlos Silva", 
@@ -45,28 +72,14 @@ const PaginaResidentes = () => {
     residente.cuidados.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleVerDetalhes = (residente) => {
-    console.log('Ver detalhes:', residente);
-  };
+  const handleVerDetalhes = (residente) => console.log('Ver detalhes:', residente);
+  const handleRegistrarCuidados = (residente) => console.log('Registrar cuidados:', residente);
+  const handleChecklist = (residente) => console.log('Abrir checklist:', residente);
 
-  const handleRegistrarCuidados = (residente) => {
-    // Abrir modal/form para registrar cuidados
-    console.log('Registrar cuidados:', residente);
-  };
-
-  const handleChecklist = (residente) => {
-    // Navegar para checklist do residente
-    console.log('Abrir checklist:', residente);
-  };
-
-  // Estatísticas para o funcionário
   const estatisticas = {
     total: residentesAtribuidos.length,
     comChecklistHoje: residentesAtribuidos.filter(r => r.ultimoChecklist === new Date().toISOString().split('T')[0]).length,
-    comMedicacaoProxima: residentesAtribuidos.filter(r => {
-      const horaAtual = new Date().getHours();
-      const horaMedicacao = parseInt(r.proximaMedicacao.split(':')[0]);
-      return horaMedicacao - horaAtual <= 2 && horaMedicacao >= horaAtual;
+    comMedicacaoProxima: residentesAtribuidos.filter(r => {r => r.ultimoChecklist === new Date().toISOString().split('T')[0]
     }).length,
     comAlertas: residentesAtribuidos.filter(r => r.alertas !== "Nenhum").length
   };
@@ -149,7 +162,7 @@ const PaginaResidentes = () => {
         </div>
       </div>
 
-      {/* Tabela de Residentes Atribuídos */}
+      {/* Tabela */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-odara-primary text-odara-contorno">
@@ -160,7 +173,7 @@ const PaginaResidentes = () => {
               <th className="p-4 text-left font-medium">Último Checklist</th>
               <th className="p-4 text-left font-medium">Próxima Medicação</th>
               <th className="p-4 text-left font-medium">Alertas</th>
-              <th className="p-4 text-left font-medium">Ações</th>
+              <th className="p-4 text-center font-medium">Ações</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -170,60 +183,36 @@ const PaginaResidentes = () => {
                   <div className="font-medium text-odara-dark">{residente.nome}</div>
                   <div className="text-xs text-gray-500">{residente.idade} anos</div>
                 </td>
-                <td className="p-4">
-                  <span className="bg-odara-primary/10 text-odara-primary px-2 py-1 rounded text-xs font-medium">
-                    {residente.quarto}
-                  </span>
-                </td>
-                <td className="p-4">
-                  <div className="text-xs text-gray-600 max-w-xs">{residente.cuidados}</div>
-                </td>
-                <td className="p-4">
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    residente.ultimoChecklist === new Date().toISOString().split('T')[0] 
-                      ? 'bg-green-100 text-green-700' 
-                      : 'bg-yellow-100 text-yellow-700'
-                  }`}>
-                    {new Date(residente.ultimoChecklist).toLocaleDateString('pt-BR')}
-                  </span>
-                </td>
-                <td className="p-4">
-                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium">
-                    {residente.proximaMedicacao}
-                  </span>
-                </td>
+                <td className="p-4">{residente.quarto}</td>
+                <td className="p-4 text-gray-600">{residente.cuidados}</td>
+                <td className="p-4">{new Date(residente.ultimoChecklist).toLocaleDateString('pt-BR')}</td>
+                <td className="p-4">{residente.proximaMedicacao}</td>
                 <td className="p-4">
                   <span className={`px-2 py-1 rounded text-xs font-medium ${
                     residente.alertas === "Nenhum" 
-                      ? 'bg-gray-100 text-gray-700' 
-                      : 'bg-red-100 text-red-700'
+                      ? 'text-gray-700' 
+                      : 'text-red-700 font-semibold'
                   }`}>
                     {residente.alertas}
                   </span>
                 </td>
                 <td className="p-4">
-                  <div className="flex space-x-2">
-                    <button 
-                      className="text-blue-500 hover:text-blue-700 transition p-2 bg-blue-50 rounded-lg"
+                  <div className="flex justify-center gap-2 pt-2 border-t border-gray-100">
+                    <ActionButton
+                      icon={Eye}
+                      label="Detalhes"
                       onClick={() => handleVerDetalhes(residente)}
-                      title="Ver detalhes"
-                    >
-                      <FaEye />
-                    </button>
-                    <button 
-                      className="text-green-500 hover:text-green-700 transition p-2 bg-green-50 rounded-lg"
+                    />
+                    <ActionButton
+                      icon={FaClipboardList}
+                      label="Checklist"
                       onClick={() => handleChecklist(residente)}
-                      title="Checklist diário"
-                    >
-                      <FaClipboardList />
-                    </button>
-                    <button 
-                      className="text-purple-500 hover:text-purple-700 transition p-2 bg-purple-50 rounded-lg"
+                    />
+                    <ActionButton
+                      icon={FaNotesMedical}
+                      label="Cuidados"
                       onClick={() => handleRegistrarCuidados(residente)}
-                      title="Registrar cuidados"
-                    >
-                      <FaNotesMedical />
-                    </button>
+                    />
                   </div>
                 </td>
               </tr>
@@ -232,28 +221,14 @@ const PaginaResidentes = () => {
         </table>
       </div>
 
-      {/* Contagem e informações */}
+      {/* Rodapé da tabela */}
       <div className="mt-4 flex justify-between items-center text-sm text-gray-500">
         <div>
           Mostrando {filteredResidentes.length} de {residentesAtribuidos.length} residente(s)
         </div>
-        <div className="flex space-x-4 text-xs">
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-green-100 border border-green-300 rounded mr-1"></div>
-            Checklist hoje
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-yellow-100 border border-yellow-300 rounded mr-1"></div>
-            Checklist pendente
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-red-100 border border-red-300 rounded mr-1"></div>
-            Com alertas
-          </div>
-        </div>
       </div>
 
-      {/* Mensagem se não houver residentes */}
+      {/* Nenhum residente */}
       {filteredResidentes.length === 0 && (
         <div className="text-center py-12">
           <FaUserInjured className="text-gray-300 text-5xl mx-auto mb-4" />

@@ -56,101 +56,139 @@ const Dashboard = () => {
 
   const CORES = ["#2D5B78", "#D8A4AA", "#FFEFDF"];
 
-  const alertas = [
-    { 
-      id: 1, 
-      texto: "Checklist pendente para 3 funcionários", 
-      tipo: "alerta", 
-      hora: "09:30",
-      icon: <FaExclamationTriangle size={20} />,
-      detalhes: {
-        titulo: "Checklists Pendentes - Detalhes",
-        descricao: "Existem 3 funcionários com checklists pendentes para hoje:",
-        lista: [
-          "João Silva - Checklist de segurança",
-          "Maria Santos - Checklist de equipamentos", 
-          "Pedro Oliveira - Checklist de limpeza"
-        ],
-        acaoRecomendada: "Verificar com a equipe a conclusão dos checklists até o final do expediente."
-      }
-    },
-    { 
-      id: 3, 
-      texto: "5 novos checklists atribuídos", 
-      tipo: "alerta", 
-      hora: "07:45",
-      icon: <FaExclamationTriangle size={20} />,
-      detalhes: {
-        titulo: "Novos Checklists Atribuídos",
-        descricao: "Foram atribuídos 5 novos checklists para sua equipe:",
-        lista: [
-          "Checklist de segurança - Área A",
-          "Checklist de equipamentos - Turno manhã",
-          "Checklist de qualidade - Produto X",
-          "Checklist de limpeza - Cozinha",
-          "Checklist de manutenção - Equipamento Y"
-        ],
-        acaoRecomendada: "Distribuir os checklists entre os funcionários disponíveis."
-      }
-    },
-  ];
+const alertas = [
+  {
+    id: 1,
+    texto: "Checklists pendentes para 12 funcionários",
+    tipo: "alerta",
+    hora: "09:30",
+    icon: <FaExclamationTriangle size={20} />,
+    detalhes: {
+      titulo: "Checklists Pendentes - Equipe",
+      descricao: "Existem 12 funcionários com checklists pendentes para hoje:",
+      lista: [
+        "João Silva - Checklist de segurança",
+        "Maria Santos - Checklist de equipamentos",
+        "Pedro Oliveira - Checklist de limpeza",
+        "Ana Costa - Checklist de alimentação",
+        "Lucas Almeida - Checklist de medicamentos",
+        "Fernanda Rocha - Checklist de atividades recreativas",
+        "Carlos Lima - Checklist de manutenção",
+        "Juliana Souza - Checklist de qualidade",
+        "Marcos Pereira - Checklist de higiene pessoal",
+        "Renata Martins - Checklist de enfermagem",
+        "Ricardo Fernandes - Checklist de segurança",
+        "Camila Ribeiro - Checklist de estoque"
+      ],
+      acaoRecomendada: "Distribuir tarefas para a equipe e garantir que todos os checklists sejam concluídos até o final do expediente."
+    }
+  },
+  {
+    id: 2,
+    texto: "Alertas de atraso de checklists críticos",
+    tipo: "alerta",
+    hora: "11:00",
+    icon: <FaExclamationTriangle size={20} />,
+    detalhes: {
+      titulo: "Checklists Atrasados",
+      descricao: "Checklists críticos ainda não finalizados:",
+      lista: [
+        "João Silva - Checklist de segurança (Área A)",
+        "Lucas Almeida - Checklist de medicamentos (Enfermaria 1)",
+        "Juliana Souza - Checklist de qualidade (Cozinha)",
+        "Carlos Lima - Checklist de manutenção (Prédio B)"
+      ],
+      acaoRecomendada: "Contactar os responsáveis imediatamente e priorizar finalização."
+    }
+  },
+  {
+    id: 3,
+    texto: "Novos checklists atribuídos à equipe",
+    tipo: "alerta",
+    hora: "07:45",
+    icon: <FaExclamationTriangle size={20} />,
+    detalhes: {
+      titulo: "Novos Checklists Atribuídos",
+      descricao: "Foram atribuídos 15 novos checklists para os funcionários:",
+      lista: [
+        "Checklist de segurança - Área A",
+        "Checklist de alimentação - Turno manhã",
+        "Checklist de qualidade - Produto X",
+        "Checklist de limpeza - Cozinha",
+        "Checklist de manutenção - Equipamento Y",
+        "Checklist de higiene pessoal - Enfermaria 2",
+        "Checklist de enfermagem - Sala 3",
+        "Checklist de estoque - Armazém 1",
+        "Checklist de atividades recreativas - Sala comum",
+        "Checklist de medicação - Sala 1",
+        "Checklist de equipamentos - Oficina",
+        "Checklist de segurança - Área B",
+        "Checklist de alimentação - Turno tarde",
+        "Checklist de limpeza - Banheiros",
+        "Checklist de manutenção - Equipamento Z"
+      ],
+      acaoRecomendada: "Distribuir os checklists entre os funcionários disponíveis."
+    }
+  }
+];
 
-  const notificacoes = [
-    { 
-      id: 2, 
-      texto: "Reunião de equipe às 14:00", 
-      tipo: "info", 
-      hora: "08:15",
-      icon: <FaInfoCircle size={20} />,
-      detalhes: {
-        titulo: "Reunião de Equipe",
-        descricao: "Reunião agendada para hoje às 14:00 na sala de reuniões principal.",
-        lista: [
-          "Horário: 14:00 - 15:30",
-          "Local: Sala de Reuniões Principal", 
-          "Pauta: Revisão mensal de métricas",
-          "Participantes: Equipe completa"
-        ],
-        acaoRecomendada: "Confirmar presença e preparar relatórios solicitados."
-      }
-    },
-    { 
-      id: 4, 
-      texto: "Relatório mensal devido sexta-feira", 
-      tipo: "info", 
-      hora: "Ontem",
-      icon: <FaInfoCircle size={20} />,
-      detalhes: {
-        titulo: "Relatório Mensal - Prazo",
-        descricao: "O relatório mensal de atividades está com prazo para sexta-feira.",
-        lista: [
-          "Tipo: Relatório Mensal de Atividades",
-          "Prazo: Sexta-feira, 17:00",
-          "Formato: Planilha padrão",
-          "Envio: Sistema interno"
-        ],
-        acaoRecomendada: "Iniciar a compilação dos dados com antecedência."
-      }
-    },
-    { 
-      id: 5, 
-      texto: "Atualização no sistema de checklist", 
-      tipo: "info", 
-      hora: "10:00",
-      icon: <FaInfoCircle size={20} />,
-      detalhes: {
-        titulo: "Atualização do Sistema",
-        descricao: "O sistema de checklist foi atualizado com novas funcionalidades:",
-        lista: [
-          "Nova interface de usuário",
-          "Relatórios em tempo real", 
-          "Exportação em PDF",
-          "Notificações push"
-        ],
-        acaoRecomendada: "Familiarizar-se com as novas funcionalidades."
-      }
-    },
-  ];
+const notificacoes = [
+  {
+    id: 1,
+    texto: "Reunião de gestão às 16:00",
+    tipo: "info",
+    hora: "08:15",
+    icon: <FaInfoCircle size={20} />,
+    detalhes: {
+      titulo: "Reunião de Gestão",
+      descricao: "Reunião agendada para hoje às 16:00 na sala de reuniões principal.",
+      lista: [
+        "Horário: 16:00 - 17:30",
+        "Local: Sala de Reuniões Principal",
+        "Pauta: Revisão semanal de métricas, checklists e performance da equipe",
+        "Participantes: Gestores e supervisores"
+      ],
+      acaoRecomendada: "Preparar relatórios e acompanhar pendências antes da reunião."
+    }
+  },
+  {
+    id: 2,
+    texto: "Relatórios semanais pendentes",
+    tipo: "info",
+    hora: "Ontem",
+    icon: <FaInfoCircle size={20} />,
+    detalhes: {
+      titulo: "Relatórios Semanais",
+      descricao: "Alguns relatórios de setores ainda não foram enviados:",
+      lista: [
+        "Setor de Enfermagem - Relatório de medicação",
+        "Setor de Limpeza - Relatório de manutenção",
+        "Setor de Alimentação - Relatório de refeições",
+        "Setor de Atividades - Relatório de recreação"
+      ],
+      acaoRecomendada: "Solicitar envio dos relatórios antes do fechamento semanal."
+    }
+  },
+  {
+    id: 3,
+    texto: "Atualização no sistema de checklist",
+    tipo: "info",
+    hora: "10:00",
+    icon: <FaInfoCircle size={20} />,
+    detalhes: {
+      titulo: "Atualização do Sistema",
+      descricao: "O sistema de checklist foi atualizado com novas funcionalidades:",
+      lista: [
+        "Dashboard para gestores com visão completa da equipe",
+        "Notificações de atrasos em tempo real",
+        "Exportação de relatórios detalhados",
+        "Alertas de checklists críticos"
+      ],
+      acaoRecomendada: "Familiarizar-se com o dashboard do gestor e monitorar pendências."
+    }
+  }
+];
+
 
   // Ações rápidas
   const acoesRapidas = [

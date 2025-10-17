@@ -4,6 +4,8 @@ import {
   FaFilePdf, FaArrowLeft, FaChevronLeft, FaChevronRight, FaTimes
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 const mesesLista = [
   { id: 'todos', label: 'Todos os meses' },
@@ -26,7 +28,7 @@ const RegistroConsultas = () => {
       idade: 72,
       sexo: "Masculino",
       prontuario: "2023001",
-      data: new Date(2023, 0, 15), // 15 Jan 2023
+      data: new Date(2023, 0, 15),
       horario: "10:30",
       medico: "Dr. Carlos Mendes",
       motivo: "Check-up regular",
@@ -42,7 +44,7 @@ const RegistroConsultas = () => {
       idade: 68,
       sexo: "Feminino",
       prontuario: "2023002",
-      data: new Date(2023, 0, 16), // 16 Jan 2023
+      data: new Date(2023, 0, 16),
       horario: "14:15",
       medico: "Dra. Ana Santos",
       motivo: "Dor articular no joelho direito",
@@ -54,7 +56,7 @@ const RegistroConsultas = () => {
     }
   ]);
 
-  // ---- estados de UI ----
+  // Estados
   const [modalAberto, setModalAberto] = useState(false);
   const [consultaEditando, setConsultaEditando] = useState(null);
   const [filtroAberto, setFiltroAberto] = useState(false);
@@ -62,20 +64,18 @@ const RegistroConsultas = () => {
   const [infoVisivel, setInfoVisivel] = useState(false);
   const [pacienteSelecionado, setPacienteSelecionado] = useState('todos');
   const [consultaSelecionada, setConsultaSelecionada] = useState(null);
-
-  // ---- calendario estados ----
   const [dataAtual, setDataAtual] = useState(new Date());
+  const [filtroDiaAtivo, setFiltroDiaAtivo] = useState(false);
+  const [filtroDia, setFiltroDia] = useState(null);
 
-  // ---- utilitários ----
+  // Utilitários
   const pacientes = Array.from(new Set(consultas.map(c => c.paciente).filter(Boolean)));
 
-  // abrir modal adicionar
   const abrirModalAdicionar = () => {
     setConsultaEditando(null);
     setModalAberto(true);
   };
 
-  // abrir modal editar (transforma data para YYYY-MM-DD)
   const abrirModalEditar = (consulta) => {
     const copia = {
       ...consulta,
@@ -85,19 +85,15 @@ const RegistroConsultas = () => {
     setModalAberto(true);
   };
 
-  // salvar (converte data do input YYYY-MM-DD para Date)
   const salvarConsulta = (novaConsulta) => {
     const form = { ...novaConsulta };
-    // se data estiver em formato YYYY-MM-DD, converte
     if (typeof form.data === 'string' && form.data.includes('-')) {
       const [y, m, d] = form.data.split('-').map(Number);
       form.data = new Date(y, m - 1, d);
     }
     if (consultaEditando) {
-      // atualização
       setConsultas(prev => prev.map(c => c.id === consultaEditando.id ? { ...form, id: consultaEditando.id } : c));
     } else {
-      // inserir
       setConsultas(prev => [...prev, { ...form, id: Date.now() }]);
     }
     setModalAberto(false);
@@ -109,7 +105,7 @@ const RegistroConsultas = () => {
     }
   };
 
-  // filtro por mês e paciente (para lista)
+  // Filtros
   const consultasFiltradas = consultas.filter(consulta => {
     const mesConsulta = consulta.data instanceof Date ? consulta.data.getMonth() : null;
     const passaMes = filtroMes === 'todos' || (mesIdParaIndex[filtroMes] === mesConsulta);
@@ -117,7 +113,7 @@ const RegistroConsultas = () => {
     return passaMes && passaPaciente;
   }).sort((a,b)=> a.data - b.data || a.horario.localeCompare(b.horario));
 
-  // -------------- função calendário (adaptada) --------------
+  // Funções do calendário
   const alterarMes = (deslocamento) => {
     setDataAtual(ant => {
       const nova = new Date(ant);
@@ -125,7 +121,13 @@ const RegistroConsultas = () => {
       return nova;
     });
   };
-  const irParaMesAtual = () => setDataAtual(new Date());
+
+  const irParaMesAtual = () => {
+    const hoje = new Date();
+    setDataAtual(hoje);
+    setFiltroDia(hoje);
+    setFiltroDiaAtivo(true);
+  };
 
   const renderizarCabecalhoCalendario = () => {
     const nomes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
@@ -139,83 +141,61 @@ const RegistroConsultas = () => {
     });
   };
 
-  const renderDiasCalendario = () => {
-    const firstDay = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 1);
-    const lastDay = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const firstDayIndex = firstDay.getDay();
-    const prevMonthLastDay = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 0).getDate();
-    const today = new Date();
-    const days = [];
+  const getTileClassName = ({ date, view }) => {
+    let classes = [];
 
-    // dias mes anterior
-    for (let i = firstDayIndex; i > 0; i--) {
-      const day = prevMonthLastDay - i + 1;
-      days.push(
-        <div key={`prev-${day}`} className="flex flex-col aspect-square p-1 bg-odara-name/10 border border-odara-primary text-odara-dark/40">
-          <span className="text-xs font-semibold self-end">{day}</span>
-        </div>
-      );
+    const hoje = new Date();
+    if (date.getDate() === hoje.getDate() &&
+      date.getMonth() === hoje.getMonth() &&
+      date.getFullYear() === hoje.getFullYear()) {
+      classes.push('!bg-odara-primary/50 !text-dark !font-bold');
     }
 
-    // dias mes atual
-    for (let i = 1; i <= daysInMonth; i++) {
-      const isToday = i === today.getDate() && dataAtual.getMonth() === today.getMonth() && dataAtual.getFullYear() === today.getFullYear();
-      const consultasDoDia = obterConsultasDoDia(i, dataAtual.getMonth(), dataAtual.getFullYear());
-      days.push(
-        <div
-          key={`current-${i}`}
-          className={`flex flex-col aspect-square p-1 relative ${isToday ? 'bg-odara-primary/20' : 'bg-white'} overflow-y-auto cursor-pointer border border-odara-primary`}
-          onClick={() => {
-            const clicked = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), i);
-            setDataAtual(clicked);
-            // selecionar lista filtrando pelo dia
-            setFiltroMes('todos');
-            setPacienteSelecionado('todos');
-            // abrir lista apenas com esse dia
-            // por simplicidade, usamos pacienteSelecionado='__dia' trick: mas vamos setar consultaSelecionada para o dia
-            setConsultaSelecionada({ dia: clicked });
-          }}
-        >
-          <div className="flex justify-between items-start">
-            <span className={`text-xs font-semibold ${isToday ? 'text-odara-white bg-odara-accent rounded-full px-1.5 py-0.5 font-bold' : 'text-odara-accent'} self-end`}>
-              {i}
-            </span>
-            {consultasDoDia.length > 0 && (
-              <span className="text-xs text-odara-dropdown-accent font-bold text-center">
-                {consultasDoDia.length}
-              </span>
-            )}
-          </div>
-
-          <div className="flex-1 mt-1 space-y-1 overflow-y-auto">
-            {consultasDoDia.slice(0,3).map(c => (
-              <div key={c.id} className="text-xs p-1 rounded bg-odara-offwhite/60 truncate">
-                <div className="font-medium truncate">{c.horario}</div>
-                <div className="truncate">{c.paciente}</div>
-              </div>
-            ))}
-            {consultasDoDia.length > 3 && <div className="text-xs text-odara-dark/50">+{consultasDoDia.length - 3} outros</div>}
-          </div>
-        </div>
-      );
+    if (filtroDiaAtivo && filtroDia &&
+      date.getDate() === filtroDia.getDate() &&
+      date.getMonth() === filtroDia.getMonth() &&
+      date.getFullYear() === filtroDia.getFullYear()) {
+      classes.push('!bg-odara-secondary/70 !text-white !font-bold');
     }
 
-    // dias proximo mes (completa 42 células)
-    const totalCells = 42;
-    const remainingCells = totalCells - (firstDayIndex + daysInMonth);
-    for (let i = 1; i <= remainingCells; i++) {
-      days.push(
-        <div key={`next-${i}`} className="flex flex-col aspect-square p-1 bg-odara-name/10 border border-odara-primary text-odara-dark/40">
-          <span className="text-xs font-semibold self-end">{i}</span>
-        </div>
-      );
-    }
-
-    return days;
+    return classes.join(' ');
   };
 
-  // quando um dia foi selecionado no calendário, filtra lista por esse dia
+  const getTileContent = ({ date, view }) => {
+    if (view !== 'month') return null;
+
+    const consultasDoDia = obterConsultasDoDia(date.getDate(), date.getMonth(), date.getFullYear());
+    const count = consultasDoDia.length;
+    
+    if (count > 0) {
+      return (
+        <div className="mt-1 flex justify-center">
+          <div className="w-6 h-6 rounded-full bg-odara-accent text-white text-xs font-bold flex items-center justify-center">
+            {count}
+          </div>
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
+  const handleDayClick = (value) => {
+    if (filtroDiaAtivo && filtroDia &&
+      value.getDate() === filtroDia.getDate() &&
+      value.getMonth() === filtroDia.getMonth() &&
+      value.getFullYear() === filtroDia.getFullYear()) {
+      setFiltroDiaAtivo(false);
+      setFiltroDia(null);
+      setConsultaSelecionada(null);
+    } else {
+      setFiltroDia(value);
+      setFiltroDiaAtivo(true);
+      setConsultaSelecionada({ dia: value });
+    }
+  };
+
+  // Consultas mostradas
   const consultasMostradas = (() => {
     if (consultaSelecionada && consultaSelecionada.dia) {
       const dia = consultaSelecionada.dia;
@@ -231,15 +211,25 @@ const RegistroConsultas = () => {
   return (
     <div className="flex min-h-screen bg-odara-offwhite">
       <div className="flex-1 p-6 lg:p-10">
+        {/* Cabeçalho - Layout similar ao de medicamentos */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
-            <Link to="/gestao/PaginaRegistros" className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 mr-3">
-              <FaArrowLeft />
-            </Link>
+            <div className="flex items-center mb-1">
+              <Link
+                to="/gestao/PaginaRegistros"
+                className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 flex items-center"
+              >
+                <FaArrowLeft className="mr-1" />
+              </Link>
+            </div>
             <h1 className="text-3xl font-bold text-odara-dark mr-2">Registro de Consultas Médicas</h1>
             <div className="relative">
-              <button onMouseEnter={() => setInfoVisivel(true)} onMouseLeave={() => setInfoVisivel(false)} className="text-odara-accent">
-                <FaInfoCircle size={20} />
+              <button
+                onMouseEnter={() => setInfoVisivel(true)}
+                onMouseLeave={() => setInfoVisivel(false)}
+                className="text-odara-dark hover:text-odara-secondary transition-colors duration-200"
+              >
+                <FaInfoCircle size={20} className='text-odara-accent hover:text-odara-secondary' />
               </button>
               {infoVisivel && (
                 <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dropdown text-odara-name text-sm rounded-lg shadow-lg">
@@ -247,36 +237,45 @@ const RegistroConsultas = () => {
                   <p>
                     O Registro de Consultas Médicas deve conter nome, idade, sexo, prontuário, data e horário, profissional, motivo, histórico, tratamentos, exames, receitas, e anexos.
                   </p>
+                  <div className="absolute bottom-full left-4 border-4 border-transparent border-b-gray-800"></div>
                 </div>
               )}
             </div>
           </div>
-
-          <div className="flex items-center gap-3">
-            <button onClick={irParaMesAtual} className="bg-odara-white hover:bg-odara-primary text-odara-primary hover:text-odara-white font-medium py-2 px-4 rounded-lg">
-              Hoje
-            </button>
-          </div>
         </div>
 
-        {/* filtro e ações */}
+        {/* Barra de filtros - Layout similar ao de medicamentos */}
         <div className="relative flex items-center gap-4 mb-6">
-          <button onClick={abrirModalAdicionar} className="bg-odara-accent hover:bg-odara-secondary/90 text-odara-contorno font-medium py-2 px-4 rounded-lg flex items-center transition duration-200 border-2 border-odara-contorno">
-            <FaPlus className="mr-2" /> Registrar Consulta
+          {/* Botão Adicionar */}
+          <button
+            onClick={abrirModalAdicionar}
+            className="bg-odara-accent hover:bg-odara-secondary text-odara-white font-emibold py-2 px-4 rounded-lg flex items-center transition duration-200"
+          >
+            <FaPlus className="mr-2 text-odara-white" /> Nova Consulta
           </button>
 
+          {/* Filtro por Mês */}
           <div className="relative">
-            <button className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-odara-dark font-medium hover:bg-odara-primary/10 transition"
-              onClick={() => setFiltroAberto(!filtroAberto)}>
+            <button
+              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition w-full justify-center"
+              onClick={() => setFiltroAberto(!filtroAberto)}
+            >
               <FaFilter className="text-odara-accent mr-2" />
-              {mesesLista.find(m => m.id === filtroMes)?.label || 'Filtro'}
+              {mesesLista.find(m => m.id === filtroMes)?.label || 'Mês'}
             </button>
 
             {filtroAberto && (
               <div className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10 max-h-60 overflow-y-auto">
                 {mesesLista.map(mes => (
-                  <button key={mes.id} onClick={() => { setFiltroMes(mes.id); setFiltroAberto(false); setConsultaSelecionada(null); }}
-                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/10 ${filtroMes === mes.id ? 'bg-odara-primary/20 font-semibold' : ''}`}>
+                  <button
+                    key={mes.id}
+                    onClick={() => { 
+                      setFiltroMes(mes.id); 
+                      setFiltroAberto(false); 
+                      setConsultaSelecionada(null);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroMes === mes.id ? 'bg-indigo-100 font-semibold' : ''}`}
+                  >
                     {mes.label}
                   </button>
                 ))}
@@ -284,79 +283,183 @@ const RegistroConsultas = () => {
             )}
           </div>
 
-          <select className="border border-gray-300 rounded-lg px-3 py-2"
-            value={pacienteSelecionado}
-            onChange={(e) => { setPacienteSelecionado(e.target.value); setConsultaSelecionada(null); }}>
-            <option value="todos">Todos os pacientes</option>
-            {pacientes.map(p => <option key={p} value={p}>{p}</option>)}
-          </select>
+          {/* Filtro por Paciente */}
+          <div className="relative">
+            <select
+              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition w-full justify-center appearance-none cursor-pointer"
+              value={pacienteSelecionado}
+              onChange={(e) => { 
+                setPacienteSelecionado(e.target.value); 
+                setConsultaSelecionada(null); 
+              }}
+            >
+              <option value="todos">Todos os pacientes</option>
+              {pacientes.map(p => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
 
-          {/* limpar seleção de dia */}
-          {(consultaSelecionada || filtroMes !== 'todos' || pacienteSelecionado !== 'todos') && (
-            <button onClick={() => { setConsultaSelecionada(null); setFiltroMes('todos'); setPacienteSelecionado('todos'); }}
-              className="px-3 py-2 bg-odara-accent text-white rounded-full">Limpar</button>
+          {/* Botão Limpar Filtros */}
+          {(filtroDiaAtivo || filtroMes !== 'todos' || pacienteSelecionado !== 'todos') && (
+            <button
+              onClick={() => { 
+                setFiltroDiaAtivo(false); 
+                setFiltroDia(null);
+                setFiltroMes('todos'); 
+                setPacienteSelecionado('todos'); 
+                setConsultaSelecionada(null);
+              }}
+              className="flex items-center bg-odara-accent text-odara-white rounded-full px-4 py-2 shadow-sm font-medium hover:bg-odara-secondary transition"
+            >
+              <FaTimes className="mr-1" /> Limpar Filtros
+            </button>
           )}
         </div>
 
+        {/* Grid principal - Layout similar ao de medicamentos */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-odara-offwhite rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-odara-dark mb-4">Próximas Consultas</h2>
+          {/* Seção de Consultas */}
+          <div className="bg-odara-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold text-odara-dark flex items-center mb-2">
+              {filtroMes === 'todos' ? 'Todas as Consultas' : `Consultas - ${mesesLista.find(m => m.id === filtroMes)?.label}`}
+              {consultaSelecionada && ` (Dia ${consultaSelecionada.dia.getDate()})`}
+            </h2>
+
+            {/* Filtros ativos */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {filtroDiaAtivo && (
+                <span className="text-sm bg-odara-accent text-odara-white px-2 py-1 rounded-full">
+                  Dia: {filtroDia.getDate().toString().padStart(2, '0')}/{(filtroDia.getMonth() + 1).toString().padStart(2, '0')}
+                </span>
+              )}
+
+              {filtroMes !== 'todos' && (
+                <span className="text-sm bg-odara-secondary text-odara-white px-2 py-1 rounded-full">
+                  Mês: {mesesLista.find(m => m.id === filtroMes)?.label}
+                </span>
+              )}
+
+              {pacienteSelecionado !== 'todos' && (
+                <span className="text-sm bg-odara-dropdown-accent text-odara-white px-2 py-1 rounded-full">
+                  Paciente: {pacienteSelecionado}
+                </span>
+              )}
+            </div>
+
+            <p className="text-odara-name/60 mb-6">
+              {consultasMostradas.length === 0 
+                ? 'Nenhuma consulta encontrada' 
+                : `${consultasMostradas.length} consulta(s) encontrada(s)`
+              }
+            </p>
 
             <div className="space-y-4 max-h-[600px] overflow-y-auto">
               {consultasMostradas.length === 0 ? (
                 <div className="p-6 rounded-xl bg-odara-name/10 text-center">
-                  <p className="text-odara-dark/60">Nenhuma consulta encontrada</p>
+                  <p className="text-odara-dark/60">
+                    {filtroDiaAtivo 
+                      ? 'Nenhuma consulta encontrada para este dia' 
+                      : 'Nenhuma consulta encontrada'
+                    }
+                  </p>
                 </div>
               ) : (
                 consultasMostradas.map(consulta => (
-                  <div key={consulta.id} className="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-200">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="text-xl font-semibold text-odara-dark mb-2">{consulta.paciente}</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <p className="text-odara-dark/70"><span className="font-medium">Idade:</span> {consulta.idade} anos</p>
-                            <p className="text-odara-dark/70"><span className="font-medium">Sexo:</span> {consulta.sexo}</p>
-                            <p className="text-odara-dark/70"><span className="font-medium">Prontuário:</span> {consulta.prontuario}</p>
-                          </div>
-                          <div>
-                            <p className="text-odara-dark/70">
-                              <span className="font-medium">Data/Horário:</span> {consulta.data instanceof Date ? `${consulta.data.getDate().toString().padStart(2,'0')}/${(consulta.data.getMonth()+1).toString().padStart(2,'0')}/${consulta.data.getFullYear()}` : consulta.data} às {consulta.horario}
-                            </p>
-                            <p className="text-odara-dark/70"><span className="font-medium">Médico:</span> {consulta.medico}</p>
-                          </div>
-                        </div>
+                  <div
+                    key={consulta.id}
+                    className="p-4 rounded-xl hover:shadow-md transition-shadow duration-200 bg-odara-offwhite"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-odara-accent"></span>
+                        <p className="text-base font-semibold">
+                          {consulta.data instanceof Date 
+                            ? `${consulta.data.getDate().toString().padStart(2,'0')}/${(consulta.data.getMonth()+1).toString().padStart(2,'0')}/${consulta.data.getFullYear()}`
+                            : consulta.data
+                          } às {consulta.horario}
+                        </p>
+                      </div>
 
-                        <div className="mb-4">
-                          <h4 className="font-medium text-odara-dark mb-1">Motivo:</h4>
-                          <p className="text-odara-dark/70">{consulta.motivo}</p>
-                        </div>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => abrirModalEditar(consulta)}
+                          className="text-odara-secondary hover:text-odara-dropdown-accent transition-colors duration-200 p-2 rounded-full hover:bg-odara-dropdown"
+                          title="Editar consulta"
+                        >
+                          <FaEdit size={14} />
+                        </button>
+                        <button
+                          onClick={() => excluirConsulta(consulta.id)}
+                          className="text-odara-alerta hover:text-red-700 transition-colors duration-200 p-2 rounded-full hover:bg-odara-alerta/50"
+                          title="Excluir consulta"
+                        >
+                          <FaTrash size={14} />
+                        </button>
+                      </div>
+                    </div>
 
-                        {consulta.anexos && consulta.anexos.length > 0 && (
-                          <div className="mb-4">
-                            <h4 className="font-medium text-odara-dark mb-2">Anexos:</h4>
-                            <div className="flex space-x-2">
-                              {consulta.anexos.map((anexo, idx) => (
-                                <div key={idx} className="flex items-center text-odara-accent">
-                                  <FaFilePdf className="mr-1" />
-                                  <span className="text-sm">{anexo.name || `Anexo_${idx+1}.pdf`}</span>
-                                </div>
-                              ))}
+                    <h6 className="text-xl font-bold mb-1">{consulta.paciente}</h6>
+                    
+                    <div className="grid grid-cols-2 gap-2 mb-2 text-sm">
+                      <div>
+                        <strong>Idade:</strong> {consulta.idade} anos
+                      </div>
+                      <div>
+                        <strong>Sexo:</strong> {consulta.sexo}
+                      </div>
+                      <div>
+                        <strong>Prontuário:</strong> {consulta.prontuario}
+                      </div>
+                      <div>
+                        <strong>Médico:</strong> {consulta.medico}
+                      </div>
+                    </div>
+
+                    <div className="mb-2">
+                      <strong>Motivo:</strong> {consulta.motivo}
+                    </div>
+
+                    {consulta.historico && (
+                      <div className="mb-2">
+                        <strong>Histórico:</strong> {consulta.historico}
+                      </div>
+                    )}
+
+                    {consulta.tratamento && (
+                      <div className="mb-2">
+                        <strong>Tratamento:</strong> {consulta.tratamento}
+                      </div>
+                    )}
+
+                    {consulta.exames && (
+                      <div className="mb-2">
+                        <strong>Exames:</strong> {consulta.exames}
+                      </div>
+                    )}
+
+                    {consulta.receitas && (
+                      <div className="mb-2">
+                        <strong>Receitas:</strong> {consulta.receitas}
+                      </div>
+                    )}
+
+                    {consulta.anexos && consulta.anexos.length > 0 && (
+                      <div className="mb-2">
+                        <strong>Anexos:</strong>
+                        <div className="flex space-x-2 mt-1">
+                          {consulta.anexos.map((anexo, idx) => (
+                            <div key={idx} className="flex items-center text-odara-accent text-sm">
+                              <FaFilePdf className="mr-1" />
+                              <span>{anexo.name || `Anexo_${idx+1}.pdf`}</span>
                             </div>
-                          </div>
-                        )}
+                          ))}
+                        </div>
                       </div>
+                    )}
 
-                      <div className="flex space-x-2 ml-4">
-                        <button onClick={(e) => { e.stopPropagation(); abrirModalEditar(consulta); }}
-                          className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-2 rounded-full hover:bg-odara-accent/10">
-                          <FaEdit />
-                        </button>
-                        <button onClick={(e) => { e.stopPropagation(); excluirConsulta(consulta.id); }}
-                          className="text-red-500 hover:text-red-700 transition-colors duration-200 p-2 rounded-full hover:bg-red-50">
-                          <FaTrash />
-                        </button>
-                      </div>
+                    <div className="flex items-center justify-between mt-3">
+                      <span className="bg-odara-dropdown text-odara-dropdown-name/60 px-2 py-1 rounded-md text-xs">
+                        {consulta.medico}
+                      </span>
                     </div>
                   </div>
                 ))
@@ -364,37 +467,69 @@ const RegistroConsultas = () => {
             </div>
           </div>
 
-          {/* calendário */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h5 className="text-xl font-semibold text-odara-dark">{renderizarCabecalhoCalendario()}</h5>
-              <div className="flex items-center gap-2">
-                <button onClick={() => alterarMes(-1)} className="p-2 rounded hover:bg-odara-dropdown">
-                  <FaChevronLeft />
-                </button>
-                <button onClick={() => alterarMes(1)} className="p-2 rounded hover:bg-odara-dropdown">
-                  <FaChevronRight />
-                </button>
-              </div>
+          {/* Seção do Calendário - Layout similar ao de medicamentos */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 h-fit sticky top-6">
+            <div className="flex justify-center mb-5">
+              <button
+                onClick={irParaMesAtual}
+                className="bg-odara-accent hover:bg-odara-secondary text-odara-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              >
+                Hoje
+              </button>
             </div>
 
-            <div className="border border-odara-primary rounded-xl shadow-sm">
-              <div className="grid grid-cols-7 rounded-t-xl border-b border-odara-primary">
-                {['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d => (
-                  <div key={d} className="py-2 border-r border-odara-primary bg-odara-accent last:border-r-0 flex items-center justify-center text-sm font-medium text-odara-white">
-                    {d}
-                  </div>
-                ))}
-              </div>
+            <div className="flex justify-center border-2 border-odara-primary rounded-xl shadow-sm overflow-hidden max-w-md mx-auto">
+              <Calendar
+                value={dataAtual}
+                onChange={setDataAtual}
+                onClickDay={handleDayClick}
+                tileClassName={getTileClassName}
+                tileContent={getTileContent}
+                locale="pt-BR"
+                className="border-0"
+                nextLabel={<FaChevronRight />}
+                prevLabel={<FaChevronLeft />}
+                next2Label={null}
+                prev2Label={null}
+                showNeighboringMonth={false}
+              />
+            </div>
 
-              <div className="grid grid-cols-7 rounded-b-xl">
-                {renderDiasCalendario()}
+            {/* Estatísticas do dia - Layout similar ao de medicamentos */}
+            <div className="grid grid-cols-1 mt-4 p-3 bg-odara-offwhite rounded-lg max-w-md mx-auto text-center">
+              <h6 className="font-semibold text-odara-dark mb-2">Estatísticas do Dia:</h6>
+              {filtroDia ? (
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>Consultas:</span>
+                    <span className="font-semibold">
+                      {obterConsultasDoDia(filtroDia.getDate(), filtroDia.getMonth(), filtroDia.getFullYear()).length} registros
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Pacientes:</span>
+                    <span className="font-semibold">
+                      {[...new Set(obterConsultasDoDia(filtroDia.getDate(), filtroDia.getMonth(), filtroDia.getFullYear()).map(c => c.paciente))].length} pacientes
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-odara-name/60">Selecione um dia no calendário para ver as estatísticas</p>
+              )}
+              
+              <div className="mt-3 pt-2 border-t border-gray-200">
+                <div className="flex justify-center gap-2 text-xs">
+                  <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded-full bg-odara-accent"></div>
+                    <span>Dia com consultas</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Modal */}
+        {/* Modal - Layout similar ao de medicamentos */}
         {modalAberto && (
           <ModalConsulta
             consulta={consultaEditando}
@@ -407,11 +542,10 @@ const RegistroConsultas = () => {
   );
 };
 
-// Modal adaptado para aceitar consulta.data como Date ou como string YYYY-MM-DD
+// Modal - Layout similar ao de medicamentos
 const ModalConsulta = ({ consulta, onClose, onSave }) => {
   const initial = consulta ? {
     ...consulta,
-    // se consulta.data é Date, transformar pra YYYY-MM-DD para input date
     data: consulta.data instanceof Date ? consulta.data.toISOString().split('T')[0] : (consulta.data || '')
   } : {
     paciente: '',
@@ -434,7 +568,6 @@ const ModalConsulta = ({ consulta, onClose, onSave }) => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'anexos' && files) {
-      // transformar FileList em array simples (apenas demo; sem upload backend)
       setFormData(prev => ({ ...prev, anexos: Array.from(files) }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
@@ -447,12 +580,17 @@ const ModalConsulta = ({ consulta, onClose, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-odara-offwhite rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 border-l-4 border-odara-primary">
+    <div className="fixed inset-0 bg-odara-offwhite/80 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full p-6 border-l-4 border-odara-primary max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-odara-dark">{consulta ? 'Editar' : 'Nova'} Consulta Médica</h2>
-          <button onClick={onClose} className="text-odara-dark hover:text-odara-accent transition-colors duration-200">
-            <FaTimes size={24} />
+          <h2 className="text-2xl font-bold text-odara-accent">
+            {consulta ? 'Editar' : 'Nova'} Consulta Médica
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-odara-primary hover:text-odara-secondary transition-colors duration-200"
+          >
+            <FaTimes />
           </button>
         </div>
 
@@ -460,71 +598,167 @@ const ModalConsulta = ({ consulta, onClose, onSave }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-odara-dark font-medium mb-2">Paciente *</label>
-              <input name="paciente" value={formData.paciente} onChange={handleChange} className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" required />
+              <input 
+                name="paciente" 
+                value={formData.paciente} 
+                onChange={handleChange} 
+                className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary" 
+                required 
+              />
             </div>
             <div>
               <label className="block text-odara-dark font-medium mb-2">Idade *</label>
-              <input name="idade" type="number" value={formData.idade} onChange={handleChange} className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" required />
+              <input 
+                name="idade" 
+                type="number" 
+                value={formData.idade} 
+                onChange={handleChange} 
+                className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary" 
+                required 
+              />
             </div>
             <div>
               <label className="block text-odara-dark font-medium mb-2">Sexo *</label>
-              <select name="sexo" value={formData.sexo} onChange={handleChange} className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" required>
-                <option>Masculino</option><option>Feminino</option><option>Outro</option>
+              <select 
+                name="sexo" 
+                value={formData.sexo} 
+                onChange={handleChange} 
+                className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary" 
+                required
+              >
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Outro">Outro</option>
               </select>
             </div>
             <div>
               <label className="block text-odara-dark font-medium mb-2">Nº Prontuário *</label>
-              <input name="prontuario" value={formData.prontuario} onChange={handleChange} className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" required />
+              <input 
+                name="prontuario" 
+                value={formData.prontuario} 
+                onChange={handleChange} 
+                className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary" 
+                required 
+              />
             </div>
 
             <div>
               <label className="block text-odara-dark font-medium mb-2">Data *</label>
-              <input name="data" type="date" value={formData.data} onChange={handleChange} className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" required />
+              <input 
+                name="data" 
+                type="date" 
+                value={formData.data} 
+                onChange={handleChange} 
+                className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary" 
+                required 
+              />
             </div>
             <div>
               <label className="block text-odara-dark font-medium mb-2">Horário *</label>
-              <input name="horario" type="time" value={formData.horario} onChange={handleChange} className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" required />
+              <input 
+                name="horario" 
+                type="time" 
+                value={formData.horario} 
+                onChange={handleChange} 
+                className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary" 
+                required 
+              />
             </div>
 
             <div>
               <label className="block text-odara-dark font-medium mb-2">Médico *</label>
-              <input name="medico" value={formData.medico} onChange={handleChange} className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" required />
+              <input 
+                name="medico" 
+                value={formData.medico} 
+                onChange={handleChange} 
+                className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary" 
+                required 
+              />
             </div>
           </div>
 
           <div>
             <label className="block text-odara-dark font-medium mb-2">Motivo da Consulta *</label>
-            <textarea name="motivo" value={formData.motivo} onChange={handleChange} className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" rows="3" required />
+            <textarea 
+              name="motivo" 
+              value={formData.motivo} 
+              onChange={handleChange} 
+              className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary" 
+              rows="3" 
+              required 
+            />
           </div>
 
           <div>
             <label className="block text-odara-dark font-medium mb-2">Histórico e Evolução Clínica</label>
-            <textarea name="historico" value={formData.historico} onChange={handleChange} className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" rows="3" />
+            <textarea 
+              name="historico" 
+              value={formData.historico} 
+              onChange={handleChange} 
+              className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary" 
+              rows="3" 
+            />
           </div>
 
           <div>
             <label className="block text-odara-dark font-medium mb-2">Tratamento Indicado</label>
-            <textarea name="tratamento" value={formData.tratamento} onChange={handleChange} className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" rows="2" />
+            <textarea 
+              name="tratamento" 
+              value={formData.tratamento} 
+              onChange={handleChange} 
+              className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary" 
+              rows="2" 
+            />
           </div>
 
           <div>
             <label className="block text-odara-dark font-medium mb-2">Exames Solicitados</label>
-            <textarea name="exames" value={formData.exames} onChange={handleChange} className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" rows="2" />
+            <textarea 
+              name="exames" 
+              value={formData.exames} 
+              onChange={handleChange} 
+              className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary" 
+              rows="2" 
+            />
           </div>
 
           <div>
             <label className="block text-odara-dark font-medium mb-2">Receitas Médicas</label>
-            <textarea name="receitas" value={formData.receitas} onChange={handleChange} className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" rows="2" />
+            <textarea 
+              name="receitas" 
+              value={formData.receitas} 
+              onChange={handleChange} 
+              className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary" 
+              rows="2" 
+            />
           </div>
 
           <div>
             <label className="block text-odara-dark font-medium mb-2">Anexos (PDF)</label>
-            <input name="anexos" type="file" onChange={handleChange} accept="application/pdf" multiple />
+            <input 
+              name="anexos" 
+              type="file" 
+              onChange={handleChange} 
+              accept="application/pdf" 
+              multiple 
+              className="w-full px-4 py-2 border border-odara-primary rounded-lg focus:border-odara-secondary text-odara-secondary"
+            />
           </div>
 
           <div className="flex justify-end space-x-3 mt-6">
-            <button type="button" onClick={onClose} className="px-4 py-2 border border-odara-primary/30 text-odara-dark rounded-lg hover:bg-white">Cancelar</button>
-            <button type="submit" className="px-4 py-2 bg-odara-accent text-odara-contorno rounded-lg hover:bg-odara-secondary/90 border-2 border-odara-contorno">{consulta ? 'Atualizar' : 'Salvar'} Consulta</button>
+            <button 
+              type="button" 
+              onClick={onClose}
+              className="px-6 py-2 border border-odara-primary text-odara-primary rounded-lg hover:bg-odara-primary/10 transition-colors duration-200"
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              className="px-6 py-2 bg-odara-accent text-odara-white rounded-lg hover:bg-odara-secondary transition-colors duration-200"
+            >
+              {consulta ? 'Salvar Alterações' : 'Agendar Consulta'}
+            </button>
           </div>
         </form>
       </div>

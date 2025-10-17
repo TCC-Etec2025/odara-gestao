@@ -36,14 +36,18 @@ import Relatorios from './pages/funcionario/PaginaRelatorios';
 import ResidentesFuncionario from './pages/funcionario/PaginaResidentes'; 
 import Checklist from './pages/funcionario/Checklist/PaginaChecklist';
 
+{/* Checklist funcionário*/}
 import Alimentacao from './pages/funcionario/Checklist/Alimentacao';
-import Atividades from './pages/funcionario/Checklist/Atividades';
-import Comportamento from './pages/funcionario/Checklist/Comportamento';
-import ConsultasMedicas from './pages/funcionario/Checklist/ConsultasMedicas';
-import ExamesMedicos from './pages/funcionario/Checklist/ExamesMedicos';
 import MedicamentosCheck from './pages/funcionario/Checklist/Medicamentos';
-import Ocorrencias from './pages/funcionario/Checklist/Ocorrencias';
-import Preferencias from './pages/funcionario/Checklist/Preferencias';
+import Atividades from './pages/funcionario/Checklist/Atividades';
+import ExamesMedicos from './pages/funcionario/Checklist/ExamesMedicos';
+import ConsultasMedicas from './pages/funcionario/Checklist/ConsultasMedicas';
+
+{/* Registros funcionário*/}
+import Ocorrencias from './pages/funcionario/Registros/Ocorrencias';
+import Comportamento from './pages/funcionario/Registros/Comportamento';
+import Preferencias from './pages/funcionario/Registros/Preferencias';
+import SaudeCorporal from './pages/funcionario/Registros/SaudeCorporal';
 
 {/* Importando paginas do usuário familiar*/}
 import DashboardFamiliar from './pages/familiar/Dashboard';
@@ -97,6 +101,7 @@ function App() {
           {/* Leticia */}
           <Route path="checklist/medicamentos/check" element={<MedicamentosCheck />} />
           <Route path="checklist/atividades" element={<Atividades />} />
+          <Route path="saude/corporal" element={<SaudeCorporal />} />
           {/* Jamilly */}
           <Route path="checklist/ocorrencias" element={<Ocorrencias />} />
           <Route path="checklist/alimentacao" element={<Alimentacao />} />

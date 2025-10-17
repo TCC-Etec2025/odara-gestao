@@ -21,11 +21,16 @@ import {
 import Calendar from 'react-calendar'; 
 import 'react-calendar/dist/Calendar.css';
 
+// Componente wrapper para ícones
+const IconWrapper = ({ icon: Icon, size = 24, ...props }) => (
+  <Icon size={size} {...props} />
+);
+
 const DashboardFamiliar = () => {
   const [visualizacao, setVisualizacao] = useState("casa");
   const [familiarSelecionado, setFamiliarSelecionado] = useState(0);
-  const [modalAlertasAberto, setModalAlertasAberto] = useState(false);
-  const [modalNotificacoesAberto, setModalNotificacoesAberto] = useState(false);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [itemSelecionado, setItemSelecionado] = useState(null);
   const [modalDocumentosAberto, setModalDocumentosAberto] = useState(false);
   const [modalMedicamentosAberto, setModalMedicamentosAberto] = useState(false);
   const [modalConsultasAberto, setModalConsultasAberto] = useState(false);
@@ -58,7 +63,7 @@ const DashboardFamiliar = () => {
       nome: "Maria Santos",
       idade: 82,
       quarto: "205",
-      foto: "../images/foto-idoso-maria.jpg",
+      foto: "../images/foto-idosa-maria.png",
       parentesco: "Mãe",
       status: "Cuidados especiais",
       ultimaVisita: "14/09/2024",
@@ -72,43 +77,96 @@ const DashboardFamiliar = () => {
     }
   ];
 
-  // Alertas e notificações
-  const alertasNotificacoes = [
+  // Alertas adaptados para a visão do familiar
+  const alertas = [
     { 
       id: 1, 
       texto: "Medicamento de João precisa ser renovado", 
       tipo: "alerta", 
       hora: "09:30",
-      icon: <AlertCircle size={18} />,
-      familiar: "João Silva",
-      data: "2024-09-16"
+      detalhes: {
+        titulo: "Renovação de Medicamento - João Silva",
+        descricao: "O medicamento Losartana 50mg precisa ser renovado até sexta-feira:",
+        lista: [
+          "Medicamento: Losartana 50mg",
+          "Prazo para renovação: Sexta-feira", 
+          "Quantidade restante: 3 dias",
+          "Farmácia: Drogaria Central"
+        ],
+        acaoRecomendada: "Entrar em contato com a farmácia para renovação da receita."
+      }
     },
     { 
       id: 2, 
-      texto: "Consulta marcada para Maria - 20/09 às 14h", 
-      tipo: "info", 
+      texto: "Consulta de Maria precisa de confirmação", 
+      tipo: "alerta", 
       hora: "08:15",
-      icon: <Info size={18} />,
-      familiar: "Maria Santos",
-      data: "2024-09-15"
+      detalhes: {
+        titulo: "Confirmação de Consulta - Maria Santos",
+        descricao: "A consulta com o geriatra precisa ser confirmada até amanhã:",
+        lista: [
+          "Especialidade: Geriatra",
+          "Data: 25/09/2024 - 10:30",
+          "Médico: Dra. Ana Santos",
+          "Local: Clínica Vida Nova"
+        ],
+        acaoRecomendada: "Ligar para a clínica e confirmar a presença."
+      }
     },
+  ];
+
+  // Notificações adaptadas para a visão do familiar
+  const notificacoes = [
     { 
       id: 3, 
-      texto: "Relatório mensal disponível", 
+      texto: "Relatório mensal de saúde disponível", 
       tipo: "info", 
       hora: "07:45",
-      icon: <Info size={18} />,
-      familiar: "casa",
-      data: "2024-09-14"
+      detalhes: {
+        titulo: "Relatório Mensal de Saúde",
+        descricao: "O relatório mensal de saúde dos residentes está disponível para download:",
+        lista: [
+          "Período: Setembro/2024",
+          "Status geral: Estável",
+          "Consultas realizadas: 5",
+          "Medicamentos em uso: 8"
+        ],
+        acaoRecomendada: "Revisar o relatório e entrar em contato em caso de dúvidas."
+      }
     },
     { 
       id: 4, 
-      texto: "Atividade física cancelada", 
-      tipo: "alerta", 
+      texto: "Visita familiar agendada para sábado", 
+      tipo: "info", 
       hora: "Ontem",
-      icon: <AlertCircle size={18} />,
-      familiar: "João Silva",
-      data: "2024-09-13"
+      detalhes: {
+        titulo: "Visita Familiar Agendada",
+        descricao: "Sua visita está agendada para este sábado:",
+        lista: [
+          "Data: Sábado, 21/09/2024",
+          "Horário: 14:00 - 16:00",
+          "Local: Sala de Visitas", 
+          "Residentes: João e Maria"
+        ],
+        acaoRecomendada: "Confirmar presença até sexta-feira."
+      }
+    },
+    { 
+      id: 5, 
+      texto: "Atualização no cardápio semanal", 
+      tipo: "info", 
+      hora: "10:00",
+      detalhes: {
+        titulo: "Atualização no Cardápio",
+        descricao: "O cardápio da próxima semana foi atualizado com novas opções:",
+        lista: [
+          "Novos pratos incluídos",
+          "Ajustes nas dietas especiais",
+          "Opções vegetarianas ampliadas", 
+          "Cardápio festivo no domingo"
+        ],
+        acaoRecomendada: "Verificar o cardápio e informar preferências."
+      }
     },
   ];
 
@@ -278,12 +336,26 @@ const DashboardFamiliar = () => {
     setFamiliarSelecionado((prev) => (prev - 1 + familiares.length) % familiares.length);
   };
 
+  const abrirModal = (item) => {
+    setItemSelecionado(item);
+    setModalAberto(true);
+  };
+
+  const fecharModal = () => {
+    setModalAberto(false);
+    setItemSelecionado(null);
+  };
+
   // Filtrar dados baseado na visualização 
   const alertasFiltrados = visualizacao === "casa" 
-    ? alertasNotificacoes
-    : alertasNotificacoes.filter(alerta => 
-        alerta.familiar === familiarAtual.nome || alerta.familiar === "casa"
+    ? alertas
+    : alertas.filter(alerta => 
+        alerta.detalhes.titulo.includes(familiarAtual.nome.split(' ')[0])
       );
+
+  const notificacoesFiltradas = visualizacao === "casa" 
+    ? notificacoes
+    : notificacoes;
 
   const medicamentosFiltrados = visualizacao === "casa"
     ? medicamentos
@@ -470,192 +542,189 @@ const DashboardFamiliar = () => {
               </div>
             </div>
 
-            {/* Calendários */}
+            {/* Calendários lado a lado */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-6">
-                {/* Calendário de Consultas Médicas */}
-                <div 
-                  className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
-                  onClick={() => setModalConsultasAberto(true)}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-odara-dark flex items-center gap-2">
-                      <CalendarIcon size={18} /> {/* Usando o ícone renomeado */}
-                      Consultas Médicas
-                    </h3>
-                    <Eye size={18} className="text-odara-dark/60" />
-                  </div>
-                  <Calendar 
-                    value={dataConsulta}
-                    onChange={setDataConsulta}
-                    className="w-full border-0"
-                  />
-                  <div className="mt-4 space-y-2">
-                    {consultasFiltradas.slice(0, 2).map((consulta) => (
-                      <div key={consulta.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
-                        <div className="bg-blue-100 p-2 rounded">
-                          <Clock size={16} className="text-blue-600" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">{consulta.tipo}</p>
-                          <p className="text-xs text-gray-500">
-                            {new Date(consulta.data).toLocaleDateString()} • {consulta.horario}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+              {/* Calendário de Consultas Médicas */}
+              <div 
+                className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
+                onClick={() => setModalConsultasAberto(true)}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-odara-dark flex items-center gap-2">
+                    <CalendarIcon size={18} />
+                    Consultas Médicas
+                  </h3>
+                  <Eye size={18} className="text-odara-dark/60" />
                 </div>
-
-                {/* Calendário de Atividades */}
-                <div 
-                  className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
-                  onClick={() => setModalAtividadesAberto(true)}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-odara-dark flex items-center gap-2">
-                      <Activity size={18} />
-                      Atividades da Semana
-                    </h3>
-                    <Eye size={18} className="text-odara-dark/60" />
-                  </div>
-                  <Calendar 
-                    value={dataAtividade}
-                    onChange={setDataAtividade}
-                    className="w-full border-0"
-                  />
+                <Calendar 
+                  value={dataConsulta}
+                  onChange={setDataConsulta}
+                  className="w-full border-0"
+                />
+                <div className="mt-4 space-y-2">
+                  {consultasFiltradas.slice(0, 2).map((consulta) => (
+                    <div key={consulta.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
+                      <div className="bg-blue-100 p-2 rounded">
+                        <Clock size={16} className="text-blue-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{consulta.tipo}</p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(consulta.data).toLocaleDateString()} • {consulta.horario}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Medicamentos */}
-              <div className="space-y-6">
-                <div 
-                  className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
-                  onClick={() => setModalMedicamentosAberto(true)}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-odara-dark flex items-center gap-2">
-                      <Pill size={18} />
-                      Medicamentos {visualizacao === "familiar" && `- ${familiarAtual.nome.split(' ')[0]}`}
-                    </h3>
-                    <Eye size={18} className="text-odara-dark/60" />
-                  </div>
-                  <div className="space-y-3">
-                    {medicamentosFiltrados.slice(0, 3).map((medicamento) => (
-                      <div key={medicamento.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div>
-                          <p className="text-sm font-medium">{medicamento.nome}</p>
-                          <p className="text-xs text-gray-500">{medicamento.horario} • {medicamento.dosagem}</p>
-                        </div>
-                        <span className={`text-xs px-2 py-1 rounded ${
-                          medicamento.status === 'tomado' 
-                            ? 'bg-green-100 text-green-600' 
-                            : 'bg-yellow-100 text-yellow-600'
-                        }`}>
-                          {medicamento.status}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+              {/* Calendário de Atividades */}
+              <div 
+                className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
+                onClick={() => setModalAtividadesAberto(true)}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-odara-dark flex items-center gap-2">
+                    <Activity size={18} />
+                    Atividades da Semana
+                  </h3>
+                  <Eye size={18} className="text-odara-dark/60" />
                 </div>
+                <Calendar 
+                  value={dataAtividade}
+                  onChange={setDataAtividade}
+                  className="w-full border-0"
+                />
+              </div>
+            </div>
 
-                {/* Cardápio Semanal */}
-                <div 
-                  className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
-                  onClick={() => setModalCardapioAberto(true)}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-odara-dark flex items-center gap-2">
-                      <Utensils size={18} />
-                      Cardápio da Semana
-                    </h3>
-                    <Eye size={18} className="text-odara-dark/60" />
-                  </div>
-                  <div className="space-y-3">
-                    {cardapioFiltrado.slice(0, 3).map((item) => (
-                      <div key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
-                        <div className="bg-green-100 p-2 rounded min-w-12 text-center">
-                          <span className="text-sm font-medium text-green-600">{item.dia.slice(0, 3)}</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">{item.refeicao}</p>
-                          <p className="text-xs text-gray-500">{item.tipo}</p>
-                        </div>
+            {/* Medicamentos e Cardápio abaixo dos calendários */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Medicamentos */}
+              <div 
+                className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
+                onClick={() => setModalMedicamentosAberto(true)}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-odara-dark flex items-center gap-2">
+                    <Pill size={18} />
+                    Medicamentos {visualizacao === "familiar" && `- ${familiarAtual.nome.split(' ')[0]}`}
+                  </h3>
+                  <Eye size={18} className="text-odara-dark/60" />
+                </div>
+                <div className="space-y-3">
+                  {medicamentosFiltrados.slice(0, 3).map((medicamento) => (
+                    <div key={medicamento.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div>
+                        <p className="text-sm font-medium">{medicamento.nome}</p>
+                        <p className="text-xs text-gray-500">{medicamento.horario} • {medicamento.dosagem}</p>
                       </div>
-                    ))}
-                  </div>
+                      <span className={`text-xs px-2 py-1 rounded ${
+                        medicamento.status === 'tomado' 
+                          ? 'bg-green-100 text-green-600' 
+                          : 'bg-yellow-100 text-yellow-600'
+                      }`}>
+                        {medicamento.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Cardápio Semanal */}
+              <div 
+                className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
+                onClick={() => setModalCardapioAberto(true)}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-odara-dark flex items-center gap-2">
+                    <Utensils size={18} />
+                    Cardápio da Semana
+                  </h3>
+                  <Eye size={18} className="text-odara-dark/60" />
+                </div>
+                <div className="space-y-3">
+                  {cardapioFiltrado.slice(0, 3).map((item) => (
+                    <div key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
+                      <div className="bg-green-100 p-2 rounded min-w-12 text-center">
+                        <span className="text-sm font-medium text-green-600">{item.dia.slice(0, 3)}</span>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{item.refeicao}</p>
+                        <p className="text-xs text-gray-500">{item.tipo}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Alertas e Notificações */}
+          {/* Alertas e Notificações - MODELO APLICADO */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow h-full flex flex-col">
-              {/* Cabeçalho dos Alertas */}
-              <div className="p-6 border-b">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Bell className="text-odara-dark" size={24} />
-                    <h2 className="text-xl font-semibold text-odara-dark">Alertas</h2>
-                  </div>
+            <div className="bg-white rounded-2xl shadow p-6 h-full">
+              <div className="flex items-center gap-2 mb-4">
+                <IconWrapper icon={Bell} />
+                <h2 className="text-xl font-semibold text-odara-dark">Alertas e Notificações</h2>
+              </div>
+              
+              <div className="mb-6">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="font-medium text-odara-dark">Alertas</h3>
+                  <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">
+                    {alertasFiltrados.length}
+                  </span>
+                </div>
+                <div className="space-y-3">
+                  {alertasFiltrados.map((alerta) => (
+                    <div key={alerta.id} className="p-3 rounded-lg border-l-4 border-red-500 bg-red-50">
+                      <div className="flex items-start gap-2">
+                        <IconWrapper icon={AlertCircle} size={20} />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-odara-dark">{alerta.texto}</p>
+                          <p className="text-xs text-gray-500 mt-1">{alerta.hora}</p>
+                        </div>
+                        <button
+                          onClick={() => abrirModal(alerta)}
+                          className="text-gray-400 hover:text-odara-dark transition-colors"
+                          title="Ver detalhes"
+                        >
+                          <IconWrapper icon={Eye} size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Divisória e Notificações */}
-              <div className="flex-1 flex flex-col">
-                {/* Seção de Alertas */}
-                <div className="p-4 border-b">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-odara-dark flex items-center gap-2">
-                      <AlertCircle size={16} className="text-red-500" />
-                      Alertas Importantes
-                    </h3>
-                    <button 
-                      onClick={() => setModalAlertasAberto(true)}
-                      className="p-1 hover:bg-gray-100 rounded transition"
-                    >
-                      <Eye size={14} />
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    {alertasFiltrados
-                      .filter(alerta => alerta.tipo === 'alerta')
-                      .slice(0, 2)
-                      .map((alerta) => (
-                        <div key={alerta.id} className="p-3 rounded-lg border-l-4 border-red-500 bg-red-50">
-                          <p className="text-sm font-medium text-odara-dark">{alerta.texto}</p>
-                          <p className="text-xs text-gray-500 mt-1">{alerta.hora}</p>
-                        </div>
-                      ))}
-                  </div>
-                </div>
+              <div className="border-t border-gray-200 my-4"></div>
 
-                {/* Seção de Notificações */}
-                <div className="p-4 flex-1">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-odara-dark flex items-center gap-2">
-                      <Info size={16} className="text-blue-500" />
-                      Notificações
-                    </h3>
-                    <button 
-                      onClick={() => setModalNotificacoesAberto(true)}
-                      className="p-1 hover:bg-gray-100 rounded transition"
-                    >
-                      <Eye size={14} />
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    {alertasFiltrados
-                      .filter(alerta => alerta.tipo === 'info')
-                      .slice(0, 3)
-                      .map((alerta) => (
-                        <div key={alerta.id} className="p-3 rounded-lg border-l-4 border-blue-500 bg-blue-50">
-                          <p className="text-sm font-medium text-odara-dark">{alerta.texto}</p>
-                          <p className="text-xs text-gray-500 mt-1">{alerta.hora}</p>
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="font-medium text-odara-dark">Notificações</h3>
+                  <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                    {notificacoesFiltradas.length}
+                  </span>
+                </div>
+                <div className="space-y-3">
+                  {notificacoesFiltradas.map((notificacao) => (
+                    <div key={notificacao.id} className="p-3 rounded-lg border-l-4 border-blue-500 bg-blue-50">
+                      <div className="flex items-start gap-2">
+                        <IconWrapper icon={Info} size={20} />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-odara-dark">{notificacao.texto}</p>
+                          <p className="text-xs text-gray-500 mt-1">{notificacao.hora}</p>
                         </div>
-                      ))}
-                  </div>
+                        <button
+                          onClick={() => abrirModal(notificacao)}
+                          className="text-gray-400 hover:text-odara-dark transition-colors"
+                          title="Ver detalhes"
+                        >
+                          <IconWrapper icon={Eye} size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -663,61 +732,93 @@ const DashboardFamiliar = () => {
         </div>
       </div>
 
-      {/* Modal de Alertas */}
-      {modalAlertasAberto && (
-        <Modal onClose={() => setModalAlertasAberto(false)} titulo="Alertas Importantes">
-          <div className="space-y-4">
-            {alertasFiltrados
-              .filter(alerta => alerta.tipo === 'alerta')
-              .map((alerta) => (
-                <div key={alerta.id} className="p-4 rounded-lg border-l-4 border-red-500 bg-red-50">
-                  <div className="flex items-start gap-3">
-                    <AlertCircle size={20} className="text-red-600 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="font-medium text-odara-dark">{alerta.texto}</p>
-                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                        <span>{alerta.hora}</span>
-                        <span>•</span>
-                        <span>{alerta.familiar}</span>
-                        <span>•</span>
-                        <span>{alerta.data}</span>
-                      </div>
-                    </div>
-                  </div>
+      {/* Modal de Detalhes das Notificações - MODELO APLICADO */}
+      {modalAberto && itemSelecionado && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b">
+              <h3 className="text-xl font-semibold text-odara-dark">
+                {itemSelecionado.detalhes.titulo}
+              </h3>
+              <button
+                onClick={fecharModal}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <IconWrapper icon={X} size={24} />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <div className="flex items-start gap-3 mb-4">
+                <div className={`p-2 rounded-full ${
+                  itemSelecionado.tipo === 'alerta' ? 'bg-red-100' : 'bg-blue-100'
+                }`}>
+                  <IconWrapper 
+                    icon={itemSelecionado.tipo === 'alerta' ? AlertCircle : Info} 
+                    size={20} 
+                  />
                 </div>
-              ))}
+                <div>
+                  <p className="text-sm text-gray-600">{itemSelecionado.detalhes.descricao}</p>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="font-medium text-odara-dark mb-2">Detalhes:</h4>
+                <ul className="space-y-2">
+                  {itemSelecionado.detalhes.lista.map((item, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className={`w-1.5 h-1.5 rounded-full mt-2 ${
+                        itemSelecionado.tipo === 'alerta' ? 'bg-red-500' : 'bg-blue-500'
+                      }`}></div>
+                      <span className="text-sm text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className={`p-3 rounded-lg ${
+                itemSelecionado.tipo === 'alerta' ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'
+              }`}>
+                <h4 className={`font-medium text-sm mb-1 ${
+                  itemSelecionado.tipo === 'alerta' ? 'text-red-800' : 'text-blue-800'
+                }`}>
+                  Ação Recomendada:
+                </h4>
+                <p className={`text-sm ${
+                  itemSelecionado.tipo === 'alerta' ? 'text-red-700' : 'text-blue-700'
+                }`}>
+                  {itemSelecionado.detalhes.acaoRecomendada}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 p-6 border-t">
+              <button
+                onClick={fecharModal}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Fechar
+              </button>
+              <button
+                onClick={() => {
+                  console.log(`Ação tomada para: ${itemSelecionado.texto}`);
+                  fecharModal();
+                }}
+                className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors ${
+                  itemSelecionado.tipo === 'alerta' 
+                    ? 'bg-red-500 hover:bg-red-600' 
+                    : 'bg-blue-500 hover:bg-blue-600'
+                }`}
+              >
+                Marcar como Lida
+              </button>
+            </div>
           </div>
-        </Modal>
+        </div>
       )}
 
-      {/* Modal de Notificações */}
-      {modalNotificacoesAberto && (
-        <Modal onClose={() => setModalNotificacoesAberto(false)} titulo="Todas as Notificações">
-          <div className="space-y-4">
-            {alertasFiltrados
-              .filter(alerta => alerta.tipo === 'info')
-              .map((alerta) => (
-                <div key={alerta.id} className="p-4 rounded-lg border-l-4 border-blue-500 bg-blue-50">
-                  <div className="flex items-start gap-3">
-                    <Info size={20} className="text-blue-600 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="font-medium text-odara-dark">{alerta.texto}</p>
-                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                        <span>{alerta.hora}</span>
-                        <span>•</span>
-                        <span>{alerta.familiar}</span>
-                        <span>•</span>
-                        <span>{alerta.data}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </Modal>
-      )}
-
-      {/* Modal de Solicitação de Documentos */}
+      {/* Modais existentes mantidos */}
       {modalDocumentosAberto && (
         <Modal onClose={() => setModalDocumentosAberto(false)} titulo="Solicitação de Documentos">
           <div className="space-y-4">
@@ -778,30 +879,6 @@ const DashboardFamiliar = () => {
         </Modal>
       )}
 
-      {/* Modal de Consultas Médicas */}
-      {modalConsultasAberto && (
-        <Modal onClose={() => setModalConsultasAberto(false)} titulo="Consultas Médicas">
-          <div className="space-y-4">
-            {consultasFiltradas.map((consulta) => (
-              <div key={consulta.id} className="bg-blue-50 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold text-odara-dark">{consulta.tipo}</h3>
-                    <p className="text-sm text-gray-600 mt-1">Médico: {consulta.medico}</p>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                      <span>Data: {new Date(consulta.data).toLocaleDateString()}</span>
-                      <span>•</span>
-                      <span>Horário: {consulta.horario}</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">Local: {consulta.local}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Modal>
-      )}
-
       {/* Modal de Atividades */}
       {modalAtividadesAberto && (
         <Modal onClose={() => setModalAtividadesAberto(false)} titulo="Atividades da Semana">
@@ -819,6 +896,30 @@ const DashboardFamiliar = () => {
                       <span>Duração: {atividade.duracao}</span>
                     </div>
                     <p className="text-sm text-gray-600 mt-1">Local: {atividade.local}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Modal>
+      )}
+
+      {/* Modal de Consultas Médicas */}
+      {modalConsultasAberto && (
+        <Modal onClose={() => setModalConsultasAberto(false)} titulo="Consultas Médicas">
+          <div className="space-y-4">
+            {consultasFiltradas.map((consulta) => (
+              <div key={consulta.id} className="bg-blue-50 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold text-odara-dark">{consulta.tipo}</h3>
+                    <p className="text-sm text-gray-600 mt-1">Médico: {consulta.medico}</p>
+                    <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                      <span>Data: {new Date(consulta.data).toLocaleDateString()}</span>
+                      <span>•</span>
+                      <span>Horário: {consulta.horario}</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">Local: {consulta.local}</p>
                   </div>
                 </div>
               </div>
