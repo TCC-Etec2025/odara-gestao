@@ -16,8 +16,9 @@ const RegistroAtividades = () => {
       descricao: "Encontro para discutir a leitura da semana",
       categoria: "criativa",
       residentes: "João Santos",
-      concluida: true
+      status: "concluida"
     },
+
     {
       id: 2,
       data: new Date(new Date().getFullYear(), new Date().getMonth(), 5),
@@ -26,17 +27,29 @@ const RegistroAtividades = () => {
       descricao: "Sessão de emergência para 4 residentes",
       categoria: "fisica",
       residentes: "Maria Oliveira",
-      concluida: false
+      status: "iniciada"
     },
+
     {
       id: 3,
-      data: new Date(new Date().getFullYear(), new Date().getMonth(), 6),
+      data: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay()),
       horario: "14:00",
       titulo: "Roda de Conversa",
       descricao: "Roda de conversa liderada pela psicóloga Júlia",
       categoria: "social",
       residentes: "Ana Costa",
-      concluida: false
+      status: ""
+    },
+
+    {
+      id: 4,
+      data: new Date(new Date().getFullYear(), new Date().getMonth(), 23),
+      horario: "16:00",
+      titulo: "Jogo da Memória",
+      descricao: "Jogo que exige decorar posição de cartas e unir os pares.",
+      categoria: "logica",
+      residentes: "Ana Costa",
+      status: ""
     },
   ]);
 
@@ -61,14 +74,15 @@ const RegistroAtividades = () => {
   const [idEditando, setIdEditando] = useState(null);
 
   // Estados para controle de filtros
-  const [filtroAtivo, setFiltroAtivo] = useState('todos');
-  const [filtroAberto, setFiltroAberto] = useState(false);
+  const [filtroCategoria, setFiltroCategoria] = useState('todos');
+  const [filtroCategoriaAberto, setFiltroCategoriaAberto] = useState(false);
   const [infoVisivel, setInfoVisivel] = useState(false);
   const [filtroDia, setFiltroDia] = useState(null);
   const [filtroDiaAtivo, setFiltroDiaAtivo] = useState(false);
-  const [residenteSelecionado, setResidenteSelecionado] = useState('');
+  const [filtroResidente, setFiltroResidente] = useState('');
   const [filtroResidenteAberto, setFiltroResidenteAberto] = useState(false);
-  const [mostrarArquivadas, setMostrarArquivadas] = useState(false);
+  const [filtroStatusAberto, setFiltroStatusAberto] = useState(false);
+  const [filtroStatus, setFiltroStatus] = useState('todos'); // 'todos', 'pendentes', 'iniciadas', 'concluidas', 'atrasadas'
 
   // ===== CONSTANTES E CONFIGURAÇÕES =====
   // Mapeamento de categorias com cores correspondentes
@@ -91,8 +105,8 @@ const RegistroAtividades = () => {
   // Cores por categoria (não mais por atividade)
   const CORES_CATEGORIAS = {
     [CATEGORIAS.CRIATIVA]: 'bg-odara-primary/60 text-odara-dark',
-    [CATEGORIAS.LOGICA]: 'bg-odara-accent/60 text-odara-white',
-    [CATEGORIAS.FISICA]: 'bg-odara-secondary/60 text-odara-white',
+    [CATEGORIAS.LOGICA]: 'bg-odara-accent/60 text-odara-dark',
+    [CATEGORIAS.FISICA]: 'bg-odara-secondary/60 text-odara-dark',
     [CATEGORIAS.SOCIAL]: 'bg-odara-dropdown-accent/60 text-odara-dark',
     [CATEGORIAS.OUTRA]: 'bg-odara-contorno text-odara-dark'
   };
@@ -166,7 +180,7 @@ const RegistroAtividades = () => {
     if (date.getDate() === hoje.getDate() &&
       date.getMonth() === hoje.getMonth() &&
       date.getFullYear() === hoje.getFullYear()) {
-      classes.push('!bg-odara-primary/20 font-bold');
+      classes.push('!bg-odara-primary/50 !text-dark !font-bold');
     }
 
     // Dia selecionado pelo filtro
@@ -174,7 +188,7 @@ const RegistroAtividades = () => {
       date.getDate() === filtroDia.getDate() &&
       date.getMonth() === filtroDia.getMonth() &&
       date.getFullYear() === filtroDia.getFullYear()) {
-      classes.push('outline-2 outline outline-odara-accent outline-offset-[-1px]');
+      classes.push('!bg-odara-secondary/70 !text-white !font-bold');
     }
 
     return classes.join(' ');
@@ -308,52 +322,101 @@ const RegistroAtividades = () => {
     }
   };
 
-  // Alterna o status de conclusão de uma atividade
-  const alternarConclusao = (id) => {
-    setAtividades(anterior => anterior.map(atividade =>
-      atividade.id === id
-        ? { ...atividade, concluida: !atividade.concluida }
-        : atividade
-    ));
-
-    // Mantém o filtro ativo após marcar como concluída
-    if (filtroDiaAtivo) {
-      const atividadeFiltrada = atividades.find(a => a.id === id);
-      if (atividadeFiltrada) {
-        setFiltroDia(new Date(atividadeFiltrada.data));
-        setFiltroDiaAtivo(true);
+  // Altera o status de uma atividade
+  const alterarStatus = (id, novoStatus) => {
+    setAtividades(anterior => anterior.map(atividade => {
+      if (atividade.id === id) {
+        // Se for "limpar", volta para pendente (o sistema decide se é atrasada depois)
+        if (novoStatus === 'limpar') {
+          return { ...atividade, status: 'pendente' };
+        }
+        return { ...atividade, status: novoStatus };
       }
+      return atividade;
+    }));
+  };
+
+  // Função para verificar se uma atividade está atrasada
+  const estaAtrasada = (atividade) => {
+    const agora = new Date();
+    const dataAtividade = new Date(atividade.data);
+
+    // Verifica se a data já passou (considera apenas data, não hora)
+    const dataAtividadeSemHora = new Date(dataAtividade.getFullYear(), dataAtividade.getMonth(), dataAtividade.getDate());
+    const hojeSemHora = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+
+    // Só está atrasada se a data JÁ PASSOU (é anterior a hoje)
+    if (dataAtividadeSemHora < hojeSemHora) {
+      return true;
     }
+
+    // Se for hoje, verifica o horário (se tiver horário definido)
+    if (atividade.horario && dataAtividadeSemHora.getTime() === hojeSemHora.getTime()) {
+      const [hora, minuto] = atividade.horario.split(':').map(Number);
+      const horarioAtividade = new Date();
+      horarioAtividade.setHours(hora, minuto, 0, 0);
+
+      // Considera atrasada se passou do horário
+      return agora > horarioAtividade;
+    }
+
+    // Se a data é hoje ou futura, NÃO está atrasada
+    return false;
+  };
+
+  // Função para determinar o status a ser mostrado no dropdown
+  const getStatusParaDropdown = (atividade) => {
+    // Se é pendente ou atrasada, mostra como disponível para iniciar/concluir
+    if (atividade.status === 'pendente' || atividade.status === 'atrasada') {
+      return 'pendente';
+    }
+    return atividade.status;
+  };
+
+  // Função para obter os status para filtragem (pode retornar múltiplos status)
+  const getStatusParaFiltro = (atividade) => {
+    const status = [];
+
+    // Status principal baseado no estado atual
+    if (atividade.status === 'iniciada' || atividade.status === 'concluida') {
+      status.push(atividade.status);
+    } else {
+      // Se não tem status definido, é automaticamente pendente
+      status.push('pendente');
+    }
+
+    // Se está atrasada e não é concluída, adiciona 'atrasada' aos status
+    if (estaAtrasada(atividade) && atividade.status !== 'concluida') {
+      status.push('atrasada');
+    }
+
+    return status;
   };
 
   // ===== FILTROS =====
   const atividadesFiltradas = atividades
     .filter(atividade => {
-      const passaFiltroCategoria = filtroAtivo === 'todos' || atividade.categoria === filtroAtivo;
+      const passaFiltroCategoria = filtroCategoria === 'todos' || atividade.categoria === filtroCategoria;
       const passaFiltroDia = !filtroDiaAtivo || (
         atividade.data.getDate() === filtroDia.getDate() &&
         atividade.data.getMonth() === filtroDia.getMonth() &&
         atividade.data.getFullYear() === filtroDia.getFullYear()
       );
-      const passaFiltroResidente = !residenteSelecionado || atividade.residentes === residenteSelecionado;
-      const passaFiltroArquivamento = mostrarArquivadas ? atividade.concluida : !atividade.concluida;
+      const passaFiltroResidente = !filtroResidente || atividade.residentes === filtroResidente;
 
-      return passaFiltroCategoria && passaFiltroDia && passaFiltroResidente && passaFiltroArquivamento;
+      // LÓGICA PARA O FILTRO DE STATUS - verifica se o status do filtro está no array de status da atividade
+      const statusParaFiltro = getStatusParaFiltro(atividade);
+
+      const passaFiltroStatus =
+        filtroStatus === 'todos' ? true :
+          filtroStatus === 'pendentes' ? statusParaFiltro.includes('pendente') :
+            filtroStatus === 'iniciadas' ? statusParaFiltro.includes('iniciada') :
+              filtroStatus === 'concluidas' ? statusParaFiltro.includes('concluida') :
+                filtroStatus === 'atrasadas' ? statusParaFiltro.includes('atrasada') :
+                  true;
+
+      return passaFiltroCategoria && passaFiltroDia && passaFiltroResidente && passaFiltroStatus;
     })
-    .sort((a, b) => {
-      const comparacaoData = mostrarArquivadas
-        ? new Date(b.data) - new Date(a.data)
-        : new Date(a.data) - new Date(b.data);
-
-      if (comparacaoData === 0) {
-        const horarioA = a.horario.split(' - ')[0] || '00:00';
-        const horarioB = b.horario.split(' - ')[0] || '00:00';
-        return horarioA.localeCompare(horarioB);
-      }
-
-      return comparacaoData;
-    });
-
   // ===== RENDERIZAÇÃO DO COMPONENTE =====
   return (
     <div className="flex min-h-screen bg-odara-offwhite">
@@ -404,9 +467,9 @@ const RegistroAtividades = () => {
           {/* Filtro por Categoria */}
           <div className="relative">
             <button
-              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition w-40 justify-center"
+              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition w-full justify-center"
               onClick={() => {
-                setFiltroAberto(!filtroAberto);
+                setFiltroCategoriaAberto(!filtroCategoriaAberto);
                 setFiltroResidenteAberto(false);
               }}
             >
@@ -414,16 +477,16 @@ const RegistroAtividades = () => {
               Categoria
             </button>
 
-            {filtroAberto && (
+            {filtroCategoriaAberto && (
               <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
                 {FILTROS.map(filtro => (
                   <button
                     key={filtro.id}
                     onClick={() => {
-                      setFiltroAtivo(filtro.id);
-                      setFiltroAberto(false);
+                      setFiltroCategoria(filtro.id);
+                      setFiltroCategoriaAberto(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroAtivo === filtro.id ? 'bg-indigo-100 font-semibold' : ''}`}
+                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroCategoria === filtro.id ? 'bg-indigo-100 font-semibold' : ''}`}
                   >
                     {filtro.label}
                   </button>
@@ -435,10 +498,10 @@ const RegistroAtividades = () => {
           {/* Filtro por Residente */}
           <div className="relative">
             <button
-              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition w-40 justify-center"
+              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition w-full justify-center"
               onClick={() => {
                 setFiltroResidenteAberto(!filtroResidenteAberto);
-                setFiltroAberto(false);
+                setFiltroCategoriaAberto(false);
               }}
             >
               <FaFilter className="text-odara-accent mr-2" />
@@ -449,10 +512,10 @@ const RegistroAtividades = () => {
               <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
                 <button
                   onClick={() => {
-                    setResidenteSelecionado('');
+                    setFiltroResidente('');
                     setFiltroResidenteAberto(false);
                   }}
-                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${!residenteSelecionado ? 'bg-indigo-100 font-semibold' : ''}`}
+                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${!filtroResidente ? 'bg-indigo-100 font-semibold' : ''}`}
                 >
                   Todos
                 </button>
@@ -460,10 +523,10 @@ const RegistroAtividades = () => {
                   <button
                     key={residente}
                     onClick={() => {
-                      setResidenteSelecionado(residente);
+                      setFiltroResidente(residente);
                       setFiltroResidenteAberto(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${residenteSelecionado === residente ? 'bg-indigo-100 font-semibold' : ''}`}
+                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroResidente === residente ? 'bg-indigo-100 font-semibold' : ''}`}
                   >
                     {residente}
                   </button>
@@ -472,26 +535,80 @@ const RegistroAtividades = () => {
             )}
           </div>
 
-          {/* Filtro para Mostrar/Ocultar Arquivadas */}
-          <button
-            onClick={() => setMostrarArquivadas(!mostrarArquivadas)}
-            className={` text-odara-contorno font-emibold py-2 px-4 rounded-lg flex items-center transition duration-200 ${mostrarArquivadas
-              ? 'bg-odara-secondary text-odara-white border-odara-secondary'
-              : 'bg-odara-accent hover:bg-odara-secondary'
-              }`}
-          >
-            <FaFilter className="mr-2" />
-            {mostrarArquivadas ? 'Próximas' : 'Arquivadas'}
-          </button>
+          {/* Filtro por Status */}
+          {/* Filtro por Status */}
+          <div className="relative">
+            <button
+              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition w-40 justify-center"
+              onClick={() => {
+                setFiltroStatusAberto(!filtroStatusAberto);
+                setFiltroCategoriaAberto(false);
+                setFiltroResidenteAberto(false);
+              }}
+            >
+              <FaFilter className="text-odara-accent mr-2" />
+              Status
+            </button>
+
+            {filtroStatusAberto && (
+              <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                <button
+                  onClick={() => {
+                    setFiltroStatus('todos');
+                    setFiltroStatusAberto(false);
+                  }}
+                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroStatus === 'todos' ? 'bg-indigo-100 font-semibold' : ''}`}
+                >
+                  Todos
+                </button>
+                <button
+                  onClick={() => {
+                    setFiltroStatus('pendentes');
+                    setFiltroStatusAberto(false);
+                  }}
+                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroStatus === 'pendentes' ? 'bg-indigo-100 font-semibold' : ''}`}
+                >
+                  Pendentes
+                </button>
+                <button
+                  onClick={() => {
+                    setFiltroStatus('iniciadas');
+                    setFiltroStatusAberto(false);
+                  }}
+                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroStatus === 'iniciadas' ? 'bg-indigo-100 font-semibold' : ''}`}
+                >
+                  Iniciadas
+                </button>
+                <button
+                  onClick={() => {
+                    setFiltroStatus('concluidas');
+                    setFiltroStatusAberto(false);
+                  }}
+                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroStatus === 'concluidas' ? 'bg-indigo-100 font-semibold' : ''}`}
+                >
+                  Concluídas
+                </button>
+                <button
+                  onClick={() => {
+                    setFiltroStatus('atrasadas');
+                    setFiltroStatusAberto(false);
+                  }}
+                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroStatus === 'atrasadas' ? 'bg-indigo-100 font-semibold' : ''}`}
+                >
+                  Atrasadas
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* Botão Limpar Todos os Filtros */}
-          {(filtroDiaAtivo || residenteSelecionado || filtroAtivo !== 'todos') && (
+          {(filtroDiaAtivo || filtroResidente || filtroCategoria !== 'todos') && (
             <button
               onClick={() => {
                 setFiltroDiaAtivo(false);
                 setFiltroDia(null);
-                setResidenteSelecionado('');
-                setFiltroAtivo('todos');
+                setFiltroResidente('');
+                setFiltroCategoria('todos');
               }}
               className="flex items-center bg-odara-accent text-odara-white rounded-full px-4 py-2 shadow-sm font-medium hover:bg-odara-secondary transition"
             >
@@ -502,129 +619,198 @@ const RegistroAtividades = () => {
 
         {/* Grid principal com atividades e calendário */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Seção de Próximas Atividades */}
+          {/* Seção de Atividades Pendentes*/}
           <div className="bg-odara-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-6">
             <h2 className="text-2xl font-bold text-odara-dark flex items-center mb-2">
-              {mostrarArquivadas ? 'Atividades Arquivadas' : 'Próximas Atividades'}
+              {filtroStatus === 'todos' ? 'Todas as Atividades' :
+                `Atividades ${filtroStatus.charAt(0).toUpperCase() + filtroStatus.slice(1)}`}
             </h2>
 
             {/* Filtros ativos */}
             <div className="flex flex-wrap gap-2 mb-4">
+
+              {/* Mostra qual opção de filtro de dia está ativa */}
               {filtroDiaAtivo && (
                 <span className="text-sm bg-odara-accent text-odara-white px-2 py-1 rounded-full">
                   Dia: {filtroDia.getDate().toString().padStart(2, '0')}/{(filtroDia.getMonth() + 1).toString().padStart(2, '0')}
                 </span>
               )}
-              {residenteSelecionado && (
+
+              {/* Mostra qual opção de filtro de residente está ativa */}
+              {filtroResidente && (
                 <span className="text-sm bg-odara-secondary text-odara-white px-2 py-1 rounded-full">
-                  Residente: {residenteSelecionado}
+                  Residente: {filtroResidente}
                 </span>
               )}
-              {filtroAtivo !== 'todos' && (
+
+              {/* Mostra qual opção de filtro de categoria está ativa */}
+              {filtroCategoria !== 'todos' && (
                 <span className="text-sm bg-odara-primary text-odara-white px-2 py-1 rounded-full">
-                  Categoria: {ROTULOS_CATEGORIAS[filtroAtivo]}
+                  Categoria: {ROTULOS_CATEGORIAS[filtroCategoria]}
+                </span>
+              )}
+
+              {/* Mostra qual opção de filtro de status está ativa */}
+              {filtroStatus !== 'todos' && (
+                <span className="text-sm bg-odara-dropdown-accent text-odara-white px-2 py-1 rounded-full">
+                  Status: {filtroStatus.charAt(0).toUpperCase() + filtroStatus.slice(1)}
                 </span>
               )}
             </div>
 
             <p className="text-odara-name/60 mb-6">
-              {mostrarArquivadas
-                ? 'Atividades concluídas e arquivadas'
-                : 'Não perca sua programação'
+              {filtroStatus === 'todos'
+                ? 'Todas as atividades cadastradas'
+                : filtroStatus === 'concluidas'
+                  ? 'Atividades concluídas'
+                  : filtroStatus === 'pendentes'
+                    ? 'Atividades pendentes'
+                    : filtroStatus === 'iniciadas'
+                      ? 'Atividades iniciadas'
+                      : filtroStatus === 'atrasadas'
+                        ? 'Atividades atrasadas'
+                        : 'Atividades'
               }
             </p>
 
             <div className="space-y-4 max-h-[600px] overflow-y-auto">
-              {atividadesFiltradas.length === 0 ? (
-                <div className="p-6 rounded-xl bg-odara-name/10 text-center">
-                  <p className="text-odara-dark/60">
-                    {mostrarArquivadas
-                      ? 'Nenhuma atividade arquivada'
-                      : 'Nenhuma atividade agendada'
-                    }
-                  </p>
-                </div>
-              ) : (
-                atividadesFiltradas.map(atividade => (
-                  <div
-                    key={atividade.id}
-                    className={`p-4 rounded-xl hover:shadow-md transition-shadow duration-200 ${CORES_CATEGORIAS[atividade.categoria]}`}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2.5">
-                        <span className={`w-2.5 h-2.5 rounded-full ${CORES_CALENDARIO[atividade.categoria]}`}></span>
-                        <p className="text-base font-semibold">
-                          {atividade.data.getDate().toString().padStart(2, '0')}/
-                          {(atividade.data.getMonth() + 1).toString().padStart(2, '0')}/
-                          {atividade.data.getFullYear()}
-                          {atividade.horario && ` - ${atividade.horario.split(' - ')[0]}`}
-                        </p>
+              <div className="space-y-4 max-h-[600px] overflow-y-auto">
+                {atividadesFiltradas.length === 0 ? (
+                  <div className="p-6 rounded-xl bg-odara-name/10 text-center">
+                    <p className="text-odara-dark/60">
+                      {filtroStatus === 'concluidas'
+                        ? 'Nenhuma atividade concluída'
+                        : filtroStatus === 'pendentes'
+                          ? 'Nenhuma atividade pendente'
+                          : filtroStatus === 'iniciadas'
+                            ? 'Nenhuma atividade iniciada'
+                            : filtroStatus === 'atrasadas'
+                              ? 'Nenhuma atividade atrasada'
+                              : 'Nenhuma atividade encontrada'
+                      }
+                    </p>
+                  </div>
+                ) : (
+                  atividadesFiltradas.map(atividade => (
+                    <div
+                      key={atividade.id}
+                      className={`p-4 rounded-xl hover:shadow-md transition-shadow duration-200 ${CORES_CATEGORIAS[atividade.categoria]}`}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2.5">
+                          <span className={`w-2.5 h-2.5 rounded-full ${CORES_CALENDARIO[atividade.categoria]}`}></span>
+                          <p className="text-base font-semibold">
+                            {atividade.data.getDate().toString().padStart(2, '0')}/
+                            {(atividade.data.getMonth() + 1).toString().padStart(2, '0')}/
+                            {atividade.data.getFullYear()}
+                            {atividade.horario && ` - ${atividade.horario.split(' - ')[0]}`}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="relative">
+                            <select
+                              value={atividade.status === 'pendente' || atividade.status === 'atrasada' ? 'registrar' : atividade.status}
+                              onChange={(e) => {
+                                if (e.target.value === 'limpar') {
+                                  alterarStatus(atividade.id, 'pendente');
+                                } else {
+                                  alterarStatus(atividade.id, e.target.value);
+                                }
+                              }}
+                              className={`text-sm rounded-lg px-3 py-1 border focus:ring-2 focus:ring-odara-primary focus:border-odara-primary transition-colors duration-200 ${atividade.status === 'concluida'
+                                  ? 'bg-green-500 text-white border-green-500'
+                                  : atividade.status === 'iniciada'
+                                    ? 'bg-blue-500 text-white border-blue-500'
+                                    : 'bg-gray-400 text-white border-gray-400'
+                                }`}
+                            >
+                              {(atividade.status === 'pendente' || atividade.status === 'atrasada') && (
+                                <option value="registrar" className="bg-white text-odara-dark">
+                                  Registrar status
+                                </option>
+                              )}
+
+                              <option value="iniciada" className="bg-white text-odara-dark">Iniciada</option>
+                              <option value="concluida" className="bg-white text-odara-dark">Concluída</option>
+
+                              {(atividade.status === 'iniciada' || atividade.status === 'concluida') && (
+                                <option value="limpar" className="bg-white text-odara-dark">
+                                  Limpar status
+                                </option>
+                              )}
+                            </select>
+                          </div>
+
+                          {/* Badge automático - Pendente ou Atrasada */}
+                          {(atividade.status === 'pendente' || atividade.status === 'atrasada') && (
+                            <span className={`text-xs text-white px-2 py-1 rounded-full ${estaAtrasada(atividade)
+                                ? 'bg-red-500'
+                                : 'bg-yellow-500'
+                              }`}>
+                              {estaAtrasada(atividade) ? 'Atrasada' : 'Pendente'}
+                            </span>
+                          )}
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-3">
-                        <label className="flex items-center gap-2 text-sm">
-                          <input
-                            type="checkbox"
-                            className="rounded focus:ring-odara-primary"
-                            checked={atividade.concluida}
-                            onChange={() => alternarConclusao(atividade.id)}
-                          />
-                          {atividade.concluida ? 'Arquivada' : 'Realizado'}
-                        </label>
+                      <h6 className="text-xl font-bold mb-1 flex items-center">
+                        {atividade.status === 'concluida' && (
+                          <span className="text-green-500 mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          </span>
+                        )}
+                        {atividade.titulo}
+                      </h6>
 
+                      <p className="text-base mb-2">{atividade.descricao}</p>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center text-sm">
+                          <span className="bg-odara-dropdown text-odara-dropdown-name/60 px-2 py-1 rounded-md text-xs">
+                            {ROTULOS_CATEGORIAS[atividade.categoria]}
+                          </span>
+
+                          {atividade.residentes && (
+                            <>
+                              <span className="mx-2">•</span>
+                              <span className="text-odara-name">{atividade.residentes}</span>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Botões de editar e excluir no canto inferior direito */}
                         <div className="flex space-x-2">
                           <button
                             onClick={() => abrirModalEditar(atividade.id)}
-                            className="text-odara-secondary hover:text-odara-dropdown-accent transition-colors duration-200 p-1 rounded-full hover:bg-odara-dropdown"
+                            className="text-odara-secondary hover:text-odara-dropdown-accent transition-colors duration-200 p-2 rounded-full hover:bg-odara-dropdown"
+                            title="Editar atividade"
                           >
-                            <FaEdit />
+                            <FaEdit size={14} />
                           </button>
 
                           <button
                             onClick={() => excluirAtividade(atividade.id)}
-                            className="text-odara-alerta hover:text-odara-accent transition-colors duration-200 p-1 rounded-full hover:bg-odara-alerta/50"
+                            className="text-odara-alerta hover:text-red-700 transition-colors duration-200 p-2 rounded-full hover:bg-odara-alerta/50"
+                            title="Excluir atividade"
                           >
-                            <FaTrash />
+                            <FaTrash size={14} />
                           </button>
                         </div>
                       </div>
                     </div>
-
-                    <h6 className="text-xl font-bold mb-1 flex items-center">
-                      {atividade.concluida && (
-                        <span className="text-odara-secondary mr-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                          </svg>
-                        </span>
-                      )}
-
-                      {atividade.titulo}
-                    </h6>
-
-                    <p className="text-base mb-2">{atividade.descricao}</p>
-                    <div className="flex items-center text-sm">
-                      <span className="bg-odara-dropdown text-odara-dropdown-name/60 px-2 py-1 rounded-md text-xs">
-                        {ROTULOS_CATEGORIAS[atividade.categoria]}
-                      </span>
-
-                      {atividade.residentes && (
-                        <>
-                          <span className="mx-2">•</span>
-                          <span className="text-odara-name">{atividade.residentes}</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                ))
-              )}
+                  ))
+                )}
+              </div>
             </div>
           </div>
 
           {/* Seção do Calendário com React Calendar */}
           <div className="bg-white rounded-2xl shadow-lg p-6 h-fit sticky top-6">
             <div className="flex justify-center mb-5">
-              {/* Botão Hoje apenas - centralizado */}
+              {/* Botão Hoje */}
               <button
                 onClick={irParaHoje}
                 className="bg-odara-accent hover:bg-odara-secondary text-odara-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
@@ -633,7 +819,7 @@ const RegistroAtividades = () => {
               </button>
             </div>
 
-            <div className="border border-odara-primary rounded-xl shadow-sm overflow-hidden max-w-md mx-auto">
+            <div className="flex justify-center border-2 border-odara-primary rounded-xl shadow-sm overflow-hidden max-w-md mx-auto">
               <Calendar
                 value={dataAtual}
                 onChange={setDataAtual}
@@ -651,9 +837,9 @@ const RegistroAtividades = () => {
             </div>
 
             {/* Legenda das cores */}
-            <div className="mt-4 p-3 bg-odara-offwhite rounded-lg max-w-md mx-auto">
+            <div className="grid grid-cols-1 mt-4 p-3 bg-odara-offwhite rounded-lg max-w-md mx-auto text-center">
               <h6 className="font-semibold text-odara-dark mb-2">Legenda das Categorias:</h6>
-              <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="grid grid-cols-3 gap-2 text-xs justify-items-center">
                 {Object.entries(CATEGORIAS).map(([chave, valor]) => (
                   <div key={valor} className="flex items-center gap-2">
                     <div className={`w-3 h-3 rounded-full ${CORES_CALENDARIO[valor]}`}></div>
