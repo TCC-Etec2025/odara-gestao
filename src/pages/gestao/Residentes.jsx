@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaUserInjured, FaSearch, FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 
-const Residentes = () => {
+const ResidentesFuncionario = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [residentes, setResidentes] = useState([
     { id: 1, nome: "Carlos Silva", quarto: "102", idade: 78, status: "Ativo", preferencias: 6, dataEntrada: "2022-05-20" },
@@ -109,4 +109,4 @@ const Residentes = () => {
   );
 };
 
-export default Residentes;
+export default ResidentesFuncionario;
