@@ -1,358 +1,920 @@
-import React, { useState } from 'react';
-import { FaUtensils, FaWalking, FaPlus, FaEdit, FaTrash, FaFilter, FaInfoCircle, FaTimes } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaArrowLeft, FaChevronLeft, FaChevronRight, FaCheck, FaTimes, FaArrowUp, FaFilter } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa';
-
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 const Medicamentos = () => {
-  const [preferences, setPreferences] = useState({
-    alimentar: [
-      { id: 1, title: "Comida Italiana", description: "Prefere massas e pratos da culinária italiana", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 2, title: "Vegetariano", description: "Prefere refeições sem carne", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
-    ],
-    atividades: [
-      { id: 3, title: "Leitura", description: "Gosta de ler livros no tempo livre", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 4, title: "Caminhada", description: "Prefere caminhar ao ar livre", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
-    ],
-    cuidador: [
-      { id: 5, title: "Leticia", description: "Prefere que Leticia sirva seu alimento", residente: "João", foto: "../images/foto-idoso-joao.jpg" },
-      { id: 6, title: "Maria", description: "Prefere que Maria dê banho e cuide de sua higiene", residente: "Maria", foto: "../images/foto-idosa-maria.png" }
-    ]
-  });
+  // ===== ESTADOS DO COMPONENTE =====
 
-  const [modalAberto, setModalAberto] = useState(false);
-  const [categoriaAtual, setCategoriaAtual] = useState('');
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
-  const [novaPreferencia, setNovaPreferencia] = useState({ titulo: '', descricao: '', residente: '', foto: '' });
-  const [filtroAtivo, setFiltroAtivo] = useState('todos');
-  const [filtroAberto, setFiltroAberto] = useState(false);
-  const [editando, setEditando] = useState(false);
-  const [idEditando, setIdEditando] = useState(null);
-  const [infoVisivel, setInfoVisivel] = useState(false);
-  const [residenteSelecionado, setResidenteSelecionado] = useState('');
-  const [residenteAtual, setResidenteAtual] = useState(null);
-  const [dropdownAberto, setDropdownAberto] = useState(false);
+  // Estado para dados de exemplo (simulando dados do backend)
+  const [medicamentos, setMedicamentos] = useState([
+    // Medicamentos para hoje (data atual)
+    {
+      id: 1,
+      residente: "João Santos",
+      nomeMedicamento: "Losartana",
+      dosagem: "50mg",
+      dose: "1 comprimido",
+      horario: "08:00",
+      observacoes: "Tomar antes das refeições",
+      local: "Quarto 1A-2",
+      periodo: "manha",
+      status: "pendente",
+      dataAdministracao: new Date() // Hoje
+    },
+    {
+      id: 2,
+      residente: "Maria Oliveira",
+      nomeMedicamento: "Sinvastatina",
+      dosagem: "20mg",
+      dose: "1 comprimido",
+      horario: "22:00",
+      observacoes: "Tomar à noite",
+      local: "Quarto 2B-1",
+      periodo: "noite",
+      status: "pendente",
+      dataAdministracao: new Date() // Hoje
+    },
+    {
+      id: 3,
+      residente: "Ana Fagundes",
+      nomeMedicamento: "Pristiq",
+      dosagem: "100mg",
+      dose: "2 comprimidos",
+      horario: "07:30",
+      observacoes: "Tomar com água",
+      local: "Quarto 3A-1",
+      periodo: "manha",
+      status: "administrado",
+      dataAdministracao: new Date() // Hoje
+    },
+    {
+      id: 4,
+      residente: "Felipe Silva",
+      nomeMedicamento: "Omeprazol",
+      dosagem: "40mg",
+      dose: "1 cápsula",
+      horario: "07:30",
+      observacoes: "Em jejum",
+      local: "Quarto 1B-3",
+      periodo: "manha",
+      status: "pendente",
+      dataAdministracao: new Date() // Hoje
+    },
+    {
+      id: 5,
+      residente: "Roberta Costa",
+      nomeMedicamento: "Vitamina D",
+      dosagem: "1000UI",
+      dose: "1 comprimido",
+      horario: "15:00",
+      observacoes: "Após o almoço",
+      local: "Quarto 2A-1",
+      periodo: "tarde",
+      status: "pendente",
+      dataAdministracao: new Date() // Hoje
+    },
 
+    // Medicamento para 3 dias atrás (exemplo de data passada)
+    {
+      id: 6,
+      residente: "Carlos Mendes",
+      nomeMedicamento: "Metformina",
+      dosagem: "850mg",
+      dose: "1 comprimido",
+      horario: "09:00",
+      observacoes: "Após o café da manhã",
+      local: "Quarto 4C-2",
+      periodo: "manha",
+      status: "pendente",
+      dataAdministracao: new Date(new Date().setDate(new Date().getDate() - 3)) // 3 dias atrás
+    },
 
-  const CATEGORIAS = {
-    ALIMENTAR: 'alimentar',
-    ATIVIDADES: 'atividades',
-    CUIDADOR: 'cuidador'
+    // Medicamento para 1 mês depois (exemplo de data futura)
+    {
+      id: 7,
+      residente: "Beatriz Hishimoto",
+      nomeMedicamento: "Levotiroxina",
+      dosagem: "50mcg",
+      dose: "1 comprimido",
+      horario: "07:00",
+      observacoes: "Em jejum, 30min antes do café",
+      local: "Quarto 3B-1",
+      periodo: "manha",
+      status: "pendente",
+      dataAdministracao: new Date(new Date().setMonth(new Date().getMonth() + 1)) // 1 mês depois
+    },
+
+    // Medicamento para 5 dias depois (exemplo de data futura próxima)
+    {
+      id: 8,
+      residente: "Ricardo Almeida",
+      nomeMedicamento: "AAS",
+      dosagem: "100mg",
+      dose: "1 comprimido",
+      horario: "20:00",
+      observacoes: "Após o jantar",
+      local: "Quarto 2C-3",
+      periodo: "noite",
+      status: "pendente",
+      dataAdministracao: new Date(new Date().setDate(new Date().getDate() + 5)) // 5 dias depois
+    }
+  ]);
+
+  // Estados para filtros
+  const [filtroStatus, setFiltroStatus] = useState('todos');
+  const [filtroResidente, setFiltroResidente] = useState('todos');
+  const [filtroData, setFiltroData] = useState(new Date());
+  const [filtroPeriodo, setFiltroPeriodo] = useState('todos');
+
+  // Estados para controle de interface
+  const [calendarioAberto, setCalendarioAberto] = useState(false);
+  const [filtroResidenteAberto, setFiltroResidenteAberto] = useState(false);
+  const [filtroStatusAberto, setFiltroStatusAberto] = useState(false);
+  const [filtroPeriodoAberto, setFiltroPeriodoAberto] = useState(false);
+  const [mostrarScrollTop, setMostrarScrollTop] = useState(false);
+
+  // ===== CONSTANTES E CONFIGURAÇÕES =====
+
+  // Opções de status
+  const STATUS = {
+    TODOS: 'todos',
+    PENDENTE: 'pendente',
+    ATRASADO: 'atrasado',
+    ADMINISTRADO: 'administrado'
   };
 
-  const CATEGORIA_LABELS = {
-    [CATEGORIAS.ALIMENTAR]: "Alimentar",
-    [CATEGORIAS.ATIVIDADES]: "Atividades",
-    [CATEGORIAS.CUIDADOR]: "Cuidador"
+  // Rótulos para exibição do Título de acordo com o status
+  const ROTULOS_STATUS = {
+    [STATUS.TODOS]: "Todas as Administrações",
+    [STATUS.PENDENTE]: "Administrações Pendentes",
+    [STATUS.ATRASADO]: "Administrações em Atraso",
+    [STATUS.ADMINISTRADO]: "Administrações Concluídas"
   };
 
-  const FILTROS = [
-    { id: 'todos', label: 'Todos' },
-    { id: CATEGORIAS.ALIMENTAR, label: CATEGORIA_LABELS[CATEGORIAS.ALIMENTAR] },
-    { id: CATEGORIAS.ATIVIDADES, label: CATEGORIA_LABELS[CATEGORIAS.ATIVIDADES] },
-    { id: CATEGORIAS.CUIDADOR, label: CATEGORIA_LABELS[CATEGORIAS.CUIDADOR] }
-  ];
-
-  const abrirModalAdicionar = (categoria) => {
-    setCategoriaAtual(categoria);
-    setNovaPreferencia({ titulo: '', descricao: '', residente: '', foto: '' });
-    setEditando(false);
-    setIdEditando(null);
-    setModalAberto(true);
+  // Rótulos simplificados para as opções de filtros
+  const ROTULOS_FILTRO_STATUS = {
+    [STATUS.TODOS]: "Todos",
+    [STATUS.PENDENTE]: "Pendentes",
+    [STATUS.ATRASADO]: "Atrasados",
+    [STATUS.ADMINISTRADO]: "Concluídos"
   };
 
-  const abrirModalEditar = (categoria, id) => {
-    const preferenciaParaEditar = preferences[categoria].find(item => item.id === id);
-    if (preferenciaParaEditar) {
-      setCategoriaAtual(categoria);
-      setNovaPreferencia({
-        titulo: preferenciaParaEditar.title,
-        descricao: preferenciaParaEditar.description,
-        residente: preferenciaParaEditar.residente,
-        foto: preferenciaParaEditar.foto
+  // Opções de período
+  const PERIODOS = {
+    TODOS: 'todos',
+    MANHA: 'manha',
+    TARDE: 'tarde',
+    NOITE: 'noite'
+  };
+
+  // Rótulos para exibição dos períodos
+  const ROTULOS_PERIODOS = {
+    [PERIODOS.TODOS]: "Todos",
+    [PERIODOS.MANHA]: "Manhã",
+    [PERIODOS.TARDE]: "Tarde",
+    [PERIODOS.NOITE]: "Noite"
+  };
+
+  // ===== FUNÇÕES AUXILIARES =====
+
+  // Função para obter lista única de residentes
+  const obterResidentes = () => {
+    return [...new Set(medicamentos.map(med => med.residente))];
+  };
+
+  // Função para formatar data para exibição
+  const formatarData = (data) => {
+    return data.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
+  // Função para extrair hora do horário (para ordenação)
+  const extrairHora = (horario) => {
+    const [hora, minuto] = horario.split(':').map(Number);
+    return hora * 60 + minuto; // Converter para minutos totais para facilitar ordenação
+  };
+
+  // Função para determinar o período baseado no horário
+  const obterPeriodoDoHorario = (horario) => {
+    const hora = parseInt(horario.split(':')[0]);
+    if (hora >= 6 && hora < 12) return PERIODOS.MANHA;
+    if (hora >= 12 && hora < 18) return PERIODOS.TARDE;
+    return PERIODOS.NOITE;
+  };
+
+  // Função para verificar se o horário já passou (considerando 10 minutos de tolerância)
+  const verificarHorarioPassou = (horario, dataMedicamento) => {
+    const agora = new Date();
+    const [hora, minuto] = horario.split(':').map(Number);
+
+    // Criar objeto de data para o horário do medicamento na data específica
+    const horarioMedicamento = new Date(dataMedicamento);
+    horarioMedicamento.setHours(hora, minuto, 0, 0);
+
+    // Adicionar 10 minutos de tolerância
+    const horarioComTolerancia = new Date(horarioMedicamento.getTime() + 10 * 60 * 1000);
+
+    return agora > horarioComTolerancia;
+  };
+
+  // Função para verificar se o medicamento é para a data selecionada
+  const ehParaDataSelecionada = (dataMedicamento) => {
+    const dataSelecionada = new Date(filtroData);
+    dataSelecionada.setHours(0, 0, 0, 0);
+
+    const dataMed = new Date(dataMedicamento);
+    dataMed.setHours(0, 0, 0, 0);
+
+    return dataMed.getTime() === dataSelecionada.getTime();
+  };
+
+  // Função para determinar o status dinâmico do medicamento
+  const obterStatusDinamico = (medicamento) => {
+    // Se já foi administrado manualmente, mantém o status
+    if (medicamento.status === 'administrado') {
+      return 'administrado';
+    }
+
+    // Verificar se o medicamento é para a data selecionada
+    if (ehParaDataSelecionada(medicamento.dataAdministracao)) {
+      // Se é para hoje e o horário já passou, marca como atrasado
+      if (verificarHorarioPassou(medicamento.horario, medicamento.dataAdministracao)) {
+        return 'atrasado';
+      }
+      // Se é para hoje mas o horário ainda não passou, mantém como pendente
+      return 'pendente';
+    }
+
+    // Se não é para a data selecionada, verifica se é uma data passada
+    const dataSelecionada = new Date(filtroData);
+    dataSelecionada.setHours(0, 0, 0, 0);
+
+    const dataMed = new Date(medicamento.dataAdministracao);
+    dataMed.setHours(0, 0, 0, 0);
+
+    if (dataMed < dataSelecionada) {
+      // Se é para uma data passada e não foi administrado, marca como atrasado
+      return 'atrasado';
+    }
+
+    // Se é para uma data futura, mantém como pendente
+    return 'pendente';
+  };
+
+  // ===== FUNÇÕES DE FILTRAGEM E ORDENAÇÃO =====
+
+  // Função principal para filtrar medicamentos
+  const obterMedicamentosFiltrados = () => {
+    return medicamentos
+      .filter(medicamento => {
+        // Verificar se o medicamento é para a data selecionada
+        const passaData = ehParaDataSelecionada(medicamento.dataAdministracao);
+        if (!passaData) return false;
+
+        // Aplicar status dinâmico para medicamentos não administrados
+        const statusFinal = obterStatusDinamico(medicamento);
+
+        // Filtro por status (agora usando statusFinal)
+        const passaStatus = filtroStatus === STATUS.TODOS || statusFinal === filtroStatus;
+
+        // Filtro por residente
+        const passaResidente = filtroResidente === 'todos' || medicamento.residente === filtroResidente;
+
+        // Filtro por período
+        let passaPeriodo = true;
+        if (filtroPeriodo !== PERIODOS.TODOS) {
+          const periodoMedicamento = obterPeriodoDoHorario(medicamento.horario);
+          passaPeriodo = periodoMedicamento === filtroPeriodo;
+        }
+
+        return passaStatus && passaResidente && passaPeriodo;
+      })
+      .map(medicamento => {
+        // Adicionar statusFinal ao medicamento para uso na renderização
+        const statusFinal = obterStatusDinamico(medicamento);
+        return {
+          ...medicamento,
+          statusFinal: statusFinal
+        };
+      })
+      .sort((a, b) => {
+        // Ordenar primariamente por horário (mais cedo primeiro)
+        const horaA = extrairHora(a.horario);
+        const horaB = extrairHora(b.horario);
+        if (horaA !== horaB) return horaA - horaB;
+
+        // Secundariamente por nome do residente (ordem alfabética)
+        return a.residente.localeCompare(b.residente);
       });
-      setEditando(true);
-      setIdEditando(id);
-      setModalAberto(true);
+  };
+
+  // Função para agrupar medicamentos por período
+  const agruparPorPeriodo = (medicamentos) => {
+    const grupos = {
+      [PERIODOS.MANHA]: [],
+      [PERIODOS.TARDE]: [],
+      [PERIODOS.NOITE]: []
+    };
+
+    medicamentos.forEach(medicamento => {
+      const periodo = obterPeriodoDoHorario(medicamento.horario);
+      grupos[periodo].push(medicamento);
+    });
+
+    return grupos;
+  };
+
+  // ===== FUNÇÕES DE CONTROLE DE DATA =====
+
+  // Ir para o dia anterior
+  const irParaOntem = () => {
+    const ontem = new Date(filtroData);
+    ontem.setDate(ontem.getDate() - 1);
+    setFiltroData(ontem);
+  };
+
+  // Ir para o dia seguinte
+  const irParaAmanha = () => {
+    const amanha = new Date(filtroData);
+    amanha.setDate(amanha.getDate() + 1);
+    setFiltroData(amanha);
+  };
+
+  // Voltar para hoje
+  const irParaHoje = () => {
+    setFiltroData(new Date());
+  };
+
+  // ===== FUNÇÕES DE CONTROLE DE SCROLL =====
+
+  // Verificar se deve mostrar botão de scroll para topo
+  const verificarScroll = () => {
+    const container = document.getElementById('checklist-container');
+    if (container) {
+      setMostrarScrollTop(container.scrollTop > 100);
     }
   };
 
-  const salvarPreferencia = () => {
-    if (!novaPreferencia.titulo || !novaPreferencia.descricao) return;
-
-    if (editando && idEditando) {
-      // Atualiza existente
-      setPreferences(prev => ({
-        ...prev,
-        [categoriaAtual]: prev[categoriaAtual].map(item =>
-          item.id === idEditando
-            ? {
-              ...item,
-              title: novaPreferencia.titulo,
-              description: novaPreferencia.descricao,
-              residente: novaPreferencia.residente,
-              foto: novaPreferencia.foto
-            }
-            : item
-        )
-      }));
-    } else {
-      // Adiciona novo 
-      const novoItem = {
-        id: Date.now(),
-        title: novaPreferencia.titulo,
-        description: novaPreferencia.descricao,
-        residente: novaPreferencia.residente,
-        foto: novaPreferencia.foto
-      };
-      setPreferences(prev => ({
-        ...prev,
-        [categoriaAtual]: [...prev[categoriaAtual], novoItem]
-      }));
-    }
-
-    setModalAberto(false);
-  };
-
-
-  const excluirPreferencia = (categoria, id) => {
-    if (window.confirm('Tem certeza que deseja excluir esta preferência?')) {
-      setPreferences(prev => ({
-        ...prev,
-        [categoria]: prev[categoria].filter(item => item.id !== id)
-      }));
+  // Scroll para o topo do container
+  const scrollParaTopo = () => {
+    const container = document.getElementById('checklist-container');
+    if (container) {
+      container.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  const residentes = Array.from(new Set(
-    [...preferences.alimentar, ...preferences.atividades, ...preferences.cuidador]
-      .map(item => item.residente)
-      .filter(Boolean)
-  ));
+  // ===== FUNÇÕES DE CONTROLE DE ADMINISTRAÇÃO =====
 
-  // Filtrar preferências por categoria e residente
-  const preferenciasFiltradas = Object.fromEntries(
-    Object.entries(preferences).map(([cat, items]) => [
-      cat,
-      items.filter(item =>
-        (filtroAtivo === 'todos' || filtroAtivo === cat) &&
-        (!residenteSelecionado || item.residente === residenteSelecionado)
-      )
-    ])
-  );
+  // Alternar status de administração do medicamento
+  const toggleAdministracao = (id) => {
+    setMedicamentos(anterior => anterior.map(med => {
+      if (med.id === id) {
+        // Se está como administrado, volta para pendente
+        // Se não está como administrado, marca como administrado
+        const novoStatus = med.status === 'administrado' ? 'pendente' : 'administrado';
+        return { ...med, status: novoStatus };
+      }
+      return med;
+    }));
+  };
 
-  return (
-    <div className="flex min-h-screen from-odara-offwhite to-odara-primary/30">
-      <div className="flex-1 p-6 lg:p-10">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center">
-            <div className="flex items-center mb-1">
-              <Link
-                to="/funcionario/Checklist"
-                className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 flex items-center"
-              >
-                <FaArrowLeft className="mr-1" />
-              </Link>
-            </div>
-            <h1 className="text-3xl font-bold text-odara-dark mr-2">Registro de Medicamentos</h1>
-            <div className="relative">
-              <button
-                onMouseEnter={() => setInfoVisivel(true)}
-                onMouseLeave={() => setInfoVisivel(false)}
-                className="text-odara-accent hover:text-odara-secondary transition-colors duration-200"
-              >
-                <FaInfoCircle size={20} />
-              </button>
-              {infoVisivel && (
-                <div className="absolute z-10 left-0 top-full mt-2 w-72 p-3 bg-odara-dark text-white text-sm rounded-lg shadow-lg">
-                  <h3 className="font-bold mb-2">Registro de Medicamentos</h3>
-                  <p>
-                    O Registro de Medicamentos está localizado os respectivos cadastros para melhor controle detalhado de medicação tais quais o paciente deverá ingerir para a realização de seu tratamento.   Ele garante a segurança e continuidade do tratamento dos residentes, e auxiliam na organização, otimização e na avaliação da funcionalidade do mesmo, colaborando para o trabalho da equipe de saúde.
-                  </p>
-                  <div className="absolute bottom-full left-4 border-4 border-transparent border-b-odara-dark"></div>
-                </div>
-              )}
-            </div>
-          </div>
+  // ===== RENDERIZAÇÃO DOS COMPONENTES =====
+
+  // Renderizar header do card baseado no status
+  const renderizarHeaderCard = (medicamento) => {
+    // Usar statusFinal que combina status manual e dinâmico
+    const status = medicamento.statusFinal;
+
+    const configs = {
+      [STATUS.ADMINISTRADO]: {
+        corBolinha: 'bg-green-500',
+        corCheckbox: 'text-green-500 border-green-500',
+        corTarja: 'bg-green-500 text-white',
+        corFundo: 'bg-green-50',
+        texto: 'Administrado',
+        icone: <FaCheck size={10} />
+      },
+      [STATUS.PENDENTE]: {
+        corBolinha: 'bg-yellow-500',
+        corCheckbox: 'text-yellow-500 border-yellow-500',
+        corTarja: 'bg-yellow-500 text-white',
+        corFundo: 'bg-yellow-50',
+        texto: 'Pendente',
+        icone: <FaTimes size={10} />
+      },
+      [STATUS.ATRASADO]: {
+        corBolinha: 'bg-red-500',
+        corCheckbox: 'text-red-500 border-red-500',
+        corTarja: 'bg-red-500 text-white',
+        corFundo: 'bg-red-50',
+        texto: 'Atrasado',
+        icone: <FaTimes size={10} />
+      }
+    };
+
+    const config = configs[status];
+
+    return (
+      <div className={`flex items-center justify-between p-3 rounded-t-lg ${config.corFundo}`}>
+        {/* Lado esquerdo: bolinha e horário */}
+        <div className="flex items-center">
+          <div className={`w-3 h-3 rounded-full ${config.corBolinha} mr-3`}></div>
+          <span className="font-semibold">{medicamento.horario}</span>
         </div>
 
-        <div className="relative flex items-center gap-4 mb-6">
-          {/* Botão Adicionar */}
+        {/* Lado direito: checkbox e tarja de status */}
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => setDropdownAberto(!dropdownAberto)}
-            className="bg-odara-accent hover:bg-odara-secondary/90 text-odara-contorno font-medium py-2 px-4 rounded-lg flex items-center transition duration-200 border-2 border-odara-contorno"
+            onClick={() => toggleAdministracao(medicamento.id)}
+            className={`w-6 h-6 border-2 rounded flex items-center justify-center ${config.corCheckbox} hover:opacity-80 transition-opacity`}
           >
-            <FaPlus className="mr-2" /> Adicionar
+            {config.icone}
           </button>
+          <span className={`text-xs px-2 py-1 rounded-full ${config.corTarja}`}>
+            {config.texto}
+          </span>
+        </div>
+      </div>
+    );
+  };
 
-          {/* Dropdown */}
-          {dropdownAberto && (
-            <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50">
-              {Object.values(CATEGORIAS).map(categoria => (
-                <button
-                  key={categoria}
-                  className="block w-full text-left px-4 py-2 text-sm hover:bg-odara-primary/10"
-                  onClick={() => {
-                    setCategoriaSelecionada(categoria);
-                    abrirModalAdicionar(categoria); // abre o modal
-                    setDropdownAberto(false);
-                  }}
-                >
-                  {CATEGORIA_LABELS[categoria]}
-                </button>
-              ))}
-            </div>
-          )}
+  // Renderizar linha divisória entre períodos
+  const renderizarDivisorPeriodo = (periodo) => {
+    const rotulos = {
+      [PERIODOS.MANHA]: "Período da Manhã",
+      [PERIODOS.TARDE]: "Período da Tarde",
+      [PERIODOS.NOITE]: "Período da Noite"
+    };
 
-          {/* Selecionando por residentes */}
-          <div className="relative">
-            <select
-              className="border border-gray-300 rounded-lg px-3 py-2"
-              value={residenteSelecionado || ''}
-              onChange={(e) => setResidenteSelecionado(e.target.value)}
-            >
-              <option value="">Todos os residentes</option>
-              {residentes.map(r => <option key={r} value={r}>{r}</option>)}
-            </select>
-          </div>
+    return (
+      <div className="flex items-center my-4">
+        <div className="flex-1 border-t border-gray-300"></div>
+        <span className="mx-4 text-sm font-medium text-gray-600">
+          {rotulos[periodo]}
+        </span>
+        <div className="flex-1 border-t border-gray-300"></div>
+      </div>
+    );
+  };
 
+  // ===== EFEITOS =====
+
+  // Configurar listener de scroll
+  useEffect(() => {
+    const container = document.getElementById('checklist-container');
+    if (container) {
+      container.addEventListener('scroll', verificarScroll);
+      return () => container.removeEventListener('scroll', verificarScroll);
+    }
+  }, []);
+
+  // Efeito para atualizar status dinamicamente a cada minuto
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Forçar re-render para atualizar status dinâmicos
+      setMedicamentos(anterior => [...anterior]);
+    }, 60000); // Atualizar a cada minuto
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // ===== DADOS COMPUTADOS =====
+
+  const medicamentosFiltrados = obterMedicamentosFiltrados();
+  const medicamentosAgrupados = agruparPorPeriodo(medicamentosFiltrados);
+  const residentes = obterResidentes();
+  const totalAdministracoes = medicamentosFiltrados.length;
+
+  // Verificar se há filtros ativos (agora SEMPRE inclui a tarja de data)
+  const temFiltrosAtivos = filtroStatus !== STATUS.TODOS ||
+    filtroResidente !== 'todos' ||
+    filtroPeriodo !== PERIODOS.TODOS ||
+    true; // Sempre true para garantir que a tarja de data apareça
+
+  return (
+    <div className="flex min-h-screen bg-odara-offwhite">
+      <div className="flex-1 p-6 lg:p-10">
+
+        {/* ===== CABEÇALHO DA PÁGINA ===== */}
+        <div className="flex items-center mb-6">
+          {/* Botão voltar */}
+          <Link
+            to="#/null"
+            className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 mr-3"
+          >
+            <FaArrowLeft size={20} />
+          </Link>
+          {/* Título da página */}
+          <h1 className="text-3xl font-bold text-odara-dark">
+            Checklist de Medicamentos
+          </h1>
+        </div>
+
+        {/* ===== BARRA DE FILTROS ===== */}
+        <div className="flex flex-wrap gap-4 mb-6">
+
+          {/* Filtro de Status */}
           <div className="relative">
             <button
-              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-odara-dark font-medium hover:bg-odara-primary/10 transition"
-              onClick={() => setFiltroAberto(!filtroAberto)}
+              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-odara-primary hover:text-white transition"
+              onClick={() => {
+                setFiltroStatusAberto(!filtroStatusAberto);
+                setFiltroResidenteAberto(false);
+                setFiltroPeriodoAberto(false);
+                setCalendarioAberto(false);
+              }}
             >
               <FaFilter className="text-odara-accent mr-2" />
-              Filtro
+              Status
             </button>
-
-            {filtroAberto && (
-              <div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-                {FILTROS.map(filtro => (
+            {filtroStatusAberto && (
+              <div className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                {Object.entries(ROTULOS_FILTRO_STATUS).map(([valor, rotulo]) => (
                   <button
-                    key={filtro.id}
+                    key={valor}
                     onClick={() => {
-                      setFiltroAtivo(filtro.id);
-                      setFiltroAberto(false);
+                      setFiltroStatus(valor);
+                      setFiltroStatusAberto(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/10 ${filtroAtivo === filtro.id ? 'bg-odara-primary/20 font-semibold' : ''}`}
+                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroStatus === valor ? 'bg-indigo-100 font-semibold' : ''
+                      }`}
                   >
-                    {filtro.label}
+                    {rotulo}
                   </button>
                 ))}
               </div>
             )}
           </div>
-        </div>
 
-        <div className="bg-odara-offwhite rounded-2xl shadow-lg p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="max-h-[calc(100vh-250px)] overflow-y-auto pr-2 lg:col-span-2 space-y-8">
-            {Object.entries(preferenciasFiltradas).map(([categoria, items]) => (
-              <div key={categoria} className="mb-8">
-                <h3 className="text-xl font-semibold text-odara-dark mb-4 flex items-center">
-                  {categoria === 'alimentar' && <FaUtensils className="mr-2 text-odara-accent" />}
-                  {categoria === 'atividades' && <FaWalking className="mr-2 text-odara-accent" />}
-                  {categoria === 'cuidador' && <FaWalking className="mr-2 text-odara-accent" />}
-                  {CATEGORIA_LABELS[categoria]}
-                </h3>
-                <ul className="space-y-4">
-                  {items.map(item => (
-                    <li
-                      key={item.id}
-                      className="bg-white p-4 rounded-lg border border-gray-200 flex justify-between items-start hover:shadow-md transition-shadow duration-200"
-                      onMouseEnter={() => setResidenteAtual(item)}
-                    >
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-odara-dark">{item.residente}</h4>
-                        <p className="text-odara-dark/70 text-sm mt-1">{item.description}</p>
-                      </div>
-                      <div className="flex space-x-2 ml-4">
-                        <button onClick={() => abrirModalEditar(categoria, item.id)}
-                          className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 p-1 rounded-full hover:bg-odara-accent/10">
-                          <FaEdit />
-                        </button>
-                        <button onClick={() => excluirPreferencia(categoria, item.id)}
-                          className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1 rounded-full hover:bg-red-50">
-                          <FaTrash />
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+          {/* Filtro de Residentes */}
+          <div className="relative">
+            <button
+              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-odara-primary hover:text-white transition"
+              onClick={() => {
+                setFiltroResidenteAberto(!filtroResidenteAberto);
+                setFiltroStatusAberto(false);
+                setFiltroPeriodoAberto(false);
+                setCalendarioAberto(false);
+              }}
+            >
+              <FaFilter className="text-odara-accent mr-2" />
+              Residentes
+            </button>
+            {filtroResidenteAberto && (
+              <div className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                <button
+                  onClick={() => {
+                    setFiltroResidente('todos');
+                    setFiltroResidenteAberto(false);
+                  }}
+                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroResidente === 'todos' ? 'bg-indigo-100 font-semibold' : ''
+                    }`}
+                >
+                  Todos
+                </button>
+                <button
+                  onClick={() => {
+                    setFiltroResidente('meus');
+                    setFiltroResidenteAberto(false);
+                  }}
+                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroResidente === 'meus' ? 'bg-indigo-100 font-semibold' : ''
+                    }`}
+                >
+                  Meus
+                </button>
+                {residentes.map(residente => (
+                  <button
+                    key={residente}
+                    onClick={() => {
+                      setFiltroResidente(residente);
+                      setFiltroResidenteAberto(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroResidente === residente ? 'bg-indigo-100 font-semibold' : ''
+                      }`}
+                  >
+                    {residente}
+                  </button>
+                ))}
               </div>
-            ))}
+            )}
           </div>
 
-          <div className="mt-10 bg-odara-offwhite rounded-2xl shadow-lg p-10 h-fit border-l-4 border-odara-primary">
-            <h3 className="text-xl mb-4">RESIDENTE <h3 className="text-odara-dark">{residenteAtual?.residente || 'Área para foto do paciente'}</h3></h3>
-            <div className="text-center">
-              <div className="w-50 h-50 mx-auto rounded-full flex items-center justify-center mb-2">
-                {residenteAtual?.foto ? (
-                  <img src={residenteAtual.foto} alt={residenteAtual.residente} className="w-60 h-60 rounded-[30px] object-cover" />
-                ) : (
-                  <span className="text-odara-primary text-4xl">👤</span>
+          {/* Filtro de Data */}
+          <div className="relative">
+            <button
+              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-odara-primary hover:text-white transition"
+              onClick={() => {
+                setCalendarioAberto(!calendarioAberto);
+                setFiltroStatusAberto(false);
+                setFiltroResidenteAberto(false);
+                setFiltroPeriodoAberto(false);
+              }}
+            >
+              <FaFilter className="text-odara-accent mr-2" />
+              Data
+            </button>
+            {calendarioAberto && (
+              <div className="absolute mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                <Calendar
+                  value={filtroData}
+                  onChange={(data) => {
+                    setFiltroData(data);
+                    setCalendarioAberto(false);
+                  }}
+                  locale="pt-BR"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Filtro de Período */}
+          <div className="relative">
+            <button
+              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-odara-primary hover:text-white transition"
+              onClick={() => {
+                setFiltroPeriodoAberto(!filtroPeriodoAberto);
+                setFiltroStatusAberto(false);
+                setFiltroResidenteAberto(false);
+                setCalendarioAberto(false);
+              }}
+            >
+              <FaFilter className="text-odara-accent mr-2" />
+              Período
+            </button>
+            {filtroPeriodoAberto && (
+              <div className="absolute mt-2 w-32 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                {Object.entries(ROTULOS_PERIODOS).map(([valor, rotulo]) => (
+                  <button
+                    key={valor}
+                    onClick={() => {
+                      setFiltroPeriodo(valor);
+                      setFiltroPeriodoAberto(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroPeriodo === valor ? 'bg-indigo-100 font-semibold' : ''
+                      }`}
+                  >
+                    {rotulo}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Botão Limpar Todos os Filtros */}
+          {( filtroData !== new Date() || filtroResidente !== 'todos' || filtroStatus !== 'todos' || filtroPeriodo !== 'todos') && (
+            <button
+              onClick={() => {
+                setFiltroData(new Date());
+                setFiltroPeriodo('todos');
+                setFiltroResidente('todos');
+                setFiltroStatus('todos');
+              }}
+              className="flex items-center bg-odara-accent text-odara-white rounded-full px-4 py-2 shadow-sm font-medium hover:bg-odara-secondary transition"
+            >
+              <FaTimes className="mr-1" /> Limpar Filtros
+            </button>
+          )}
+
+        </div>
+
+        {/* ===== CONTAINER PRINCIPAL DO CHECKLIST ===== */}
+        <div className="bg-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-6">
+
+          {/* ===== CONTROLES DE DATA E TÍTULO ===== */}
+          <div className="flex flex-col items-center mb-4">
+            {/* Controles de navegação de data - Centralizado */}
+            <div className="flex items-center gap-2 mb-4">
+              <button
+                onClick={irParaOntem}
+                className="p-2 text-odara-accent hover:text-odara-secondary transition-colors"
+                title="Dia anterior"
+              >
+                <FaChevronLeft />
+              </button>
+              <button
+                onClick={irParaHoje}
+                className="bg-odara-accent hover:bg-odara-secondary text-white font-medium py-2 px-4 rounded-lg transition-colors"
+              >
+                Ir para Hoje
+              </button>
+              <button
+                onClick={irParaAmanha}
+                className="p-2 text-odara-accent hover:text-odara-secondary transition-colors"
+                title="Próximo dia"
+              >
+                <FaChevronRight />
+              </button>
+            </div>
+
+            {/* Título e contador - Centralizado */}
+            <div className="flex items-center gap-4 mb-4">
+              <h2 className="text-2xl font-bold text-odara-dark">
+                {ROTULOS_STATUS[filtroStatus]}
+              </h2>
+              <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
+                Total: {totalAdministracoes}
+              </span>
+            </div>
+
+            {/* ===== TARJAS DE FILTROS ATIVOS ===== */}
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              {/* Tarja de Data (SEMPRE visível) */}
+              <span className="bg-odara-accent text-odara-white font-bold px-3 py-1 rounded-full text-sm">
+                Data: {formatarData(filtroData)}
+              </span>
+
+              {/* Tarja de Status (apenas quando filtrado) */}
+              {filtroStatus !== STATUS.TODOS && (
+                <span className="bg-odara-dropdown-accent text-odara-white font-bold px-3 py-1 rounded-full text-sm">
+                  Status: {ROTULOS_FILTRO_STATUS[filtroStatus]}
+                </span>
+              )}
+
+              {/* Tarja de Residentes (apenas quando filtrado) */}
+              {filtroResidente !== 'todos' && (
+                <span className="bg-odara-primary text-odara-white font-bold px-3 py-1 rounded-full text-sm">
+                  Residente: {filtroResidente === 'meus' ? 'Meus' : filtroResidente}
+                </span>
+              )}
+
+              {/* Tarja de Período (apenas quando filtrado) */}
+              {filtroPeriodo !== PERIODOS.TODOS && (
+                <span className="bg-odara-contorno text-odara-dark font-bold px-3 py-1 rounded-full text-sm">
+                  Período: {ROTULOS_PERIODOS[filtroPeriodo]}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* ===== LISTA DE MEDICAMENTOS ===== */}
+          <div
+            id="checklist-container"
+            className="max-h-[600px] overflow-y-auto relative"
+            onScroll={verificarScroll}
+          >
+            {/* Botão para voltar ao topo (aparece apenas durante scroll) */}
+            {mostrarScrollTop && (
+              <button
+                onClick={scrollParaTopo}
+                className="absolute right-4 bottom-4 bg-odara-accent text-white p-3 rounded-full shadow-lg hover:bg-odara-secondary transition-colors z-10"
+                title="Voltar ao topo"
+              >
+                <FaArrowUp />
+              </button>
+            )}
+
+            {/* Renderização condicional baseada no filtro de período */}
+            {filtroPeriodo === PERIODOS.TODOS ? (
+              // ===== MODO TODOS OS PERÍODOS =====
+              <div>
+                {/* Período da Manhã */}
+                {medicamentosAgrupados[PERIODOS.MANHA].length > 0 && (
+                  <>
+                    {renderizarDivisorPeriodo(PERIODOS.MANHA)}
+                    <div className="space-y-4">
+                      {medicamentosAgrupados[PERIODOS.MANHA].map(medicamento => (
+                        <div key={medicamento.id} className="bg-white rounded-lg shadow-md border border-gray-200">
+                          {renderizarHeaderCard(medicamento)}
+                          <div className="p-4">
+                            <p className="mb-2">
+                              <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
+                            </p>
+                            <p className="mb-2">
+                              <strong>Dose:</strong> {medicamento.dose}
+                            </p>
+                            {medicamento.observacoes && (
+                              <p>
+                                <strong>Obs:</strong> {medicamento.observacoes}
+                              </p>
+                            )}
+                          </div>
+                          <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
+                            <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
+                              {medicamento.residente}
+                            </span>
+                            <span className="mx-2">•</span>
+                            <span className="text-odara-name">{medicamento.local}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {/* Período da Tarde */}
+                {medicamentosAgrupados[PERIODOS.TARDE].length > 0 && (
+                  <>
+                    {renderizarDivisorPeriodo(PERIODOS.TARDE)}
+                    <div className="space-y-4">
+                      {medicamentosAgrupados[PERIODOS.TARDE].map(medicamento => (
+                        <div key={medicamento.id} className="bg-white rounded-lg shadow-md border border-gray-200">
+                          {renderizarHeaderCard(medicamento)}
+                          <div className="p-4">
+                            <p className="mb-2">
+                              <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
+                            </p>
+                            <p className="mb-2">
+                              <strong>Dose:</strong> {medicamento.dose}
+                            </p>
+                            {medicamento.observacoes && (
+                              <p>
+                                <strong>Obs:</strong> {medicamento.observacoes}
+                              </p>
+                            )}
+                          </div>
+                          <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
+                            <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
+                              {medicamento.residente}
+                            </span>
+                            <span className="mx-2">•</span>
+                            <span className="text-odara-name">{medicamento.local}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {/* Período da Noite */}
+                {medicamentosAgrupados[PERIODOS.NOITE].length > 0 && (
+                  <>
+                    {renderizarDivisorPeriodo(PERIODOS.NOITE)}
+                    <div className="space-y-4">
+                      {medicamentosAgrupados[PERIODOS.NOITE].map(medicamento => (
+                        <div key={medicamento.id} className="bg-white rounded-lg shadow-md border border-gray-200">
+                          {renderizarHeaderCard(medicamento)}
+                          <div className="p-4">
+                            <p className="mb-2">
+                              <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
+                            </p>
+                            <p className="mb-2">
+                              <strong>Dose:</strong> {medicamento.dose}
+                            </p>
+                            {medicamento.observacoes && (
+                              <p>
+                                <strong>Obs:</strong> {medicamento.observacoes}
+                              </p>
+                            )}
+                          </div>
+                          <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
+                            <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
+                              {medicamento.residente}
+                            </span>
+                            <span className="mx-2">•</span>
+                            <span className="text-odara-name">{medicamento.local}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
+            ) : (
+              // ===== MODO PERÍODO ESPECÍFICO =====
+              <div className="space-y-4">
+                {medicamentosFiltrados.map(medicamento => (
+                  <div key={medicamento.id} className="bg-white rounded-lg shadow-md border border-gray-200">
+                    {renderizarHeaderCard(medicamento)}
+                    <div className="p-4">
+                      <p className="mb-2">
+                        <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
+                      </p>
+                      <p className="mb-2">
+                        <strong>Dose:</strong> {medicamento.dose}
+                      </p>
+                      {medicamento.observacoes && (
+                        <p>
+                          <strong>Obs:</strong> {medicamento.observacoes}
+                        </p>
+                      )}
+                    </div>
+                    <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
+                      <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
+                        {medicamento.residente}
+                      </span>
+                      <span className="mx-2">•</span>
+                      <span className="text-odara-name">{medicamento.local}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
-            </div>
+            {/* Mensagem quando não há medicamentos */}
+            {medicamentosFiltrados.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                Nenhuma administração encontrada para os filtros selecionados.
+              </div>
+            )}
           </div>
         </div>
-
-        {/* Modal */}
-        {modalAberto && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-odara-offwhite rounded-xl shadow-2xl max-w-md w-full p-6 border-l-4 border-odara-primary">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-odara-dark">
-                  {editando ? 'Editar' : 'Adicionar'} Preferência - {CATEGORIA_LABELS[categoriaAtual]}
-                </h2>
-                <button onClick={() => setModalAberto(false)} className="text-odara-dark hover:text-odara-accent transition-colors duration-200">✕</button>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-odara-dark font-medium mb-2">Residente</label>
-                  <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-                    value={novaPreferencia.residente}
-                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, residente: e.target.value })}
-                    placeholder="Nome do residente" />
-                </div>
-                <div>
-                  <label className="block text-odara-dark font-medium mb-2">Título</label>
-                  <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-                    value={novaPreferencia.titulo}
-                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, titulo: e.target.value })}
-                    placeholder="Digite o título" />
-                </div>
-                <div>
-                  <label className="block text-odara-dark font-medium mb-2">Descrição</label>
-                  <textarea className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg" rows="4"
-                    value={novaPreferencia.descricao}
-                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, descricao: e.target.value })}
-                    placeholder="Digite a descrição"></textarea>
-                </div>
-                <div>
-                  <label className="block text-odara-dark font-medium mb-2">Foto do Residente</label>
-                  <input type="text" className="w-full px-4 py-2 border border-odara-primary/30 rounded-lg"
-                    value={novaPreferencia.foto}
-                    onChange={(e) => setNovaPreferencia({ ...novaPreferencia, foto: e.target.value })}
-                    placeholder="Link da foto" />
-                </div>
-              </div>
-
-              <div className="flex justify-end space-x-3 mt-6">
-                <button onClick={() => setModalAberto(false)}
-                  className="px-4 py-2 border border-odara-primary/30 text-odara-dark rounded-lg hover:bg-white transition-colors duration-200">Cancelar</button>
-                <button onClick={salvarPreferencia}
-                  className="px-4 py-2 bg-odara-accent text-odara-contorno rounded-lg hover:bg-odara-secondary/90 transition-colors duration-200 border-2 border-odara-contorno"
-                  disabled={!novaPreferencia.titulo || !novaPreferencia.descricao}>
-                  {editando ? 'Atualizar' : 'Salvar'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
-    </div >
+    </div>
   );
 };
 
