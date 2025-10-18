@@ -479,7 +479,7 @@ const Medicamentos = () => {
     );
   };
 
-  // ===== EFEITOS =====
+  // ===== EFEITOS ===== 
 
   // Configurar listeners de scroll
   useEffect(() => {
