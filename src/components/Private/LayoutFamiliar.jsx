@@ -21,8 +21,8 @@ const LayoutFamiliar = () => {
       {/* Área de conteúdo principal, ajusta o padding com base no estado recolhido da barra lateral */}
       <main
         className={`flex-grow transition-all duration-300
-          ${isCollapsed ? 'pl-20' : 'pl-64'} // Ajusta o padding com base em isCollapsed
-          pt-13
+          ${isCollapsed ? 'pl-5' : 'pl-70'} 
+          pt-16
           bg-odara-offwhite
         `}
       >

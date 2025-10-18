@@ -377,12 +377,12 @@ const DashboardFamiliar = () => {
 
   return (
     <div className="flex min-h-screen bg-odara-offwhite">
-      <div className="flex-1 p-6 lg:p-8">
-        <header className="mb-8">
+      <div className="flex-1 p-6 lg:p-2">
+        <header className="mb-4">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-odara-dark">
-                {visualizacao === "casa" ? "Dashboard da Casa" : `Acompanhamento - ${familiarAtual.nome}`}
+                {visualizacao === "casa" ? "Área do Responsável" : `Acompanhamento - ${familiarAtual.nome}`}
               </h1>
               <p className="text-odara-dark/60 text-sm">
                 {visualizacao === "casa" 
@@ -542,63 +542,6 @@ const DashboardFamiliar = () => {
               </div>
             </div>
 
-            {/* Calendários lado a lado */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Calendário de Consultas Médicas */}
-              <div 
-                className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
-                onClick={() => setModalConsultasAberto(true)}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-odara-dark flex items-center gap-2">
-                    <CalendarIcon size={18} />
-                    Consultas Médicas
-                  </h3>
-                  <Eye size={18} className="text-odara-dark/60" />
-                </div>
-                <Calendar 
-                  value={dataConsulta}
-                  onChange={setDataConsulta}
-                  className="w-full border-0"
-                />
-                <div className="mt-4 space-y-2">
-                  {consultasFiltradas.slice(0, 2).map((consulta) => (
-                    <div key={consulta.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
-                      <div className="bg-blue-100 p-2 rounded">
-                        <Clock size={16} className="text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{consulta.tipo}</p>
-                        <p className="text-xs text-gray-500">
-                          {new Date(consulta.data).toLocaleDateString()} • {consulta.horario}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Calendário de Atividades */}
-              <div 
-                className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
-                onClick={() => setModalAtividadesAberto(true)}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-odara-dark flex items-center gap-2">
-                    <Activity size={18} />
-                    Atividades da Semana
-                  </h3>
-                  <Eye size={18} className="text-odara-dark/60" />
-                </div>
-                <Calendar 
-                  value={dataAtividade}
-                  onChange={setDataAtividade}
-                  className="w-full border-0"
-                />
-              </div>
-            </div>
-
-            {/* Medicamentos e Cardápio abaixo dos calendários */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Medicamentos */}
               <div 
@@ -658,9 +601,64 @@ const DashboardFamiliar = () => {
                 </div>
               </div>
             </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Calendário de Consultas Médicas */}
+              <div 
+                className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
+                onClick={() => setModalConsultasAberto(true)}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-odara-dark flex items-center gap-2">
+                    <CalendarIcon size={18} />
+                    Consultas Médicas
+                  </h3>
+                  <Eye size={18} className="text-odara-dark/60" />
+                </div>
+                <Calendar 
+                  value={dataConsulta}
+                  onChange={setDataConsulta}
+                  className="w-full border-0"
+                />
+                <div className="mt-4 space-y-2">
+                  {consultasFiltradas.slice(0, 2).map((consulta) => (
+                    <div key={consulta.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
+                      <div className="bg-blue-100 p-2 rounded">
+                        <Clock size={16} className="text-blue-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{consulta.tipo}</p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(consulta.data).toLocaleDateString()} • {consulta.horario}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Calendário de Atividades */}
+              <div 
+                className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
+                onClick={() => setModalAtividadesAberto(true)}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-odara-dark flex items-center gap-2">
+                    <Activity size={18} />
+                    Atividades da Semana
+                  </h3>
+                  <Eye size={18} className="text-odara-dark/60" />
+                </div>
+                <Calendar 
+                  value={dataAtividade}
+                  onChange={setDataAtividade}
+                  className="w-full border-0"
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Alertas e Notificações - MODELO APLICADO */}
+          {/* Alertas e Notificações*/}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow p-6 h-full">
               <div className="flex items-center gap-2 mb-4">
@@ -732,7 +730,7 @@ const DashboardFamiliar = () => {
         </div>
       </div>
 
-      {/* Modal de Detalhes das Notificações - MODELO APLICADO */}
+      {/* Modal de Detalhes das Notificações */}
       {modalAberto && itemSelecionado && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
@@ -818,7 +816,6 @@ const DashboardFamiliar = () => {
         </div>
       )}
 
-      {/* Modais existentes mantidos */}
       {modalDocumentosAberto && (
         <Modal onClose={() => setModalDocumentosAberto(false)} titulo="Solicitação de Documentos">
           <div className="space-y-4">
