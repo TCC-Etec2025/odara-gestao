@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaArrowLeft, FaChevronLeft, FaChevronRight, FaCheck, FaTimes, FaArrowUp, FaFilter } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Calendar from 'react-calendar';
@@ -23,6 +23,7 @@ const Medicamentos = () => {
       status: "pendente",
       dataAdministracao: new Date() // Hoje
     },
+
     {
       id: 2,
       residente: "Maria Oliveira",
@@ -36,6 +37,7 @@ const Medicamentos = () => {
       status: "pendente",
       dataAdministracao: new Date() // Hoje
     },
+
     {
       id: 3,
       residente: "Ana Fagundes",
@@ -46,9 +48,10 @@ const Medicamentos = () => {
       observacoes: "Tomar com água",
       local: "Quarto 3A-1",
       periodo: "manha",
-      status: "administrado",
+      status: "concluido",
       dataAdministracao: new Date() // Hoje
     },
+
     {
       id: 4,
       residente: "Felipe Silva",
@@ -62,6 +65,7 @@ const Medicamentos = () => {
       status: "pendente",
       dataAdministracao: new Date() // Hoje
     },
+
     {
       id: 5,
       residente: "Roberta Costa",
@@ -137,12 +141,18 @@ const Medicamentos = () => {
 
   // ===== CONSTANTES E CONFIGURAÇÕES =====
 
+  // Refs para os dropdowns
+  const statusRef = useRef(null);
+  const residenteRef = useRef(null);
+  const dataRef = useRef(null);
+  const periodoRef = useRef(null);
+
   // Opções de status
   const STATUS = {
     TODOS: 'todos',
     PENDENTE: 'pendente',
     ATRASADO: 'atrasado',
-    ADMINISTRADO: 'administrado'
+    ADMINISTRADO: 'concluido'
   };
 
   // Rótulos para exibição do Título de acordo com o status
@@ -236,8 +246,8 @@ const Medicamentos = () => {
   // Função para determinar o status dinâmico do medicamento
   const obterStatusDinamico = (medicamento) => {
     // Se já foi administrado manualmente, mantém o status
-    if (medicamento.status === 'administrado') {
-      return 'administrado';
+    if (medicamento.status === 'concluido') {
+      return 'concluido';
     }
 
     // Verificar se o medicamento é para a data selecionada
@@ -355,13 +365,20 @@ const Medicamentos = () => {
   // Verificar se deve mostrar botão de scroll para topo
   const verificarScroll = () => {
     const container = document.getElementById('checklist-container');
-    if (container) {
-      setMostrarScrollTop(container.scrollTop > 100);
-    }
+
+    // Verificar scroll da página OU do container
+    const scrollPagina = window.scrollY > 100;
+    const scrollContainer = container ? container.scrollTop > 100 : false;
+
+    setMostrarScrollTop(scrollPagina || scrollContainer);
   };
 
-  // Scroll para o topo do container
+  // Scroll para o topo da página e do container
   const scrollParaTopo = () => {
+    // Rolar a página inteira para o topo
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Rolar o container para o topo
     const container = document.getElementById('checklist-container');
     if (container) {
       container.scrollTo({ top: 0, behavior: 'smooth' });
@@ -376,7 +393,7 @@ const Medicamentos = () => {
       if (med.id === id) {
         // Se está como administrado, volta para pendente
         // Se não está como administrado, marca como administrado
-        const novoStatus = med.status === 'administrado' ? 'pendente' : 'administrado';
+        const novoStatus = med.status === 'concluido' ? 'pendente' : 'concluido';
         return { ...med, status: novoStatus };
       }
       return med;
@@ -396,7 +413,7 @@ const Medicamentos = () => {
         corCheckbox: 'text-green-500 border-green-500',
         corTarja: 'bg-green-500 text-white',
         corFundo: 'bg-green-50',
-        texto: 'Administrado',
+        texto: 'Concluído',
         icone: <FaCheck size={10} />
       },
       [STATUS.PENDENTE]: {
@@ -464,13 +481,24 @@ const Medicamentos = () => {
 
   // ===== EFEITOS =====
 
-  // Configurar listener de scroll
+  // Configurar listeners de scroll
   useEffect(() => {
     const container = document.getElementById('checklist-container');
+
+    // Listener para scroll da página
+    window.addEventListener('scroll', verificarScroll);
+
+    // Listener para scroll do container
     if (container) {
       container.addEventListener('scroll', verificarScroll);
-      return () => container.removeEventListener('scroll', verificarScroll);
     }
+
+    return () => {
+      window.removeEventListener('scroll', verificarScroll);
+      if (container) {
+        container.removeEventListener('scroll', verificarScroll);
+      }
+    };
   }, []);
 
   // Efeito para atualizar status dinamicamente a cada minuto
@@ -481,6 +509,29 @@ const Medicamentos = () => {
     }, 60000); // Atualizar a cada minuto
 
     return () => clearInterval(interval);
+  }, []);
+
+  // Efeito para fechar dropdowns ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (statusRef.current && !statusRef.current.contains(event.target)) {
+        setFiltroStatusAberto(false);
+      }
+      if (residenteRef.current && !residenteRef.current.contains(event.target)) {
+        setFiltroResidenteAberto(false);
+      }
+      if (dataRef.current && !dataRef.current.contains(event.target)) {
+        setCalendarioAberto(false);
+      }
+      if (periodoRef.current && !periodoRef.current.contains(event.target)) {
+        setFiltroPeriodoAberto(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   // ===== DADOS COMPUTADOS =====
@@ -498,30 +549,37 @@ const Medicamentos = () => {
 
   return (
     <div className="flex min-h-screen bg-odara-offwhite">
-      <div className="flex-1 p-6 lg:p-10">
+      <div className="flex-1 flex flex-col items-center px-4 py-6 lg:px-10 lg:py-10">
 
         {/* ===== CABEÇALHO DA PÁGINA ===== */}
-        <div className="flex items-center mb-6">
-          {/* Botão voltar */}
-          <Link
-            to="#/null"
-            className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 mr-3"
-          >
-            <FaArrowLeft size={20} />
-          </Link>
-          {/* Título da página */}
-          <h1 className="text-3xl font-bold text-odara-dark">
-            Checklist de Medicamentos
-          </h1>
+        <div className="w-full max-w-6xl mb-6">
+          <div className="flex items-center justify-center">
+            {/* Título da página - Sempre centralizado */}
+            <div className="flex items-center">
+              {/* Botão voltar */}
+              <Link
+                to="#/null"
+                className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 mr-3"
+              >
+                <FaArrowLeft size={20} />
+              </Link>
+              {/* Título da página */}
+              <h1 className="text-2xl lg:text-3xl font-bold text-odara-dark">
+                Checklist de Medicamentos
+              </h1>
+            </div>
+          </div>
         </div>
 
         {/* ===== BARRA DE FILTROS ===== */}
-        <div className="flex flex-wrap gap-4 mb-6">
-
+        <div className="w-full max-w-6xl flex flex-wrap justify-center gap-2 mb-6">
           {/* Filtro de Status */}
-          <div className="relative">
+          <div className="relative" ref={statusRef}>
             <button
-              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-odara-primary hover:text-white transition"
+              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 ${filtroStatusAberto
+                ? 'border-odara-primary text-gray-700'
+                : 'border-odara-contorno text-gray-700'
+                } font-medium hover:border-2 hover:border-odara-primary transition text-sm`}
               onClick={() => {
                 setFiltroStatusAberto(!filtroStatusAberto);
                 setFiltroResidenteAberto(false);
@@ -533,7 +591,7 @@ const Medicamentos = () => {
               Status
             </button>
             {filtroStatusAberto && (
-              <div className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+              <div className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg !border-2 !border-odara-primary z-10">
                 {Object.entries(ROTULOS_FILTRO_STATUS).map(([valor, rotulo]) => (
                   <button
                     key={valor}
@@ -541,7 +599,7 @@ const Medicamentos = () => {
                       setFiltroStatus(valor);
                       setFiltroStatusAberto(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroStatus === valor ? 'bg-indigo-100 font-semibold' : ''
+                    className={`block w-full text-left px-4 py-2 text-sm hover:!bg-odara-primary/20 ${filtroStatus === valor ? '!bg-odara-accent/20 font-semibold' : '!border-1 !border-odara-contorno !rounded'
                       }`}
                   >
                     {rotulo}
@@ -552,9 +610,12 @@ const Medicamentos = () => {
           </div>
 
           {/* Filtro de Residentes */}
-          <div className="relative">
+          <div className="relative" ref={residenteRef}>
             <button
-              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-odara-primary hover:text-white transition"
+              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 ${filtroResidenteAberto
+                ? 'border-odara-primary text-gray-700'
+                : 'border-odara-contorno text-gray-700'
+                } font-medium hover:border-2 hover:border-odara-primary transition text-sm`}
               onClick={() => {
                 setFiltroResidenteAberto(!filtroResidenteAberto);
                 setFiltroStatusAberto(false);
@@ -566,13 +627,13 @@ const Medicamentos = () => {
               Residentes
             </button>
             {filtroResidenteAberto && (
-              <div className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+              <div className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg !border-2 !border-odara-primary z-10 max-h-60 overflow-y-auto">
                 <button
                   onClick={() => {
                     setFiltroResidente('todos');
                     setFiltroResidenteAberto(false);
                   }}
-                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroResidente === 'todos' ? 'bg-indigo-100 font-semibold' : ''
+                  className={`block w-full text-left px-4 py-2 text-sm hover:!bg-odara-primary/20 ${filtroResidente === 'todos' ? '!bg-odara-accent/20 font-semibold' : '!border-1 !border-odara-contorno !rounded'
                     }`}
                 >
                   Todos
@@ -582,7 +643,7 @@ const Medicamentos = () => {
                     setFiltroResidente('meus');
                     setFiltroResidenteAberto(false);
                   }}
-                  className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroResidente === 'meus' ? 'bg-indigo-100 font-semibold' : ''
+                  className={`block w-full text-left px-4 py-2 text-sm hover:!bg-odara-primary/20 ${filtroResidente === 'meus' ? '!bg-odara-accent/20 font-semibold' : '!border-1 !border-odara-contorno'
                     }`}
                 >
                   Meus
@@ -594,7 +655,7 @@ const Medicamentos = () => {
                       setFiltroResidente(residente);
                       setFiltroResidenteAberto(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroResidente === residente ? 'bg-indigo-100 font-semibold' : ''
+                    className={`block w-full text-left px-4 py-2 text-sm hover:!bg-odara-primary/20 ${filtroResidente === residente ? '!bg-odara-accent/20 font-semibold' : '!border-1 !border-odara-contorno !rounded'
                       }`}
                   >
                     {residente}
@@ -605,9 +666,12 @@ const Medicamentos = () => {
           </div>
 
           {/* Filtro de Data */}
-          <div className="relative">
+          <div className="relative" ref={dataRef}>
             <button
-              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-odara-primary hover:text-white transition"
+              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 ${calendarioAberto
+                ? 'border-odara-primary text-gray-700'
+                : 'border-odara-contorno text-gray-700'
+                } font-medium hover:border-2 hover:border-odara-primary transition text-sm`}
               onClick={() => {
                 setCalendarioAberto(!calendarioAberto);
                 setFiltroStatusAberto(false);
@@ -619,7 +683,7 @@ const Medicamentos = () => {
               Data
             </button>
             {calendarioAberto && (
-              <div className="absolute mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+              <div className="absolute mt-2 bg-white !rounded-lg shadow-lg border-2 p-2 !border-odara-primary z-10">
                 <Calendar
                   value={filtroData}
                   onChange={(data) => {
@@ -627,15 +691,38 @@ const Medicamentos = () => {
                     setCalendarioAberto(false);
                   }}
                   locale="pt-BR"
+                  tileClassName={({ date, view }) => {
+                    if (view === 'month') {
+                      // Criar datas normalizadas (apenas ano, mês, dia)
+                      const hoje = new Date();
+                      const hojeNormalizado = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+                      const dataSelecionadaNormalizada = new Date(filtroData.getFullYear(), filtroData.getMonth(), filtroData.getDate());
+                      const dataTileNormalizada = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+                      // Verificar se é a data selecionada (filtrada)
+                      if (dataTileNormalizada.getTime() === dataSelecionadaNormalizada.getTime()) {
+                        return '!rounded !bg-odara-accent/20 !text-odara-accent !font-bold';
+                      }
+
+                      // Verificar se é hoje
+                      if (dataTileNormalizada.getTime() === hojeNormalizado.getTime()) {
+                        return '!rounded !bg-odara-primary/20 !text-odara-primary !font-bold';
+                      }
+                    }
+                    return '!border-1 !border-odara-contorno hover:!bg-odara-white hover:!border-odara-primary !rounded hover:!border-1';
+                  }}
                 />
               </div>
             )}
           </div>
 
           {/* Filtro de Período */}
-          <div className="relative">
+          <div className="relative" ref={periodoRef}>
             <button
-              className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-200 text-gray-700 font-medium hover:bg-odara-primary hover:text-white transition"
+              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 ${filtroPeriodoAberto
+                ? 'border-odara-primary text-gray-700'
+                : 'border-odara-contorno text-gray-700'
+                } font-medium hover:border-2 hover:border-odara-primary transition text-sm`}
               onClick={() => {
                 setFiltroPeriodoAberto(!filtroPeriodoAberto);
                 setFiltroStatusAberto(false);
@@ -647,7 +734,7 @@ const Medicamentos = () => {
               Período
             </button>
             {filtroPeriodoAberto && (
-              <div className="absolute mt-2 w-32 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+              <div className="absolute mt-2 w-32 bg-white rounded-lg shadow-lg !border-2 !border-odara-primary z-10">
                 {Object.entries(ROTULOS_PERIODOS).map(([valor, rotulo]) => (
                   <button
                     key={valor}
@@ -655,7 +742,7 @@ const Medicamentos = () => {
                       setFiltroPeriodo(valor);
                       setFiltroPeriodoAberto(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-indigo-50 ${filtroPeriodo === valor ? 'bg-indigo-100 font-semibold' : ''
+                    className={`block w-full text-left px-4 py-2 text-sm hover:!bg-odara-primary/20 ${filtroPeriodo === valor ? '!bg-odara-accent/20 font-semibold' : '!border-1 !border-odara-contorno !rounded'
                       }`}
                   >
                     {rotulo}
@@ -666,7 +753,7 @@ const Medicamentos = () => {
           </div>
 
           {/* Botão Limpar Todos os Filtros */}
-          {( filtroData !== new Date() || filtroResidente !== 'todos' || filtroStatus !== 'todos' || filtroPeriodo !== 'todos') && (
+          {(filtroData.toDateString() !== new Date().toDateString() || filtroResidente !== 'todos' || filtroStatus !== 'todos' || filtroPeriodo !== 'todos') && (
             <button
               onClick={() => {
                 setFiltroData(new Date());
@@ -674,16 +761,15 @@ const Medicamentos = () => {
                 setFiltroResidente('todos');
                 setFiltroStatus('todos');
               }}
-              className="flex items-center bg-odara-accent text-odara-white rounded-full px-4 py-2 shadow-sm font-medium hover:bg-odara-secondary transition"
+              className="flex items-center bg-odara-accent text-odara-white rounded-full px-3 py-2 shadow-sm font-medium hover:bg-odara-secondary transition text-sm"
             >
-              <FaTimes className="mr-1" /> Limpar Filtros
+              <FaTimes className="mr-1" /> Limpar
             </button>
           )}
-
         </div>
 
         {/* ===== CONTAINER PRINCIPAL DO CHECKLIST ===== */}
-        <div className="bg-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-6">
+        <div className="w-full max-w-4xl bg-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-4 lg:p-6 relative">
 
           {/* ===== CONTROLES DE DATA E TÍTULO ===== */}
           <div className="flex flex-col items-center mb-4">
@@ -698,7 +784,7 @@ const Medicamentos = () => {
               </button>
               <button
                 onClick={irParaHoje}
-                className="bg-odara-accent hover:bg-odara-secondary text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                className="bg-odara-accent hover:bg-odara-secondary text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm lg:text-base"
               >
                 Ir para Hoje
               </button>
@@ -712,8 +798,8 @@ const Medicamentos = () => {
             </div>
 
             {/* Título e contador - Centralizado */}
-            <div className="flex items-center gap-4 mb-4">
-              <h2 className="text-2xl font-bold text-odara-dark">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4 text-center sm:text-left">
+              <h2 className="text-xl lg:text-2xl font-bold text-odara-dark">
                 {ROTULOS_STATUS[filtroStatus]}
               </h2>
               <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
@@ -722,29 +808,29 @@ const Medicamentos = () => {
             </div>
 
             {/* ===== TARJAS DE FILTROS ATIVOS ===== */}
-            <div className="flex flex-wrap items-center gap-2 mb-4">
-              {/* Tarja de Data (SEMPRE visível) */}
-              <span className="bg-odara-accent text-odara-white font-bold px-3 py-1 rounded-full text-sm">
-                Data: {formatarData(filtroData)}
-              </span>
-
+            <div className="flex flex-wrap justify-center gap-2 mb-4">
               {/* Tarja de Status (apenas quando filtrado) */}
               {filtroStatus !== STATUS.TODOS && (
-                <span className="bg-odara-dropdown-accent text-odara-white font-bold px-3 py-1 rounded-full text-sm">
+                <span className="bg-odara-dropdown-accent/20 text-odara-dropdown-accent font-bold px-3 py-1 rounded-full text-sm">
                   Status: {ROTULOS_FILTRO_STATUS[filtroStatus]}
                 </span>
               )}
 
               {/* Tarja de Residentes (apenas quando filtrado) */}
               {filtroResidente !== 'todos' && (
-                <span className="bg-odara-primary text-odara-white font-bold px-3 py-1 rounded-full text-sm">
+                <span className="bg-odara-primary/20 text-odara-primary font-bold px-3 py-1 rounded-full text-sm">
                   Residente: {filtroResidente === 'meus' ? 'Meus' : filtroResidente}
                 </span>
               )}
 
+              {/* Tarja de Data (SEMPRE visível) */}
+              <span className="bg-odara-accent/20 text-odara-accent font-bold px-3 py-1 rounded-full text-sm">
+                Data: {formatarData(filtroData)}
+              </span>
+
               {/* Tarja de Período (apenas quando filtrado) */}
               {filtroPeriodo !== PERIODOS.TODOS && (
-                <span className="bg-odara-contorno text-odara-dark font-bold px-3 py-1 rounded-full text-sm">
+                <span className="bg-odara-secondary/20 text-odara-secondary font-bold px-3 py-1 rounded-full text-sm">
                   Período: {ROTULOS_PERIODOS[filtroPeriodo]}
                 </span>
               )}
@@ -754,19 +840,23 @@ const Medicamentos = () => {
           {/* ===== LISTA DE MEDICAMENTOS ===== */}
           <div
             id="checklist-container"
-            className="max-h-[600px] overflow-y-auto relative"
+            className="max-h-[500px] lg:max-h-[600px] overflow-y-auto"
             onScroll={verificarScroll}
           >
-            {/* Botão para voltar ao topo (aparece apenas durante scroll) */}
-            {mostrarScrollTop && (
-              <button
-                onClick={scrollParaTopo}
-                className="absolute right-4 bottom-4 bg-odara-accent text-white p-3 rounded-full shadow-lg hover:bg-odara-secondary transition-colors z-10"
-                title="Voltar ao topo"
-              >
-                <FaArrowUp />
-              </button>
-            )}
+            {/* Botão para voltar ao topo (fixo na tela mas alinhado com o container) */}
+            <button
+              onClick={scrollParaTopo}
+              className={`fixed bottom-6 bg-odara-accent text-white p-3 rounded-full shadow-lg hover:bg-odara-secondary transition-all duration-300 z-50 ${mostrarScrollTop
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-4 pointer-events-none'
+                }`}
+              title="Voltar ao topo"
+              style={{
+                right: `calc(50% - ${document.querySelector('.w-full.max-w-4xl') ? document.querySelector('.w-full.max-w-4xl').offsetWidth / 2 : 0}px)`
+              }}
+            >
+              <FaArrowUp />
+            </button>
 
             {/* Renderização condicional baseada no filtro de período */}
             {filtroPeriodo === PERIODOS.TODOS ? (
@@ -908,7 +998,7 @@ const Medicamentos = () => {
             {/* Mensagem quando não há medicamentos */}
             {medicamentosFiltrados.length === 0 && (
               <div className="text-center py-8 text-gray-500">
-                Nenhuma administração encontrada para os filtros selecionados.
+                <p>Nenhuma administração encontrada para os filtros selecionados.</p>
               </div>
             )}
           </div>
