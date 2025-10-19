@@ -51,6 +51,26 @@ const RegistroAlimentar = () => {
   const REFEICOES = ["Café da Manhã", "Almoço", "Lanche", "Jantar"];
   const residentesUnicos = [...new Set(registros.map(r => r.residentes))];
 
+  // Constantes para status
+  const STATUS = {
+    ATIVOS: 'ativos',
+    SUSPENSOS: 'suspensos',
+    FINALIZADOS: 'finalizados'
+  };
+
+  const ROTULOS_STATUS = {
+    [STATUS.ATIVOS]: "Ativos",
+    [STATUS.SUSPENSOS]: "Suspensos",
+    [STATUS.FINALIZADOS]: "Finalizados"
+  };
+
+  // Cores para status
+  const CORES_STATUS = {
+    [STATUS.ATIVOS]: 'bg-green-500 text-white',
+    [STATUS.SUSPENSOS]: 'bg-yellow-500 text-white',
+    [STATUS.FINALIZADOS]: 'bg-gray-500 text-white'
+  };
+
   // Constantes para controle
   const CONTROLES = {
     TODOS: 'todos',
@@ -113,6 +133,13 @@ const RegistroAlimentar = () => {
     } else {
       setFiltroControle('todos');
     }
+  };
+
+  // Função para alterar status
+  const alterarStatus = (id, novoStatus) => {
+    setRegistros(prev => prev.map(r => 
+      r.id === id ? { ...r, status: novoStatus } : r
+    ));
   };
 
   // Funções básicas
@@ -438,17 +465,45 @@ const RegistroAlimentar = () => {
                 const statusControle = getStatusControle(r);
                 return (
                   <div key={r.id} className="p-4 mb-4 rounded-xl border-l-4 border-odara-primary bg-odara-offwhite">
-                    <div className="flex justify-between items-center mb-2">
-                      <p className="font-semibold">{r.refeicao} - {r.horario}</p>
-                      <div className="flex gap-2">
-                        <button onClick={() => abrirModalEditar(r.id)} className="p-1 text-white bg-blue-500 rounded"><FaEdit /></button>
-                        <button onClick={() => excluirRegistro(r.id)} className="p-1 text-white bg-red-500 rounded"><FaTrash /></button>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className={`w-2.5 h-2.5 rounded-full ${
+                          r.status === 'ativos' ? 'bg-green-500' :
+                          r.status === 'suspensos' ? 'bg-yellow-500' : 'bg-gray-500'
+                        }`}></span>
+                        <p className="text-base font-semibold">
+                          {r.data.getDate().toString().padStart(2, '0')}/
+                          {(r.data.getMonth() + 1).toString().padStart(2, '0')}/
+                          {r.data.getFullYear()} - {r.horario}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <select
+                          value={r.status}
+                          onChange={(e) => alterarStatus(r.id, e.target.value)}
+                          className={`text-sm rounded-lg px-3 py-1 border focus:ring-2 focus:ring-odara-primary focus:border-odara-primary transition-colors duration-200 ${CORES_STATUS[r.status]}`}
+                        >
+                          {Object.entries(ROTULOS_STATUS).map(([valor, rotulo]) => (
+                            <option key={valor} value={valor} className="bg-white text-odara-dark">
+                              {rotulo}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
-                    <p><strong>Alimento:</strong> {r.alimento}</p>
-                    <p><strong>Residente(s):</strong> {r.residentes}</p>
-                    <p><strong>Status:</strong> {r.status}</p>
+
+                    <h6 className="text-xl font-bold mb-1">{r.refeicao}</h6>
                     
+                    <div className="grid grid-cols-1 gap-2 mb-2 text-sm">
+                      <div>
+                        <strong>Alimento:</strong> {r.alimento}
+                      </div>
+                      <div>
+                        <strong>Residente(s):</strong> {r.residentes}
+                      </div>
+                    </div>
+
                     {/* Controle de conclusão com indicador de status */}
                     <div className="flex items-center justify-between mt-2">
                       <label className="flex items-center gap-2">
@@ -471,6 +526,32 @@ const RegistroAlimentar = () => {
                           {ROTULOS_CONTROLES[statusControle]}
                         </span>
                       )}
+                    </div>
+
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex items-center text-sm">
+                        <span className="bg-odara-dropdown text-odara-dropdown-name/60 px-2 py-1 rounded-md text-xs">
+                          {r.residentes}
+                        </span>
+                      </div>
+
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => abrirModalEditar(r.id)}
+                          className="text-odara-secondary hover:text-odara-dropdown-accent transition-colors duration-200 p-2 rounded-full hover:bg-odara-dropdown"
+                          title="Editar registro"
+                        >
+                          <FaEdit size={14} />
+                        </button>
+
+                        <button
+                          onClick={() => excluirRegistro(r.id)}
+                          className="text-odara-alerta hover:text-red-700 transition-colors duration-200 p-2 rounded-full hover:bg-odara-alerta/50"
+                          title="Excluir registro"
+                        >
+                          <FaTrash size={14} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
