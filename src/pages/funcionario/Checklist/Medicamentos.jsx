@@ -576,10 +576,12 @@ const Medicamentos = () => {
           {/* Filtro de Status */}
           <div className="relative" ref={statusRef}>
             <button
-              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 ${filtroStatusAberto
-                ? 'border-odara-primary text-gray-700'
-                : 'border-odara-contorno text-gray-700'
-                } font-medium hover:border-2 hover:border-odara-primary transition text-sm`}
+              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 
+                ${filtroStatusAberto
+                  ? 'border-odara-primary text-gray-700'
+                  : 'border-odara-primary/40 text-gray-700'} 
+              font-medium hover:border-odara-primary transition text-sm`}
+
               onClick={() => {
                 setFiltroStatusAberto(!filtroStatusAberto);
                 setFiltroResidenteAberto(false);
@@ -590,8 +592,9 @@ const Medicamentos = () => {
               <FaFilter className="text-odara-accent mr-2" />
               Status
             </button>
+
             {filtroStatusAberto && (
-              <div className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg !border-2 !border-odara-primary z-10">
+              <div className="absolute mt-2 w-23 bg-white rounded-lg shadow-lg !border-2 !border-odara-primary z-10">
                 {Object.entries(ROTULOS_FILTRO_STATUS).map(([valor, rotulo]) => (
                   <button
                     key={valor}
@@ -599,8 +602,13 @@ const Medicamentos = () => {
                       setFiltroStatus(valor);
                       setFiltroStatusAberto(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm hover:!bg-odara-primary/20 ${filtroStatus === valor ? '!bg-odara-accent/20 font-semibold' : '!border-1 !border-odara-contorno !rounded'
-                      }`}
+
+                    className={`block w-full text-left px-2 py-2 text-sm hover:!bg-odara-primary/20 
+                      ${filtroStatus === valor
+                        ? '!bg-odara-accent/20 font-semibold'
+                        : '!border-1 !border-odara-contorno !rounded'
+                      }
+                    `}
                   >
                     {rotulo}
                   </button>
@@ -612,10 +620,13 @@ const Medicamentos = () => {
           {/* Filtro de Residentes */}
           <div className="relative" ref={residenteRef}>
             <button
-              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 ${filtroResidenteAberto
-                ? 'border-odara-primary text-gray-700'
-                : 'border-odara-contorno text-gray-700'
-                } font-medium hover:border-2 hover:border-odara-primary transition text-sm`}
+              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 font-medium hover:border-odara-primary transition text-sm
+                ${filtroResidenteAberto
+                  ? 'border-odara-primary text-gray-700'
+                  : 'border-odara-primary/40 text-gray-700'
+                } 
+              `}
+
               onClick={() => {
                 setFiltroResidenteAberto(!filtroResidenteAberto);
                 setFiltroStatusAberto(false);
@@ -626,28 +637,41 @@ const Medicamentos = () => {
               <FaFilter className="text-odara-accent mr-2" />
               Residentes
             </button>
+
             {filtroResidenteAberto && (
-              <div className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg !border-2 !border-odara-primary z-10 max-h-60 overflow-y-auto">
+              <div className="absolute mt-2 w-33 bg-white rounded-lg shadow-lg !border-2 !border-odara-primary z-10 max-h-60 overflow-y-auto">
                 <button
                   onClick={() => {
                     setFiltroResidente('todos');
                     setFiltroResidenteAberto(false);
                   }}
-                  className={`block w-full text-left px-4 py-2 text-sm hover:!bg-odara-primary/20 ${filtroResidente === 'todos' ? '!bg-odara-accent/20 font-semibold' : '!border-1 !border-odara-contorno !rounded'
-                    }`}
+
+                  className={`block w-full text-left px-2 py-2 text-sm hover:!bg-odara-primary/20 
+                    ${filtroResidente === 'todos'
+                      ? '!bg-odara-accent/20 font-semibold'
+                      : '!border-1 !border-odara-contorno !rounded'
+                    }
+                  `}
                 >
                   Todos
                 </button>
+
                 <button
                   onClick={() => {
                     setFiltroResidente('meus');
                     setFiltroResidenteAberto(false);
                   }}
-                  className={`block w-full text-left px-4 py-2 text-sm hover:!bg-odara-primary/20 ${filtroResidente === 'meus' ? '!bg-odara-accent/20 font-semibold' : '!border-1 !border-odara-contorno'
-                    }`}
+
+                  className={`block w-full text-left px-2 py-2 text-sm hover:!bg-odara-primary/20 
+                    ${filtroResidente === 'meus'
+                      ? '!bg-odara-accent/20 font-semibold'
+                      : '!border-1 !border-odara-contorno'
+                    }
+                  `}
                 >
                   Meus
                 </button>
+
                 {residentes.map(residente => (
                   <button
                     key={residente}
@@ -655,8 +679,13 @@ const Medicamentos = () => {
                       setFiltroResidente(residente);
                       setFiltroResidenteAberto(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm hover:!bg-odara-primary/20 ${filtroResidente === residente ? '!bg-odara-accent/20 font-semibold' : '!border-1 !border-odara-contorno !rounded'
-                      }`}
+
+                    className={`block w-full text-left px-2 py-2 text-sm hover:!bg-odara-primary/20 
+                      ${filtroResidente === residente
+                        ? '!bg-odara-accent/20 font-semibold'
+                        : '!border-1 !border-odara-contorno !rounded'
+                      }
+                    `}
                   >
                     {residente}
                   </button>
@@ -668,10 +697,13 @@ const Medicamentos = () => {
           {/* Filtro de Data */}
           <div className="relative" ref={dataRef}>
             <button
-              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 ${calendarioAberto
-                ? 'border-odara-primary text-gray-700'
-                : 'border-odara-contorno text-gray-700'
-                } font-medium hover:border-2 hover:border-odara-primary transition text-sm`}
+              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 font-medium hover:border-odara-primary transition text-sm 
+                ${calendarioAberto
+                  ? 'border-odara-primary text-gray-700'
+                  : 'border-odara-primary/40 text-gray-700'
+                }
+              `}
+
               onClick={() => {
                 setCalendarioAberto(!calendarioAberto);
                 setFiltroStatusAberto(false);
@@ -682,6 +714,7 @@ const Medicamentos = () => {
               <FaFilter className="text-odara-accent mr-2" />
               Data
             </button>
+
             {calendarioAberto && (
               <div className="absolute mt-2 bg-white !rounded-lg shadow-lg border-2 p-2 !border-odara-primary z-10">
                 <Calendar
@@ -690,6 +723,7 @@ const Medicamentos = () => {
                     setFiltroData(data);
                     setCalendarioAberto(false);
                   }}
+
                   locale="pt-BR"
                   tileClassName={({ date, view }) => {
                     if (view === 'month') {
@@ -709,6 +743,7 @@ const Medicamentos = () => {
                         return '!rounded !bg-odara-primary/20 !text-odara-primary !font-bold';
                       }
                     }
+
                     return '!border-1 !border-odara-contorno hover:!bg-odara-white hover:!border-odara-primary !rounded hover:!border-1';
                   }}
                 />
@@ -719,10 +754,11 @@ const Medicamentos = () => {
           {/* Filtro de Período */}
           <div className="relative" ref={periodoRef}>
             <button
-              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 ${filtroPeriodoAberto
-                ? 'border-odara-primary text-gray-700'
-                : 'border-odara-contorno text-gray-700'
-                } font-medium hover:border-2 hover:border-odara-primary transition text-sm`}
+              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 font-medium hover:border-odara-primary transition text-sm
+                ${filtroPeriodoAberto
+                  ? 'border-odara-primary text-gray-700'
+                  : 'border-odara-primary/40 text-gray-700'}
+                `}
               onClick={() => {
                 setFiltroPeriodoAberto(!filtroPeriodoAberto);
                 setFiltroStatusAberto(false);
@@ -734,7 +770,7 @@ const Medicamentos = () => {
               Período
             </button>
             {filtroPeriodoAberto && (
-              <div className="absolute mt-2 w-32 bg-white rounded-lg shadow-lg !border-2 !border-odara-primary z-10">
+              <div className="absolute mt-2 w-25 bg-white rounded-lg shadow-lg !border-2 !border-odara-primary z-10">
                 {Object.entries(ROTULOS_PERIODOS).map(([valor, rotulo]) => (
                   <button
                     key={valor}
@@ -742,8 +778,13 @@ const Medicamentos = () => {
                       setFiltroPeriodo(valor);
                       setFiltroPeriodoAberto(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm hover:!bg-odara-primary/20 ${filtroPeriodo === valor ? '!bg-odara-accent/20 font-semibold' : '!border-1 !border-odara-contorno !rounded'
-                      }`}
+
+                    className={`block w-full text-left px-2 py-2 text-sm hover:!bg-odara-primary/20 
+                      ${filtroPeriodo === valor
+                        ? '!bg-odara-accent/20 font-semibold'
+                        : '!border-1 !border-odara-contorno !rounded'
+                      }
+                    `}
                   >
                     {rotulo}
                   </button>
@@ -761,9 +802,10 @@ const Medicamentos = () => {
                 setFiltroResidente('todos');
                 setFiltroStatus('todos');
               }}
+
               className="flex items-center bg-odara-accent text-odara-white rounded-full px-3 py-2 shadow-sm font-medium hover:bg-odara-secondary transition text-sm"
             >
-              <FaTimes className="mr-1" /> Limpar
+              <FaTimes className="mr-1" /> Limpar Filtros
             </button>
           )}
         </div>
