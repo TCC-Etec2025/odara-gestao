@@ -558,7 +558,7 @@ const Medicamentos = () => {
             <div className="flex items-center">
               {/* Botão voltar */}
               <Link
-                to="#/null"
+                to="/funcionario/Checklist"
                 className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 mr-3"
               >
                 <FaArrowLeft size={20} />

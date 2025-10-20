@@ -20,8 +20,8 @@ import {
 } from "lucide-react";
 import Calendar from 'react-calendar'; 
 import 'react-calendar/dist/Calendar.css';
+import { Link } from 'react-router-dom';
 
-// Componente wrapper para ícones
 const IconWrapper = ({ icon: Icon, size = 24, ...props }) => (
   <Icon size={size} {...props} />
 );
@@ -31,7 +31,6 @@ const DashboardFamiliar = () => {
   const [familiarSelecionado, setFamiliarSelecionado] = useState(0);
   const [modalAberto, setModalAberto] = useState(false);
   const [itemSelecionado, setItemSelecionado] = useState(null);
-  const [modalDocumentosAberto, setModalDocumentosAberto] = useState(false);
   const [modalMedicamentosAberto, setModalMedicamentosAberto] = useState(false);
   const [modalConsultasAberto, setModalConsultasAberto] = useState(false);
   const [modalAtividadesAberto, setModalAtividadesAberto] = useState(false);
@@ -77,7 +76,6 @@ const DashboardFamiliar = () => {
     }
   ];
 
-  // Alertas adaptados para a visão do familiar
   const alertas = [
     { 
       id: 1, 
@@ -115,7 +113,6 @@ const DashboardFamiliar = () => {
     },
   ];
 
-  // Notificações adaptadas para a visão do familiar
   const notificacoes = [
     { 
       id: 3, 
@@ -149,23 +146,6 @@ const DashboardFamiliar = () => {
           "Residentes: João e Maria"
         ],
         acaoRecomendada: "Confirmar presença até sexta-feira."
-      }
-    },
-    { 
-      id: 5, 
-      texto: "Atualização no cardápio semanal", 
-      tipo: "info", 
-      hora: "10:00",
-      detalhes: {
-        titulo: "Atualização no Cardápio",
-        descricao: "O cardápio da próxima semana foi atualizado com novas opções:",
-        lista: [
-          "Novos pratos incluídos",
-          "Ajustes nas dietas especiais",
-          "Opções vegetarianas ampliadas", 
-          "Cardápio festivo no domingo"
-        ],
-        acaoRecomendada: "Verificar o cardápio e informar preferências."
       }
     },
   ];
@@ -226,11 +206,12 @@ const DashboardFamiliar = () => {
     }
   ];
 
-  // Atividades semanais
+  // Atividades semanais - calendário semanal
   const atividadesSemana = [
     { 
       id: 1,
       dia: "Segunda", 
+      data: "2024-09-16",
       atividade: "Fisioterapia", 
       horario: "09:00", 
       familiar: "João Silva",
@@ -240,6 +221,7 @@ const DashboardFamiliar = () => {
     { 
       id: 2,
       dia: "Segunda", 
+      data: "2024-09-16",
       atividade: "Hidroginástica", 
       horario: "14:00", 
       familiar: "Maria Santos",
@@ -249,19 +231,51 @@ const DashboardFamiliar = () => {
     { 
       id: 3,
       dia: "Terça", 
+      data: "2024-09-17",
       atividade: "Oficina de artes", 
       horario: "10:00", 
       familiar: "João Silva",
       local: "Sala de Artes",
       duracao: "1 hora"
+    },
+    { 
+      id: 4,
+      dia: "Quarta", 
+      data: "2024-09-18",
+      atividade: "Musicoterapia", 
+      horario: "11:00", 
+      familiar: "Maria Santos",
+      local: "Sala de Música",
+      duracao: "1 hora"
+    },
+    { 
+      id: 5,
+      dia: "Quinta", 
+      data: "2024-09-19",
+      atividade: "Fisioterapia", 
+      horario: "09:00", 
+      familiar: "João Silva",
+      local: "Sala de Fisioterapia",
+      duracao: "1 hora"
+    },
+    { 
+      id: 6,
+      dia: "Sexta", 
+      data: "2024-09-20",
+      atividade: "Alongamento", 
+      horario: "15:00", 
+      familiar: "ambos",
+      local: "Sala de Atividades",
+      duracao: "30 minutos"
     }
   ];
 
-  // Cardápio semanal
+  // Cardápio semanal - calendário semanal
   const cardapioSemanal = [
     { 
       id: 1,
       dia: "Segunda", 
+      data: "2024-09-16",
       refeicao: "Frango grelhado com legumes cozidos", 
       familiar: "ambos",
       tipo: "Almoço",
@@ -270,6 +284,7 @@ const DashboardFamiliar = () => {
     { 
       id: 2,
       dia: "Terça", 
+      data: "2024-09-17",
       refeicao: "Peixe assado com arroz integral", 
       familiar: "ambos",
       tipo: "Almoço",
@@ -278,42 +293,38 @@ const DashboardFamiliar = () => {
     { 
       id: 3,
       dia: "Quarta", 
+      data: "2024-09-18",
       refeicao: "Sopa de legumes com frango", 
       familiar: "João Silva",
       tipo: "Jantar",
       observacoes: "Dieta pastosa"
-    }
-  ];
-
-  // Tipos de documentos para solicitação
-  const tiposDocumentos = [
-    {
-      id: 1,
-      nome: "Relatório Médico Mensal",
-      descricao: "Relatório completo do estado de saúde",
-      prazo: "5 dias úteis",
-      custo: "Gratuito"
     },
-    {
-      id: 2,
-      nome: "Atestado Médico",
-      descricao: "Atestado para procedimentos externos",
-      prazo: "2 dias úteis",
-      custo: "Gratuito"
-    },
-    {
-      id: 3,
-      nome: "Prescrição Médica",
-      descricao: "Cópia das prescrições médicas",
-      prazo: "3 dias úteis",
-      custo: "Gratuito"
-    },
-    {
+    { 
       id: 4,
-      nome: "Relatório de Evolução",
-      descricao: "Relatório detalhado de evolução clínica",
-      prazo: "7 dias úteis",
-      custo: "R$ 50,00"
+      dia: "Quinta", 
+      data: "2024-09-19",
+      refeicao: "Lasanha de berinjela", 
+      familiar: "ambos",
+      tipo: "Almoço",
+      observacoes: "Opção vegetariana"
+    },
+    { 
+      id: 5,
+      dia: "Sexta", 
+      data: "2024-09-20",
+      refeicao: "Filé de frango à parmegiana", 
+      familiar: "ambos",
+      tipo: "Almoço",
+      observacoes: ""
+    },
+    { 
+      id: 6,
+      dia: "Sábado", 
+      data: "2024-09-21",
+      refeicao: "Feijoada light", 
+      familiar: "ambos",
+      tipo: "Almoço",
+      observacoes: "Cardápio especial"
     }
   ];
 
@@ -346,7 +357,7 @@ const DashboardFamiliar = () => {
     setItemSelecionado(null);
   };
 
-  // Filtrar dados baseado na visualização 
+  // Filtrar dados baseado na visualização - para o idoso que o familiar estava filtrando
   const alertasFiltrados = visualizacao === "casa" 
     ? alertas
     : alertas.filter(alerta => 
@@ -367,13 +378,24 @@ const DashboardFamiliar = () => {
 
   const atividadesFiltradas = visualizacao === "casa"
     ? atividadesSemana
-    : atividadesSemana.filter(atv => atv.familiar === familiarAtual.nome);
+    : atividadesSemana.filter(atv => atv.familiar === familiarAtual.nome || atv.familiar === "ambos");
 
   const cardapioFiltrado = visualizacao === "casa"
     ? cardapioSemanal
     : cardapioSemanal.filter(card => 
         card.familiar === familiarAtual.nome || card.familiar === "ambos"
       );
+
+  // Funções para ter atividades e cardápio por data selecionada
+  const obterAtividadesDoDia = (data) => {
+    const dataString = data.toISOString().split('T')[0];
+    return atividadesFiltradas.filter(atv => atv.data === dataString);
+  };
+
+  const obterCardapioDoDia = (data) => {
+    const dataString = data.toISOString().split('T')[0];
+    return cardapioFiltrado.filter(card => card.data === dataString);
+  };
 
   return (
     <div className="flex min-h-screen bg-odara-offwhite">
@@ -495,7 +517,7 @@ const DashboardFamiliar = () => {
                 </div>
               </div>
 
-              {/* Informações gerais do residente selecionado */}
+              {/* Informações pessoais sobre o residente selecionado */}
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t">
                 <div className="text-center">
                   <label className="text-sm text-gray-500 block mb-1">Alergias</label>
@@ -520,10 +542,10 @@ const DashboardFamiliar = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3 space-y-6">
-            {/*Solicitação de Documentos*/}
-            <div 
-              className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
-              onClick={() => setModalDocumentosAberto(true)}
+            {/* Solicitação de Documentos */}
+            <Link 
+              to="/familiar/documentos"
+              className="block bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -540,7 +562,7 @@ const DashboardFamiliar = () => {
                   <ChevronRight size={20} />
                 </div>
               </div>
-            </div>
+            </Link>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Medicamentos */}
@@ -574,7 +596,7 @@ const DashboardFamiliar = () => {
                 </div>
               </div>
 
-              {/* Cardápio Semanal */}
+              {/* Cardápio Semanal - Agora com calendário */}
               <div 
                 className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
                 onClick={() => setModalCardapioAberto(true)}
@@ -582,15 +604,20 @@ const DashboardFamiliar = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-odara-dark flex items-center gap-2">
                     <Utensils size={18} />
-                    Cardápio da Semana
+                    Cardápio Semanal
                   </h3>
                   <Eye size={18} className="text-odara-dark/60" />
                 </div>
-                <div className="space-y-3">
-                  {cardapioFiltrado.slice(0, 3).map((item) => (
+                <Calendar 
+                  value={dataAtividade}
+                  onChange={setDataAtividade}
+                  className="w-full border-0"
+                />
+                <div className="mt-4 space-y-2">
+                  {obterCardapioDoDia(dataAtividade).slice(0, 2).map((item) => (
                     <div key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
-                      <div className="bg-green-100 p-2 rounded min-w-12 text-center">
-                        <span className="text-sm font-medium text-green-600">{item.dia.slice(0, 3)}</span>
+                      <div className="bg-orange-100 p-2 rounded">
+                        <Utensils size={16} className="text-orange-600" />
                       </div>
                       <div className="flex-1">
                         <p className="text-sm font-medium">{item.refeicao}</p>
@@ -637,7 +664,7 @@ const DashboardFamiliar = () => {
                 </div>
               </div>
 
-              {/* Calendário de Atividades */}
+              {/* Calendário de Atividades*/}
               <div 
                 className="bg-white rounded-2xl shadow p-6 hover:shadow-md transition cursor-pointer"
                 onClick={() => setModalAtividadesAberto(true)}
@@ -654,13 +681,26 @@ const DashboardFamiliar = () => {
                   onChange={setDataAtividade}
                   className="w-full border-0"
                 />
+                <div className="mt-4 space-y-2">
+                  {obterAtividadesDoDia(dataAtividade).slice(0, 2).map((atividade) => (
+                    <div key={atividade.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
+                      <div className="bg-green-100 p-2 rounded">
+                        <Activity size={16} className="text-green-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{atividade.atividade}</p>
+                        <p className="text-xs text-gray-500">{atividade.horario}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Alertas e Notificações*/}
+          {/* Alertas e Notificações */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow p-6 h-full">
+            <div className="bg-white rounded-2xl shadow p-6 sticky top-6">
               <div className="flex items-center gap-2 mb-4">
                 <IconWrapper icon={Bell} />
                 <h2 className="text-xl font-semibold text-odara-dark">Alertas e Notificações</h2>
@@ -673,7 +713,7 @@ const DashboardFamiliar = () => {
                     {alertasFiltrados.length}
                   </span>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-3 max-h-40 overflow-y-auto">
                   {alertasFiltrados.map((alerta) => (
                     <div key={alerta.id} className="p-3 rounded-lg border-l-4 border-red-500 bg-red-50">
                       <div className="flex items-start gap-2">
@@ -704,7 +744,7 @@ const DashboardFamiliar = () => {
                     {notificacoesFiltradas.length}
                   </span>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-3 max-h-40 overflow-y-auto">
                   {notificacoesFiltradas.map((notificacao) => (
                     <div key={notificacao.id} className="p-3 rounded-lg border-l-4 border-blue-500 bg-blue-50">
                       <div className="flex items-start gap-2">
@@ -816,32 +856,6 @@ const DashboardFamiliar = () => {
         </div>
       )}
 
-      {modalDocumentosAberto && (
-        <Modal onClose={() => setModalDocumentosAberto(false)} titulo="Solicitação de Documentos">
-          <div className="space-y-4">
-            {tiposDocumentos.map((documento) => (
-              <div key={documento.id} className="border-2 border-dashed border-gray-300 rounded-xl p-4 hover:border-odara-primary transition cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold text-odara-dark">{documento.nome}</h3>
-                    <p className="text-sm text-gray-600 mt-1">{documento.descricao}</p>
-                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                      <span>Prazo: {documento.prazo}</span>
-                      <span>•</span>
-                      <span>{documento.custo}</span>
-                    </div>
-                  </div>
-                  <button className="bg-odara-primary text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">
-                    <Download size={16} />
-                    Solicitar
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Modal>
-      )}
-
       {/* Modal de Medicamentos */}
       {modalMedicamentosAberto && (
         <Modal onClose={() => setModalMedicamentosAberto(false)} titulo="Gestão de Medicamentos">
@@ -878,25 +892,38 @@ const DashboardFamiliar = () => {
 
       {/* Modal de Atividades */}
       {modalAtividadesAberto && (
-        <Modal onClose={() => setModalAtividadesAberto(false)} titulo="Atividades da Semana">
-          <div className="space-y-4">
-            {atividadesFiltradas.map((atividade) => (
-              <div key={atividade.id} className="bg-green-50 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold text-odara-dark">{atividade.atividade}</h3>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                      <span>Dia: {atividade.dia}</span>
-                      <span>•</span>
-                      <span>Horário: {atividade.horario}</span>
-                      <span>•</span>
-                      <span>Duração: {atividade.duracao}</span>
+        <Modal onClose={() => setModalAtividadesAberto(false)} titulo="Calendário de Atividades">
+          <div className="mb-4">
+            <Calendar 
+              value={dataAtividade}
+              onChange={setDataAtividade}
+              className="w-full border-0 mb-4"
+            />
+            <div className="space-y-3">
+              <h4 className="font-semibold text-odara-dark">
+                Atividades para {dataAtividade.toLocaleDateString('pt-BR')}
+              </h4>
+              {obterAtividadesDoDia(dataAtividade).length > 0 ? (
+                obterAtividadesDoDia(dataAtividade).map((atividade) => (
+                  <div key={atividade.id} className="bg-green-50 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-odara-dark">{atividade.atividade}</h3>
+                        <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                          <span>Horário: {atividade.horario}</span>
+                          <span>•</span>
+                          <span>Duração: {atividade.duracao}</span>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">Local: {atividade.local}</p>
+                        <p className="text-sm text-gray-600">Residente: {atividade.familiar}</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600 mt-1">Local: {atividade.local}</p>
                   </div>
-                </div>
-              </div>
-            ))}
+                ))
+              ) : (
+                <p className="text-gray-500 text-center py-4">Nenhuma atividade para esta data</p>
+              )}
+            </div>
           </div>
         </Modal>
       )}
@@ -925,28 +952,42 @@ const DashboardFamiliar = () => {
         </Modal>
       )}
 
-      {/* Modal de Cardápio */}
+      {/* Modal de Cardápio  */}
       {modalCardapioAberto && (
         <Modal onClose={() => setModalCardapioAberto(false)} titulo="Cardápio Semanal">
-          <div className="space-y-4">
-            {cardapioFiltrado.map((item) => (
-              <div key={item.id} className="bg-yellow-50 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-4">
-                      <span className="font-semibold text-odara-dark min-w-16">{item.dia}</span>
-                      <span className="text-sm bg-orange-100 text-orange-600 px-2 py-1 rounded">
-                        {item.tipo}
-                      </span>
+          <div className="mb-4">
+            <Calendar 
+              value={dataAtividade}
+              onChange={setDataAtividade}
+              className="w-full border-0 mb-4"
+            />
+            <div className="space-y-3">
+              <h4 className="font-semibold text-odara-dark">
+                Cardápio para {dataAtividade.toLocaleDateString('pt-BR')}
+              </h4>
+              {obterCardapioDoDia(dataAtividade).length > 0 ? (
+                obterCardapioDoDia(dataAtividade).map((item) => (
+                  <div key={item.id} className="bg-yellow-50 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-4 mb-2">
+                          <span className="font-semibold text-odara-dark">{item.tipo}</span>
+                          <span className="text-sm bg-orange-100 text-orange-600 px-2 py-1 rounded">
+                            {item.dia}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600">{item.refeicao}</p>
+                        {item.observacoes && (
+                          <p className="text-xs text-gray-500 mt-1">Observações: {item.observacoes}</p>
+                        )}
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600 mt-2">{item.refeicao}</p>
-                    {item.observacoes && (
-                      <p className="text-xs text-gray-500 mt-1">Observações: {item.observacoes}</p>
-                    )}
                   </div>
-                </div>
-              </div>
-            ))}
+                ))
+              ) : (
+                <p className="text-gray-500 text-center py-4">Nenhum cardápio para esta data</p>
+              )}
+            </div>
           </div>
         </Modal>
       )}

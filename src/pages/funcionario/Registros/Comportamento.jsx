@@ -103,7 +103,7 @@ const Comportamento = () => {
           {/* Cabeçalho */}
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-2">
-              <Link to="/funcionario/Dashboard" className="text-odara-accent">
+              <Link to="/funcionario" className="text-odara-accent">
                 <FaArrowLeft />
               </Link>
               <h1 className="text-2xl font-bold text-odara-dark">

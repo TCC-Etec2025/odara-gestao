@@ -36,73 +36,73 @@ const DashboardFuncionario = () => {
   const funcionalidadesRegistro = [
     { 
       id: 1, 
+      nome: "Registro de ocorrências", 
+      icon: AlertTriangle,
+      consultarUrl: "/funcionario/Registros/ocorrencias",
+      editarUrl: "/funcionario/Registros/ocorrencias",
+      registrarUrl: "/funcionario/Registros/ocorrencias"
+    },
+    { 
+      id: 2, 
+      nome: "Registro de preferências", 
+      icon: Star,
+      consultarUrl: "/funcionario/Registros/preferencias",
+      editarUrl: "/funcionario/Registros/preferencias",
+      registrarUrl: "/funcionario/Registros/preferencias"
+    },
+    { 
+      id: 3, 
+      nome: "Registro de comportamento", 
+      icon: BarChartIcon,
+      consultarUrl: "/funcionario/Registros/comportamento",
+      editarUrl: "/funcionario/Registros/comportamento",
+      registrarUrl: "/funcionario/Registros/comportamento"
+    },
+    { 
+      id: 4, 
+      nome: "Registro da saúde corporal", 
+      icon: Hospital,
+      consultarUrl: "/funcionario/Registros/saude/corporal",
+      editarUrl: "/funcionario/Registros/saude/corporal",
+      registrarUrl: "/funcionario/Registros/saude/corporal"
+    },
+  ];
+
+  const funcionalidadesCheck = [
+    { 
+      id: 5, 
       nome: "Medicamentos", 
       icon: Pill,
       consultarUrl: "/funcionario/checklist/medicamentos/check",
       editarUrl: "/funcionario/checklist/medicamentos/check"
     },
     { 
-      id: 2, 
+      id: 6, 
       nome: "Exames médicos", 
       icon: Microscope,
       consultarUrl: "/funcionario/checklist/exames/medicos",
       editarUrl: "/funcionario/checklist/exames/medicos"
     },
     { 
-      id: 3, 
+      id: 7, 
       nome: "Consultas médicas", 
       icon: Stethoscope,
       consultarUrl: "/funcionario/checklist/consultas/medicas",
       editarUrl: "/funcionario/checklist/consultas/medicas"
     },
     { 
-      id: 4, 
+      id: 8, 
       nome: "Atividades", 
       icon: ClipboardList,
       consultarUrl: "/funcionario/checklist/atividades",
       editarUrl: "/funcionario/checklist/atividades"
     },
     { 
-      id: 5, 
+      id: 9, 
       nome: "Alimentação", 
       icon: Utensils,
       consultarUrl: "/funcionario/checklist/alimentacao",
       editarUrl: "/funcionario/checklist/alimentacao"
-    },
-  ];
-
-  const funcionalidadesCheck = [
-    { 
-      id: 6, 
-      nome: "Registro de ocorrências", 
-      icon: AlertTriangle,
-      consultarUrl: "/funcionario/checklist/ocorrencias",
-      editarUrl: "/funcionario/checklist/ocorrencias",
-      registrarUrl: "/funcionario/checklist/ocorrencias"
-    },
-    { 
-      id: 7, 
-      nome: "Registro de preferências", 
-      icon: Star,
-      consultarUrl: "/funcionario/checklist/preferencias",
-      editarUrl: "/funcionario/checklist/preferencias",
-      registrarUrl: "/funcionario/checklist/preferencias"
-    },
-    { 
-      id: 8, 
-      nome: "Registro de comportamento", 
-      icon: BarChartIcon,
-      consultarUrl: "/funcionario/checklist/comportamento",
-      editarUrl: "/funcionario/checklist/comportamento",
-      registrarUrl: "/funcionario/checklist/comportamento"
-    },
-    { 
-      id: 9, 
-      nome: "Registro da saúde corporal", 
-      icon: Hospital,
-      consultarUrl: "/funcionario/saude/corporal",
-      editarUrl: "/funcionario/saude/corporal",
-      registrarUrl: "/funcionario/saude/corporal"
     },
   ];
 
@@ -296,10 +296,8 @@ const DashboardFuncionario = () => {
 
             <div className="bg-white rounded-2xl shadow p-5">
             <h2 className="text-xl font-semibold text-odara-dark mb-4">CHECKLISTS</h2>
-
-            {/* Checklists */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
-              {funcionalidadesRegistro.map((func) => (
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {funcionalidadesCheck.map((func) => (
                 <div
                   key={func.id}
                   className={`border border-gray-200 rounded-md p-3 hover:shadow-sm transition-all duration-200 ${
@@ -317,7 +315,6 @@ const DashboardFuncionario = () => {
                       {func.nome}
                     </span>
                   </div>
-
                   <div className="flex justify-center gap-2 pt-2 border-t border-gray-100">
                     <ActionButton
                       icon={Eye}
@@ -339,8 +336,8 @@ const DashboardFuncionario = () => {
 
             {/* Registros */}
             <h2 className="text-xl font-semibold text-odara-dark mb-4">REGISTROS</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {funcionalidadesCheck.map((func) => (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              {funcionalidadesRegistro.map((func) => (
                 <div
                   key={func.id}
                   className={`border border-gray-200 rounded-md p-3 hover:shadow-sm transition-all duration-200 ${
@@ -358,7 +355,6 @@ const DashboardFuncionario = () => {
                       {func.nome}
                     </span>
                   </div>
-
                   <div className="flex justify-center gap-2 pt-2 border-t border-gray-100">
                     <ActionButton
                       icon={Eye}
@@ -379,6 +375,7 @@ const DashboardFuncionario = () => {
                 </div>
               ))}
             </div>
+
           </div>
           </div>
 

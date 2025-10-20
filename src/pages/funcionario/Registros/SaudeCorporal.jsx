@@ -148,7 +148,7 @@ const RegistroCorporal = () => {
           <div className="flex items-center">
             <div className="flex items-center mb-1">
               <Link
-                to="/gestao/PaginaRegistros"
+                to="/funcionario"
                 className="text-odara-accent hover:text-odara-secondary transition-colors duration-200 flex items-center"
               >
                 <FaArrowLeft className="mr-1" />

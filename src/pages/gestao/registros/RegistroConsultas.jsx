@@ -56,7 +56,6 @@ const RegistroConsultas = () => {
     }
   ]);
 
-  // Estados
   const [modalAberto, setModalAberto] = useState(false);
   const [consultaEditando, setConsultaEditando] = useState(null);
   const [filtroAberto, setFiltroAberto] = useState(false);
@@ -68,7 +67,6 @@ const RegistroConsultas = () => {
   const [filtroDiaAtivo, setFiltroDiaAtivo] = useState(false);
   const [filtroDia, setFiltroDia] = useState(null);
 
-  // Utilitários
   const pacientes = Array.from(new Set(consultas.map(c => c.paciente).filter(Boolean)));
 
   const abrirModalAdicionar = () => {
@@ -113,7 +111,7 @@ const RegistroConsultas = () => {
     return passaMes && passaPaciente;
   }).sort((a,b)=> a.data - b.data || a.horario.localeCompare(b.horario));
 
-  // Funções do calendário
+  // Funções no calendário
   const alterarMes = (deslocamento) => {
     setDataAtual(ant => {
       const nova = new Date(ant);
@@ -127,6 +125,9 @@ const RegistroConsultas = () => {
     setDataAtual(hoje);
     setFiltroDia(hoje);
     setFiltroDiaAtivo(true);
+  };
+
+  const irParaDiaAtual = () => {
   };
 
   const renderizarCabecalhoCalendario = () => {
@@ -211,7 +212,6 @@ const RegistroConsultas = () => {
   return (
     <div className="flex min-h-screen bg-odara-offwhite">
       <div className="flex-1 p-6 lg:p-10">
-        {/* Cabeçalho - Layout similar ao de medicamentos */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
             <div className="flex items-center mb-1">
@@ -244,7 +244,7 @@ const RegistroConsultas = () => {
           </div>
         </div>
 
-        {/* Barra de filtros - Layout similar ao de medicamentos */}
+        {/* Barra de filtros */}
         <div className="relative flex items-center gap-4 mb-6">
           {/* Botão Adicionar */}
           <button
@@ -315,7 +315,6 @@ const RegistroConsultas = () => {
           )}
         </div>
 
-        {/* Grid principal - Layout similar ao de medicamentos */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Seção de Consultas */}
           <div className="bg-odara-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-6">
@@ -467,7 +466,7 @@ const RegistroConsultas = () => {
             </div>
           </div>
 
-          {/* Seção do Calendário - Layout similar ao de medicamentos */}
+          {/* Calendário */}
           <div className="bg-white rounded-2xl shadow-lg p-6 h-fit sticky top-6">
             <div className="flex justify-center mb-5">
               <button
@@ -495,7 +494,7 @@ const RegistroConsultas = () => {
               />
             </div>
 
-            {/* Estatísticas do dia - Layout similar ao de medicamentos */}
+            {/* Estatísticas do dia */}
             <div className="grid grid-cols-1 mt-4 p-3 bg-odara-offwhite rounded-lg max-w-md mx-auto text-center">
               <h6 className="font-semibold text-odara-dark mb-2">Estatísticas do Dia:</h6>
               {filtroDia ? (
@@ -529,7 +528,7 @@ const RegistroConsultas = () => {
           </div>
         </div>
 
-        {/* Modal - Layout similar ao de medicamentos */}
+        {/* Abrir Modal */}
         {modalAberto && (
           <ModalConsulta
             consulta={consultaEditando}
@@ -542,7 +541,7 @@ const RegistroConsultas = () => {
   );
 };
 
-// Modal - Layout similar ao de medicamentos
+// Conteúdo do Modal
 const ModalConsulta = ({ consulta, onClose, onSave }) => {
   const initial = consulta ? {
     ...consulta,

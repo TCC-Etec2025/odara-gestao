@@ -52,7 +52,6 @@ import SaudeCorporal from './pages/funcionario/Registros/SaudeCorporal';
 {/* Importando paginas do usuário familiar*/}
 import DashboardFamiliar from './pages/familiar/Dashboard';
 import Documentos from './pages/familiar/PaginaDocumentos'; 
-import Medicamentos from './pages/familiar/PaginaMedicamentos';
 
 function App() {
   return (
@@ -101,13 +100,13 @@ function App() {
           {/* Leticia */}
           <Route path="checklist/medicamentos/check" element={<MedicamentosCheck />} />
           <Route path="checklist/atividades" element={<Atividades />} />
-          <Route path="saude/corporal" element={<SaudeCorporal />} />
+          <Route path="registros/saude/corporal" element={<SaudeCorporal />} />
           {/* Jamilly */}
-          <Route path="checklist/ocorrencias" element={<Ocorrencias />} />
+          <Route path="registros/ocorrencias" element={<Ocorrencias />} />
           <Route path="checklist/alimentacao" element={<Alimentacao />} />
-          <Route path="checklist/comportamento" element={<Comportamento />} />
+          <Route path="registros/comportamento" element={<Comportamento />} />
           {/* Nicole */}
-          <Route path="checklist/preferencias" element={<Preferencias />} />
+          <Route path="registros/preferencias" element={<Preferencias />} />
           <Route path="checklist/consultas/medicas" element={<ConsultasMedicas />} />
           {/* Lucas */}
           <Route path="checklist/exames/medicos" element={<ExamesMedicos />} />
@@ -117,7 +116,6 @@ function App() {
         <Route path="familiar" element={<LayoutFamiliar />}>
           <Route index element={<DashboardFamiliar />} />
           <Route path="documentos" element={<Documentos />} />
-          <Route path="medicamentos" element={<Medicamentos />} />
         </Route>
       </Routes>
     </BrowserRouter>

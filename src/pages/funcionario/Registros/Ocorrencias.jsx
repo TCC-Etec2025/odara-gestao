@@ -292,7 +292,7 @@ const Ocorrencias = () => {
 				<div className="flex justify-between items-center mb-6">
 					<div className="flex items-center gap-2">
 						<Link
-							to="/funcionario/Checklist"
+							to="/funcionario"
 							className="text-odara-accent hover:text-odara-secondary flex items-center"
 						>
 							<FaArrowLeft className="mr-1" />

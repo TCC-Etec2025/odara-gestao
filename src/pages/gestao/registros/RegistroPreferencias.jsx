@@ -42,7 +42,6 @@ const RegistroPreferencias = () => {
     [CATEGORIAS.CUIDADOR]: "Cuidador"
   };
 
-  // Cores por categoria (similar ao de atividades)
   const CORES_CATEGORIAS = {
     [CATEGORIAS.ALIMENTAR]: 'bg-odara-primary/60 text-odara-dark',
     [CATEGORIAS.ATIVIDADES]: 'bg-odara-accent/60 text-odara-dark',
@@ -149,7 +148,6 @@ const RegistroPreferencias = () => {
   return (
     <div className="flex min-h-screen bg-odara-offwhite">
       <div className="flex-1 p-6 lg:p-10">
-        {/* Cabeçalho */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
             <div className="flex items-center mb-1">
@@ -182,7 +180,7 @@ const RegistroPreferencias = () => {
           </div>
         </div>
 
-        {/* Barra de filtros - Layout similar ao de atividades */}
+        {/* Barra de filtros */}
         <div className="relative flex items-center gap-4 mb-6">
           {/* Botão Adicionar */}
           <button
@@ -192,7 +190,6 @@ const RegistroPreferencias = () => {
             <FaPlus className="mr-2 text-odara-white" /> Adicionar
           </button>
 
-          {/* Dropdown */}
           {dropdownAberto && (
             <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
               {Object.values(CATEGORIAS).map(categoria => (
@@ -264,7 +261,6 @@ const RegistroPreferencias = () => {
           )}
         </div>
 
-        {/* Grid principal - Layout similar ao de atividades */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Seção de Preferências */}
           <div className="bg-odara-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-6">
@@ -356,7 +352,6 @@ const RegistroPreferencias = () => {
             </div>
           </div>
 
-          {/* Seção do Residente - Layout similar ao de atividades */}
           <div className="bg-white rounded-2xl shadow-lg p-6 h-fit sticky top-6">
             <h3 className="text-xl font-bold text-odara-dark mb-4">RESIDENTE</h3>
             <div className="text-center">
@@ -396,7 +391,7 @@ const RegistroPreferencias = () => {
           </div>
         </div>
 
-        {/* Modal - Layout similar ao de atividades */}
+        {/* Modal */}
         {modalAberto && (
           <div className="fixed inset-0 bg-odara-offwhite/80 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 border-l-4 border-odara-primary">
