@@ -45,6 +45,12 @@ const FILTROS = [
 	})),
 ];
 
+const ROTULOS_STATUS = {
+	pendente: "Pendente",
+	resolvido: "Resolvido",
+	todos: "Todos"
+};
+
 const STATUS_OPCOES = [
 	{ id: "todos", label: "Todos" },
 	{ id: "pendente", label: "Pendente" },
@@ -127,6 +133,9 @@ const RegistroOcorrencias = () => {
 	const [dataAtual, setDataAtual] = useState(new Date());
 	const [infoVisivel, setInfoVisivel] = useState(false);
 	const [dropdownStatusAberto, setDropdownStatusAberto] = useState(null);
+
+	// Calcular residentes únicos a partir das ocorrências
+	const residentesUnicos = [...new Set(ocorrencias.map(ocorrencia => ocorrencia.residente))].filter(Boolean);
 
 	// ===== FUNÇÕES =====
 	const abrirModalAdicionar = () => {
@@ -212,6 +221,58 @@ const RegistroOcorrencias = () => {
 		setDropdownStatusAberto(dropdownStatusAberto === ocorrenciaId ? null : ocorrenciaId);
 	};
 
+	// ===== FUNÇÕES DE ESTATÍSTICAS PARA OCORRÊNCIAS =====
+	const obterOcorrenciasDoDia = (data) => {
+		return ocorrencias.filter(ocorrencia =>
+			ocorrencia.data.toDateString() === data.toDateString()
+		);
+	};
+
+	const obterResidentesDoDia = (data) => {
+		const ocorrenciasDia = obterOcorrenciasDoDia(data);
+		return [...new Set(ocorrenciasDia.map(oc => oc.residente))].filter(Boolean);
+	};
+
+	const getEstatisticasDia = (data) => {
+		const ocorrenciasDia = obterOcorrenciasDoDia(data);
+		const pendentes = ocorrenciasDia.filter(oc => oc.status === 'pendente').length;
+		const resolvidas = ocorrenciasDia.filter(oc => oc.status === 'resolvido').length;
+
+		return {
+			total: ocorrenciasDia.length,
+			pendentes,
+			resolvidas
+		};
+	};
+
+	const getEstatisticasMes = (data) => {
+		const mes = data.getMonth();
+		const ano = data.getFullYear();
+
+		const ocorrenciasMes = ocorrencias.filter(oc =>
+			oc.data.getMonth() === mes && oc.data.getFullYear() === ano
+		);
+
+		const pendentes = ocorrenciasMes.filter(oc => oc.status === 'pendente').length;
+		const resolvidas = ocorrenciasMes.filter(oc => oc.status === 'resolvido').length;
+		const residentesUnicosMes = [...new Set(ocorrenciasMes.map(oc => oc.residente))].filter(Boolean);
+
+		return {
+			totalRegistros: ocorrenciasMes.length,
+			totalResidentes: residentesUnicosMes.length,
+			pendentes,
+			resolvidas
+		};
+	};
+
+	const formatarDataLegenda = (data) => {
+		return data.toLocaleDateString('pt-BR', {
+			day: '2-digit',
+			month: '2-digit',
+			year: 'numeric'
+		});
+	};
+
 	// ===== FILTROS =====
 	const ocorrenciasFiltradas = ocorrencias
 		.filter((o) => {
@@ -245,17 +306,17 @@ const RegistroOcorrencias = () => {
 	const getTileClassName = ({ date, view }) => {
 		const classes = [];
 		const hoje = new Date();
-		
+
 		// Dia atual
 		if (date.toDateString() === hoje.toDateString()) {
 			classes.push('!bg-odara-primary/50 !text-dark !font-bold');
 		}
-		
+
 		// Dia selecionado
 		if (date.toDateString() === dataAtual.toDateString()) {
 			classes.push('!bg-odara-secondary/70 !text-white !font-bold');
 		}
-		
+
 		return classes.join(' ');
 	};
 
@@ -299,96 +360,31 @@ const RegistroOcorrencias = () => {
 					</div>
 				</div>
 
-				{/* Botão novo registro*/}
+				{/* Botão novo registro */}
 				<div className="relative flex items-center gap-4 mb-6">
 					<button
 						onClick={abrirModalAdicionar}
-						className="bg-odara-accent hover:bg-odara-secondary text-odara-contorno font-emibold py-2 px-4 rounded-lg flex items-center transition duration-200"
+						className="bg-odara-accent hover:bg-odara-secondary text-odara-white font-semibold py-2 px-4 rounded-lg flex items-center transition duration-200 text-sm sm:text-base"
 					>
-						<FaPlus className="mr-2 text-odara-white" /> Nova Ocorrência
+						<FaPlus className="mr-2 text-odara-white" /> Novo Registro
 					</button>
+				</div>
 
-					 {/* Barra de Filtros - Responsiva */}
-        <div className="relative flex flex-wrap items-center gap-2 sm:gap-4 mb-6"></div>
+				{/* Barra de Filtros */}
+				<div className="relative flex flex-wrap items-center gap-2 sm:gap-4 mb-6">
 
-					{/* Filtro por Status */}
+					{/* Filtro por Residente */}
 					<div className="relative dropdown-container">
 						<button
-							className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border-2 font-medium hover:border-2 hover:border-odara-primary transition w-40 justify-center"
-							onClick={() => {
-								setFiltroStatusAberto(!filtroStatusAberto);
-								setFiltroAberto(false);
-								setFiltroResidenteAberto(false);
-							}}
-						>
-							<FaFilter className="text-odara-accent mr-2" />
-							Status
-						</button>
-						{filtroStatusAberto && (
-							<div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border-2 border-odara-primary z-10">
-								{STATUS_OPCOES.map((status) => (
-									<button
-										key={status.id}
-										onClick={() => {
-											setFiltroStatus(status.id);
-											setFiltroStatusAberto(false);
-										}}
-										className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/20 transition-colors duration-200 ${
-											filtroStatus === status.id 
-												? 'bg-odara-accent/20 font-semibold text-odara-accent' 
-												: 'text-odara-dark'
-										}`}
-									>
-										{status.label}
-									</button>
-								))}
-							</div>
-						)}
-					</div>
-
-					{/* Filtro Categoria */}
-					<div className="relative dropdown-container">
-						<button
-							className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border-2 font-medium hover:border-2 hover:border-odara-primary transition w-40 justify-center"
-							onClick={() => {
-								setFiltroAberto(!filtroAberto);
-								setFiltroResidenteAberto(false);
-								setFiltroStatusAberto(false);
-							}}
-						>
-							<FaFilter className="text-odara-accent mr-2" />
-							Categoria
-						</button>
-						{filtroAberto && (
-							<div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border-2 border-odara-primary z-10">
-								{FILTROS.map((filtro) => (
-									<button
-										key={filtro.id}
-										onClick={() => {
-											setFiltroAtivo(filtro.id);
-											setFiltroAberto(false);
-										}}
-										className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/20 transition-colors duration-200 ${
-											filtroAtivo === filtro.id 
-												? 'bg-odara-accent/20 font-semibold text-odara-accent' 
-												: 'text-odara-dark'
-										}`}
-									>
-										{filtro.label}
-									</button>
-								))}
-							</div>
-						)}
-					</div>
-
-					{/* Filtro Residente */}
-					<div className="relative dropdown-container">
-						<button
-							className="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border-2 font-medium hover:border-2 hover:border-odara-primary transition w-40 justify-center"
+							className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 font-medium hover:border-2 hover:border-odara-primary transition text-sm
+                ${filtroResidenteAberto
+									? 'border-odara-primary text-gray-700'
+									: 'border-odara-primary/40 text-gray-700'} 
+                `}
 							onClick={() => {
 								setFiltroResidenteAberto(!filtroResidenteAberto);
-								setFiltroAberto(false);
 								setFiltroStatusAberto(false);
+								setFiltroAberto(false);
 							}}
 						>
 							<FaFilter className="text-odara-accent mr-2" />
@@ -401,32 +397,116 @@ const RegistroOcorrencias = () => {
 										setResidenteSelecionado("");
 										setFiltroResidenteAberto(false);
 									}}
-									className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/20 transition-colors duration-200 ${
-										!residenteSelecionado 
-											? 'bg-odara-accent/20 font-semibold text-odara-accent' 
-											: 'text-odara-dark'
-									}`}
+									className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/20 transition-colors duration-200 ${!residenteSelecionado
+										? 'bg-odara-accent/20 font-semibold text-odara-accent'
+										: 'text-odara-dark'
+										}`}
 								>
 									Todos
 								</button>
-								{[...new Set(ocorrencias.map((o) => o.residente).filter(Boolean))].map(
-									(residente) => (
-										<button
-											key={residente}
-											onClick={() => {
-												setResidenteSelecionado(residente);
-												setFiltroResidenteAberto(false);
-											}}
-											className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/20 transition-colors duration-200 ${
-												residenteSelecionado === residente
-													? 'bg-odara-accent/20 font-semibold text-odara-accent'
-													: 'text-odara-dark'
+								{residentesUnicos.map(residente => (
+									<button
+										key={residente}
+										onClick={() => {
+											setResidenteSelecionado(residente);
+											setFiltroResidenteAberto(false);
+										}}
+										className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/20 transition-colors duration-200 ${residenteSelecionado === residente
+											? 'bg-odara-accent/20 font-semibold text-odara-accent'
+											: 'text-odara-dark'
 											}`}
-										>
-											{residente}
-										</button>
-									)
-								)}
+									>
+										{residente}
+									</button>
+								))}
+							</div>
+						)}
+					</div>
+
+					{/* Filtro Categoria */}
+					<div className="relative dropdown-container">
+						<button
+							className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 font-medium hover:border-2 hover:border-odara-primary transition text-sm
+                ${filtroAberto
+									? 'border-odara-primary text-gray-700'
+									: 'border-odara-primary/40 text-gray-700'} 
+                `}
+							onClick={() => {
+								setFiltroAberto(!filtroAberto);
+								setFiltroResidenteAberto(false);
+								setFiltroStatusAberto(false);
+							}}
+						>
+							<FaFilter className="text-odara-accent mr-2" />
+							Categoria
+						</button>
+						{filtroAberto && (
+							<div className="absolute mt-2 w-48 bg-white rounded-lg shadow-lg border-2 border-odara-primary z-10">
+								{FILTROS.map((filtro) => (
+									<button
+										key={filtro.id}
+										onClick={() => {
+											setFiltroAtivo(filtro.id);
+											setFiltroAberto(false);
+										}}
+										className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/20 transition-colors duration-200 ${filtroAtivo === filtro.id
+											? 'bg-odara-accent/20 font-semibold text-odara-accent'
+											: 'text-odara-dark'
+											}`}
+									>
+										{filtro.label}
+									</button>
+								))}
+							</div>
+						)}
+					</div>
+
+					{/* Filtro por Status */}
+					<div className="relative dropdown-container">
+						<button
+							className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 
+                ${filtroStatusAberto
+									? 'border-odara-primary text-gray-700'
+									: 'border-odara-primary/40 text-gray-700'} 
+                font-medium hover:border-2 hover:border-odara-primary transition text-sm`}
+							onClick={() => {
+								setFiltroStatusAberto(!filtroStatusAberto);
+								setFiltroResidenteAberto(false);
+								setFiltroAberto(false);
+							}}
+						>
+							<FaFilter className="text-odara-accent mr-2" />
+							Status
+						</button>
+						{filtroStatusAberto && (
+							<div className="absolute mt-2 w-40 bg-white rounded-lg shadow-lg border-2 border-odara-primary z-10">
+								<button
+									onClick={() => {
+										setFiltroStatus("todos");
+										setFiltroStatusAberto(false);
+									}}
+									className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/20 transition-colors duration-200 ${filtroStatus === "todos"
+										? 'bg-odara-accent/20 font-semibold text-odara-accent'
+										: 'text-odara-dark'
+										}`}
+								>
+									Todos
+								</button>
+								{STATUS_OPCOES.filter(opt => opt.id !== 'todos').map((opcao) => (
+									<button
+										key={opcao.id}
+										onClick={() => {
+											setFiltroStatus(opcao.id);
+											setFiltroStatusAberto(false);
+										}}
+										className={`block w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-odara-primary/20 transition-colors duration-200 ${filtroStatus === opcao.id
+											? 'bg-odara-accent/20 font-semibold text-odara-accent'
+											: 'text-odara-dark'
+											}`}
+									>
+										{opcao.label}
+									</button>
+								))}
 							</div>
 						)}
 					</div>
@@ -517,11 +597,10 @@ const RegistroOcorrencias = () => {
 												<div className="relative">
 													<button
 														onClick={() => toggleDropdownStatus(ocorrencia.id)}
-														className={`flex items-center rounded-lg px-3 py-1 border-2 font-medium transition-colors duration-200 text-sm min-w-[120px] justify-center ${
-															ocorrencia.status === 'resolvido'
-																? 'bg-odara-primary text-white border-odara-primary hover:bg-odara-primary/90'
-																: 'bg-odara-accent text-white border-odara-accent hover:bg-odara-accent/90'
-														}`}
+														className={`flex items-center rounded-lg px-3 py-1 border-2 font-medium transition-colors duration-200 text-sm min-w-[120px] justify-center ${ocorrencia.status === 'resolvido'
+															? 'bg-odara-primary text-white border-odara-primary hover:bg-odara-primary/90'
+															: 'bg-odara-accent text-white border-odara-accent hover:bg-odara-accent/90'
+															}`}
 													>
 														<FaAngleDown className="mr-2 text-white" />
 														{ocorrencia.status === 'resolvido' ? 'Resolvido' : 'Pendente'}
@@ -532,21 +611,19 @@ const RegistroOcorrencias = () => {
 														<div className="absolute mt-1 w-32 bg-white rounded-lg shadow-lg border-2 border-odara-primary z-20 right-0">
 															<button
 																onClick={() => alterarStatus(ocorrencia.id, 'pendente')}
-																className={`block w-full text-left px-4 py-2 text-sm hover:bg-odara-primary/20 transition-colors duration-200 ${
-																	ocorrencia.status === 'pendente'
-																		? 'bg-odara-accent/20 font-semibold text-odara-accent'
-																		: 'text-odara-dark'
-																} first:rounded-t-lg`}
+																className={`block w-full text-left px-4 py-2 text-sm hover:bg-odara-primary/20 transition-colors duration-200 ${ocorrencia.status === 'pendente'
+																	? 'bg-odara-accent/20 font-semibold text-odara-accent'
+																	: 'text-odara-dark'
+																	} first:rounded-t-lg`}
 															>
 																Pendente
 															</button>
 															<button
 																onClick={() => alterarStatus(ocorrencia.id, 'resolvido')}
-																className={`block w-full text-left px-4 py-2 text-sm hover:bg-odara-primary/20 transition-colors duration-200 ${
-																	ocorrencia.status === 'resolvido'
-																		? 'bg-odara-accent/20 font-semibold text-odara-accent'
-																		: 'text-odara-dark'
-																} last:rounded-b-lg`}
+																className={`block w-full text-left px-4 py-2 text-sm hover:bg-odara-primary/20 transition-colors duration-200 ${ocorrencia.status === 'resolvido'
+																	? 'bg-odara-accent/20 font-semibold text-odara-accent'
+																	: 'text-odara-dark'
+																	} last:rounded-b-lg`}
 															>
 																Resolvido
 															</button>
@@ -568,7 +645,7 @@ const RegistroOcorrencias = () => {
 										</h6>
 
 										<p className="text-base mb-2">{ocorrencia.descricao}</p>
-										
+
 										{ocorrencia.providencias && (
 											<div className="mb-2">
 												<p className="text-sm font-semibold text-odara-dark">Providências tomadas:</p>
@@ -622,7 +699,7 @@ const RegistroOcorrencias = () => {
 						</div>
 					</div>
 
-					{/* Calendário */}
+					{/* Calendário e Estatísticas */}
 					<div className="bg-white rounded-2xl shadow-lg p-6 h-fit sticky top-6">
 						<div className="flex justify-center mb-5">
 							<button
@@ -646,20 +723,98 @@ const RegistroOcorrencias = () => {
 							/>
 						</div>
 
-						{/* Legenda das cores */}
-						<div className="grid grid-cols-1 mt-4 p-3 bg-odara-offwhite rounded-lg max-w-md mx-auto text-center">
-							<h6 className="font-semibold text-odara-dark mb-2">Legenda das Categorias:</h6>
-							<div className="grid grid-cols-2 gap-2 text-xs justify-items-center">
-								{Object.entries(CATEGORIAS).map(([chave, valor]) => (
-									<div key={valor} className="flex items-center gap-2">
-										<div className={`w-3 h-3 rounded-full ${CORES_CALENDARIO[valor]}`}></div>
-										<span>{ROTULOS_CATEGORIAS[valor]}</span>
+						{/* Legenda de Estatísticas */}
+						<div className="grid grid-cols-1 mt-6 p-3 bg-odara-offwhite rounded-lg max-w-md mx-auto">
+							<h5 className='font-bold text-odara-dark text-center mb-2 text-sm sm:text-base'>
+								{dataAtual
+									? `Estatísticas para ${formatarDataLegenda(dataAtual)}`
+									: 'Selecione uma data para visualizar as estatísticas'
+								}
+							</h5>
+
+							{dataAtual ? (
+								<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-0">
+									{/* Coluna da Esquerda - Estatísticas do Dia */}
+									<div className="sm:border-r border-gray-200 px-3 sm:pr-6">
+										<h6 className="font-semibold text-odara-dark mb-2 text-sm">Dia</h6>
+										<div className="space-y-2 text-xs">
+											<div className="flex justify-between">
+												<span>Ocorrências:</span>
+												<span className="font-semibold">{obterOcorrenciasDoDia(dataAtual).length}</span>
+											</div>
+
+											<div className="flex justify-between">
+												<span>Residentes:</span>
+												<span className="font-semibold">{obterResidentesDoDia(dataAtual).length}</span>
+											</div>
+
+											<div className="flex justify-between gap-1 mt-2">
+												<div className="flex-1 border-1 border-green-500 text-green-500 font-semibold px-1 py-0.5 rounded text-center text-xs">
+													{getEstatisticasDia(dataAtual).resolvidas}
+												</div>
+
+												<div className="flex-1 border-1 border-yellow-500 text-yellow-500 font-semibold px-1 py-0.5 rounded text-center text-xs">
+													{getEstatisticasDia(dataAtual).pendentes}
+												</div>
+											</div>
+										</div>
 									</div>
-								))}
+
+									{/* Coluna da Direita - Estatísticas do Mês */}
+									<div className='px-3 sm:pl-6'>
+										<h6 className="font-semibold text-odara-dark mb-2 text-sm">Mês</h6>
+										<div className="space-y-2 text-xs">
+											<div className="flex justify-between">
+												<span>Ocorrências: </span>
+												<span className="font-semibold">{getEstatisticasMes(dataAtual).totalRegistros}</span>
+											</div>
+
+											<div className="flex justify-between">
+												<span>Residentes: </span>
+												<span className="font-semibold">{getEstatisticasMes(dataAtual).totalResidentes}</span>
+											</div>
+
+											<div className="flex justify-between gap-1 mt-2">
+												<div className="flex-1 border-1 border-green-500 text-green-500 font-semibold px-1 py-0.5 rounded text-center text-xs">
+													{getEstatisticasMes(dataAtual).resolvidas}
+												</div>
+
+												<div className="flex-1 border-1 border-yellow-500 text-yellow-500 font-semibold px-1 py-0.5 rounded text-center text-xs">
+													{getEstatisticasMes(dataAtual).pendentes}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							) : (
+								<div className="text-center py-4">
+									<p className="text-odara-name/60 text-sm">Selecione um dia no calendário para ver as estatísticas</p>
+								</div>
+							)}
+						</div>
+
+						{/* Legenda de cores */}
+						<div className="mt-6 pt-6 border-t border-gray-200">
+							<div className="flex flex-wrap justify-center gap-3 sm:gap-4 text-xs">
+								<div className="flex items-center gap-1 text-gray-500">
+									<div className="w-3 h-3 rounded-full bg-green-500"></div>
+									<span>Concluídos</span>
+								</div>
+
+								<div className="flex items-center gap-1 text-gray-500">
+									<div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+									<span>Pendentes</span>
+								</div>
+
+								<div className="flex items-center gap-1 text-gray-500">
+									<div className="w-3 h-3 rounded-full bg-red-500"></div>
+									<span>Atrasados</span>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+
 
 				{/* Modal para adicionar/editar ocorrência */}
 				{modalAberto && (
