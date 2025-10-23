@@ -8,121 +8,120 @@ const Atividades = () => {
   // ===== ESTADOS DO COMPONENTE =====
 
   // Estado para dados de exemplo (simulando dados do backend)
-  const [medicamentos, setMedicamentos] = useState([
-    // Medicamentos para hoje (data atual)
+  const [atividades, setAtividades] = useState([
+    // Atividades para hoje (data atual)
     {
       id: 1,
       residente: "João Santos",
-      nomeMedicamento: "Losartana",
-      dosagem: "50mg",
-      dose: "1 comprimido",
-      horario: "08:00",
-      observacoes: "Tomar antes das refeições",
-      local: "Quarto 1A-2",
+      nomeAtividade: "Fisioterapia",
+      tipo: "Fisioterapia",
+      horario: "09:00",
+      duracao: "45 minutos",
+      observacoes: "Exercícios de fortalecimento muscular",
+      local: "Sala de Fisioterapia",
       periodo: "manha",
       status: "pendente",
-      dataAdministracao: new Date() // Hoje
+      dataAtividade: new Date() // Hoje
     },
 
     {
       id: 2,
       residente: "Maria Oliveira",
-      nomeMedicamento: "Sinvastatina",
-      dosagem: "20mg",
-      dose: "1 comprimido",
-      horario: "22:00",
-      observacoes: "Tomar à noite",
-      local: "Quarto 2B-1",
-      periodo: "noite",
+      nomeAtividade: "Hidroginástica",
+      tipo: "Atividade Física",
+      horario: "10:30",
+      duracao: "1 hora",
+      observacoes: "Piscina aquecida",
+      local: "Piscina",
+      periodo: "manha",
       status: "pendente",
-      dataAdministracao: new Date() // Hoje
+      dataAtividade: new Date() // Hoje
     },
 
     {
       id: 3,
       residente: "Ana Fagundes",
-      nomeMedicamento: "Pristiq",
-      dosagem: "100mg",
-      dose: "2 comprimidos",
-      horario: "07:30",
-      observacoes: "Tomar com água",
-      local: "Quarto 3A-1",
-      periodo: "manha",
+      nomeAtividade: "Oficina de Artes",
+      tipo: "Atividade Criativa",
+      horario: "14:00",
+      duracao: "1 hora",
+      observacoes: "Pintura em tela",
+      local: "Sala de Artes",
+      periodo: "tarde",
       status: "concluido",
-      dataAdministracao: new Date() // Hoje
+      dataAtividade: new Date() // Hoje
     },
 
     {
       id: 4,
       residente: "Felipe Silva",
-      nomeMedicamento: "Omeprazol",
-      dosagem: "40mg",
-      dose: "1 cápsula",
-      horario: "07:30",
-      observacoes: "Em jejum",
-      local: "Quarto 1B-3",
-      periodo: "manha",
+      nomeAtividade: "Jogos de Memória",
+      tipo: "Atividade Cognitiva",
+      horario: "15:30",
+      duracao: "30 minutos",
+      observacoes: "Cartas e quebra-cabeças",
+      local: "Sala de Jogos",
+      periodo: "tarde",
       status: "pendente",
-      dataAdministracao: new Date() // Hoje
+      dataAtividade: new Date() // Hoje
     },
 
     {
       id: 5,
       residente: "Roberta Costa",
-      nomeMedicamento: "Vitamina D",
-      dosagem: "1000UI",
-      dose: "1 comprimido",
-      horario: "15:00",
-      observacoes: "Após o almoço",
-      local: "Quarto 2A-1",
+      nomeAtividade: "Musicoterapia",
+      tipo: "Atividade Musical",
+      horario: "16:00",
+      duracao: "45 minutos",
+      observacoes: "Instrumentos musicais",
+      local: "Sala de Música",
       periodo: "tarde",
       status: "pendente",
-      dataAdministracao: new Date() // Hoje
+      dataAtividade: new Date() // Hoje
     },
 
-    // Medicamento para 3 dias atrás (exemplo de data passada)
     {
       id: 6,
       residente: "Carlos Mendes",
-      nomeMedicamento: "Metformina",
-      dosagem: "850mg",
-      dose: "1 comprimido",
-      horario: "09:00",
-      observacoes: "Após o café da manhã",
-      local: "Quarto 4C-2",
-      periodo: "manha",
+      nomeAtividade: "Cinema",
+      tipo: "Atividade Recreativa",
+      horario: "19:30",
+      duracao: "2 horas",
+      observacoes: "Sessão de filme semanal",
+      local: "Auditório",
+      periodo: "noite",
       status: "pendente",
-      dataAdministracao: new Date(new Date().setDate(new Date().getDate() - 3)) // 3 dias atrás
+      dataAtividade: new Date() // Hoje
     },
 
-    // Medicamento para 1 mês depois (exemplo de data futura)
+    // Atividade para 3 dias atrás (exemplo de data passada)
     {
       id: 7,
       residente: "Beatriz Hishimoto",
-      nomeMedicamento: "Levotiroxina",
-      dosagem: "50mcg",
-      dose: "1 comprimido",
-      horario: "07:00",
-      observacoes: "Em jejum, 30min antes do café",
-      local: "Quarto 3B-1",
+      nomeAtividade: "Yoga",
+      tipo: "Atividade Física",
+      horario: "08:00",
+      duracao: "1 hora",
+      observacoes: "Alongamento e relaxamento",
+      local: "Sala de Yoga",
       periodo: "manha",
       status: "pendente",
-      dataAdministracao: new Date(new Date().setMonth(new Date().getMonth() + 1)) // 1 mês depois
+      dataAtividade: new Date(new Date().setDate(new Date().getDate() - 3)) // 3 dias atrás
     },
 
-    // Medicamento para 5 dias depois (exemplo de data futura próxima)
+    // Atividade para 5 dias depois (exemplo de data futura)
     {
       id: 8,
       residente: "Ricardo Almeida",
-      nomeMedicamento: "AAS",
-      dosagem: "100mg",
-      dose: "1 comprimido",
-      horario: "20:00",
-      observacoes: "Após o jantar",
-      local: "Quarto 2C-3",
-      periodo: "noite",
+      nomeAtividade: "Bingo",
+      tipo: "Atividade Social",
+      horario: "17:00",
+      duracao: "1 hora",
+      observacoes: "Prêmios para os vencedores",
+      local: "Salão Principal",
+      periodo: "tarde",
       status: "pendente",
-      dataAdministracao: new Date(new Date().setDate(new Date().getDate() + 5)) // 5 dias depois
+      dataAtividade: new Date(new Date().setDate(new Date().getDate() + 5)) // 5 dias depois
     }
   ]);
 
@@ -131,12 +130,14 @@ const Atividades = () => {
   const [filtroResidente, setFiltroResidente] = useState('todos');
   const [filtroData, setFiltroData] = useState(new Date());
   const [filtroPeriodo, setFiltroPeriodo] = useState('todos');
+  const [filtroTipo, setFiltroTipo] = useState('todos');
 
   // Estados para controle de interface
   const [calendarioAberto, setCalendarioAberto] = useState(false);
   const [filtroResidenteAberto, setFiltroResidenteAberto] = useState(false);
   const [filtroStatusAberto, setFiltroStatusAberto] = useState(false);
   const [filtroPeriodoAberto, setFiltroPeriodoAberto] = useState(false);
+  const [filtroTipoAberto, setFiltroTipoAberto] = useState(false);
   const [mostrarScrollTop, setMostrarScrollTop] = useState(false);
 
   // ===== CONSTANTES E CONFIGURAÇÕES =====
@@ -146,21 +147,22 @@ const Atividades = () => {
   const residenteRef = useRef(null);
   const dataRef = useRef(null);
   const periodoRef = useRef(null);
+  const tipoRef = useRef(null);
 
   // Opções de status
   const STATUS = {
     TODOS: 'todos',
     PENDENTE: 'pendente',
     ATRASADO: 'atrasado',
-    ADMINISTRADO: 'concluido'
+    CONCLUIDO: 'concluido'
   };
 
   // Rótulos para exibição do Título de acordo com o status
   const ROTULOS_STATUS = {
-    [STATUS.TODOS]: "Todas as Administrações",
-    [STATUS.PENDENTE]: "Administrações Pendentes",
-    [STATUS.ATRASADO]: "Administrações em Atraso",
-    [STATUS.ADMINISTRADO]: "Administrações Concluídas"
+    [STATUS.TODOS]: "Todas as Atividades",
+    [STATUS.PENDENTE]: "Atividades Pendentes",
+    [STATUS.ATRASADO]: "Atividades em Atraso",
+    [STATUS.CONCLUIDO]: "Atividades Concluídas"
   };
 
   // Rótulos simplificados para as opções de filtros
@@ -168,7 +170,7 @@ const Atividades = () => {
     [STATUS.TODOS]: "Todos",
     [STATUS.PENDENTE]: "Pendentes",
     [STATUS.ATRASADO]: "Atrasados",
-    [STATUS.ADMINISTRADO]: "Concluídos"
+    [STATUS.CONCLUIDO]: "Concluídos"
   };
 
   // Opções de período
@@ -187,11 +189,38 @@ const Atividades = () => {
     [PERIODOS.NOITE]: "Noite"
   };
 
+  // Opções de tipo de atividade
+  const TIPOS_ATIVIDADE = {
+    TODOS: 'todos',
+    ATIVIDADE_FISICA: 'Atividade Física',
+    ATIVIDADE_COGNITIVA: 'Atividade Cognitiva',
+    ATIVIDADE_CRIATIVA: 'Atividade Criativa',
+    ATIVIDADE_MUSICAL: 'Atividade Musical',
+    ATIVIDADE_SOCIAL: 'Atividade Social',
+    ATIVIDADE_RECREATIVA: 'Atividade Recreativa'
+  };
+
+  // Rótulos para exibição dos tipos
+  const ROTULOS_TIPOS = {
+    [TIPOS_ATIVIDADE.TODOS]: "Todos",
+    [TIPOS_ATIVIDADE.ATIVIDADE_FISICA]: "Física",
+    [TIPOS_ATIVIDADE.ATIVIDADE_COGNITIVA]: "Cognitiva",
+    [TIPOS_ATIVIDADE.ATIVIDADE_CRIATIVA]: "Criativa",
+    [TIPOS_ATIVIDADE.ATIVIDADE_MUSICAL]: "Musical",
+    [TIPOS_ATIVIDADE.ATIVIDADE_SOCIAL]: "Social",
+    [TIPOS_ATIVIDADE.ATIVIDADE_RECREATIVA]: "Recreativa"
+  };
+
   // ===== FUNÇÕES AUXILIARES =====
 
   // Função para obter lista única de residentes
   const obterResidentes = () => {
-    return [...new Set(medicamentos.map(med => med.residente))];
+    return [...new Set(atividades.map(atv => atv.residente))];
+  };
+
+  // Função para obter lista única de tipos
+  const obterTipos = () => {
+    return [...new Set(atividades.map(atv => atv.tipo))];
   };
 
   // Função para formatar data para exibição
@@ -218,42 +247,42 @@ const Atividades = () => {
   };
 
   // Função para verificar se o horário já passou (considerando 10 minutos de tolerância)
-  const verificarHorarioPassou = (horario, dataMedicamento) => {
+  const verificarHorarioPassou = (horario, dataAtividade) => {
     const agora = new Date();
     const [hora, minuto] = horario.split(':').map(Number);
 
-    // Criar objeto de data para o horário do medicamento na data específica
-    const horarioMedicamento = new Date(dataMedicamento);
-    horarioMedicamento.setHours(hora, minuto, 0, 0);
+    // Criar objeto de data para o horário da atividade na data específica
+    const horarioAtividade = new Date(dataAtividade);
+    horarioAtividade.setHours(hora, minuto, 0, 0);
 
     // Adicionar 10 minutos de tolerância
-    const horarioComTolerancia = new Date(horarioMedicamento.getTime() + 10 * 60 * 1000);
+    const horarioComTolerancia = new Date(horarioAtividade.getTime() + 10 * 60 * 1000);
 
     return agora > horarioComTolerancia;
   };
 
-  // Função para verificar se o medicamento é para a data selecionada
-  const ehParaDataSelecionada = (dataMedicamento) => {
+  // Função para verificar se a atividade é para a data selecionada
+  const ehParaDataSelecionada = (dataAtividade) => {
     const dataSelecionada = new Date(filtroData);
     dataSelecionada.setHours(0, 0, 0, 0);
 
-    const dataMed = new Date(dataMedicamento);
-    dataMed.setHours(0, 0, 0, 0);
+    const dataAtv = new Date(dataAtividade);
+    dataAtv.setHours(0, 0, 0, 0);
 
-    return dataMed.getTime() === dataSelecionada.getTime();
+    return dataAtv.getTime() === dataSelecionada.getTime();
   };
 
-  // Função para determinar o status dinâmico do medicamento
-  const obterStatusDinamico = (medicamento) => {
-    // Se já foi administrado manualmente, mantém o status
-    if (medicamento.status === 'concluido') {
+  // Função para determinar o status dinâmico da atividade
+  const obterStatusDinamico = (atividade) => {
+    // Se já foi concluída manualmente, mantém o status
+    if (atividade.status === 'concluido') {
       return 'concluido';
     }
 
-    // Verificar se o medicamento é para a data selecionada
-    if (ehParaDataSelecionada(medicamento.dataAdministracao)) {
+    // Verificar se a atividade é para a data selecionada
+    if (ehParaDataSelecionada(atividade.dataAtividade)) {
       // Se é para hoje e o horário já passou, marca como atrasado
-      if (verificarHorarioPassou(medicamento.horario, medicamento.dataAdministracao)) {
+      if (verificarHorarioPassou(atividade.horario, atividade.dataAtividade)) {
         return 'atrasado';
       }
       // Se é para hoje mas o horário ainda não passou, mantém como pendente
@@ -264,11 +293,11 @@ const Atividades = () => {
     const dataSelecionada = new Date(filtroData);
     dataSelecionada.setHours(0, 0, 0, 0);
 
-    const dataMed = new Date(medicamento.dataAdministracao);
-    dataMed.setHours(0, 0, 0, 0);
+    const dataAtv = new Date(atividade.dataAtividade);
+    dataAtv.setHours(0, 0, 0, 0);
 
-    if (dataMed < dataSelecionada) {
-      // Se é para uma data passada e não foi administrado, marca como atrasado
+    if (dataAtv < dataSelecionada) {
+      // Se é para uma data passada e não foi concluída, marca como atrasado
       return 'atrasado';
     }
 
@@ -278,37 +307,40 @@ const Atividades = () => {
 
   // ===== FUNÇÕES DE FILTRAGEM E ORDENAÇÃO =====
 
-  // Função principal para filtrar medicamentos
-  const obterMedicamentosFiltrados = () => {
-    return medicamentos
-      .filter(medicamento => {
-        // Verificar se o medicamento é para a data selecionada
-        const passaData = ehParaDataSelecionada(medicamento.dataAdministracao);
+  // Função principal para filtrar atividades
+  const obterAtividadesFiltradas = () => {
+    return atividades
+      .filter(atividade => {
+        // Verificar se a atividade é para a data selecionada
+        const passaData = ehParaDataSelecionada(atividade.dataAtividade);
         if (!passaData) return false;
 
-        // Aplicar status dinâmico para medicamentos não administrados
-        const statusFinal = obterStatusDinamico(medicamento);
+        // Aplicar status dinâmico para atividades não concluídas
+        const statusFinal = obterStatusDinamico(atividade);
 
         // Filtro por status (agora usando statusFinal)
         const passaStatus = filtroStatus === STATUS.TODOS || statusFinal === filtroStatus;
 
         // Filtro por residente
-        const passaResidente = filtroResidente === 'todos' || medicamento.residente === filtroResidente;
+        const passaResidente = filtroResidente === 'todos' || atividade.residente === filtroResidente;
 
         // Filtro por período
         let passaPeriodo = true;
         if (filtroPeriodo !== PERIODOS.TODOS) {
-          const periodoMedicamento = obterPeriodoDoHorario(medicamento.horario);
-          passaPeriodo = periodoMedicamento === filtroPeriodo;
+          const periodoAtividade = obterPeriodoDoHorario(atividade.horario);
+          passaPeriodo = periodoAtividade === filtroPeriodo;
         }
 
-        return passaStatus && passaResidente && passaPeriodo;
+        // Filtro por tipo
+        const passatipo = filtroTipo === TIPOS_ATIVIDADE.TODOS || atividade.tipo === filtroTipo;
+
+        return passaStatus && passaResidente && passaPeriodo && passatipo;
       })
-      .map(medicamento => {
-        // Adicionar statusFinal ao medicamento para uso na renderização
-        const statusFinal = obterStatusDinamico(medicamento);
+      .map(atividade => {
+        // Adicionar statusFinal à atividade para uso na renderização
+        const statusFinal = obterStatusDinamico(atividade);
         return {
-          ...medicamento,
+          ...atividade,
           statusFinal: statusFinal
         };
       })
@@ -323,17 +355,17 @@ const Atividades = () => {
       });
   };
 
-  // Função para agrupar medicamentos por período
-  const agruparPorPeriodo = (medicamentos) => {
+  // Função para agrupar atividades por período
+  const agruparPorPeriodo = (atividades) => {
     const grupos = {
       [PERIODOS.MANHA]: [],
       [PERIODOS.TARDE]: [],
       [PERIODOS.NOITE]: []
     };
 
-    medicamentos.forEach(medicamento => {
-      const periodo = obterPeriodoDoHorario(medicamento.horario);
-      grupos[periodo].push(medicamento);
+    atividades.forEach(atividade => {
+      const periodo = obterPeriodoDoHorario(atividade.horario);
+      grupos[periodo].push(atividade);
     });
 
     return grupos;
@@ -385,30 +417,30 @@ const Atividades = () => {
     }
   };
 
-  // ===== FUNÇÕES DE CONTROLE DE ADMINISTRAÇÃO =====
+  // ===== FUNÇÕES DE CONTROLE DE CONCLUSÃO =====
 
-  // Alternar status de administração do medicamento
-  const toggleAdministracao = (id) => {
-    setMedicamentos(anterior => anterior.map(med => {
-      if (med.id === id) {
-        // Se está como administrado, volta para pendente
-        // Se não está como administrado, marca como administrado
-        const novoStatus = med.status === 'concluido' ? 'pendente' : 'concluido';
-        return { ...med, status: novoStatus };
+  // Alternar status de conclusão da atividade
+  const toggleConclusao = (id) => {
+    setAtividades(anterior => anterior.map(atv => {
+      if (atv.id === id) {
+        // Se está como concluído, volta para pendente
+        // Se não está como concluído, marca como concluído
+        const novoStatus = atv.status === 'concluido' ? 'pendente' : 'concluido';
+        return { ...atv, status: novoStatus };
       }
-      return med;
+      return atv;
     }));
   };
 
   // ===== RENDERIZAÇÃO DOS COMPONENTES =====
 
   // Renderizar header do card baseado no status
-  const renderizarHeaderCard = (medicamento) => {
+  const renderizarHeaderCard = (atividade) => {
     // Usar statusFinal que combina status manual e dinâmico
-    const status = medicamento.statusFinal;
+    const status = atividade.statusFinal;
 
     const configs = {
-      [STATUS.ADMINISTRADO]: {
+      [STATUS.CONCLUIDO]: {
         corBolinha: 'bg-green-500',
         corCheckbox: 'text-green-500 border-green-500',
         corTarja: 'bg-green-500 text-white',
@@ -441,13 +473,13 @@ const Atividades = () => {
         {/* Lado esquerdo: bolinha e horário */}
         <div className="flex items-center">
           <div className={`w-3 h-3 rounded-full ${config.corBolinha} mr-3`}></div>
-          <span className="font-semibold">{medicamento.horario}</span>
+          <span className="font-semibold">{atividade.horario}</span>
         </div>
 
         {/* Lado direito: checkbox e tarja de status */}
         <div className="flex items-center gap-2">
           <button
-            onClick={() => toggleAdministracao(medicamento.id)}
+            onClick={() => toggleConclusao(atividade.id)}
             className={`w-6 h-6 border-2 rounded flex items-center justify-center ${config.corCheckbox} hover:opacity-80 transition-opacity`}
           >
             {config.icone}
@@ -505,7 +537,7 @@ const Atividades = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       // Forçar re-render para atualizar status dinâmicos
-      setMedicamentos(anterior => [...anterior]);
+      setAtividades(anterior => [...anterior]);
     }, 60000); // Atualizar a cada minuto
 
     return () => clearInterval(interval);
@@ -526,6 +558,9 @@ const Atividades = () => {
       if (periodoRef.current && !periodoRef.current.contains(event.target)) {
         setFiltroPeriodoAberto(false);
       }
+      if (tipoRef.current && !tipoRef.current.contains(event.target)) {
+        setFiltroTipoAberto(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -536,16 +571,11 @@ const Atividades = () => {
 
   // ===== DADOS COMPUTADOS =====
 
-  const medicamentosFiltrados = obterMedicamentosFiltrados();
-  const medicamentosAgrupados = agruparPorPeriodo(medicamentosFiltrados);
+  const atividadesFiltradas = obterAtividadesFiltradas();
+  const atividadesAgrupadas = agruparPorPeriodo(atividadesFiltradas);
   const residentes = obterResidentes();
-  const totalAdministracoes = medicamentosFiltrados.length;
-
-  // Verificar se há filtros ativos (agora SEMPRE inclui a tarja de data)
-  const temFiltrosAtivos = filtroStatus !== STATUS.TODOS ||
-    filtroResidente !== 'todos' ||
-    filtroPeriodo !== PERIODOS.TODOS ||
-    true; // Sempre true para garantir que a tarja de data apareça
+  const tipos = obterTipos();
+  const totalAtividades = atividadesFiltradas.length;
 
   return (
     <div className="flex min-h-screen bg-odara-offwhite">
@@ -565,7 +595,7 @@ const Atividades = () => {
               </Link>
               {/* Título da página */}
               <h1 className="text-2xl lg:text-3xl font-bold text-odara-dark">
-                Checklist de Medicamentos
+                Checklist de Atividades
               </h1>
             </div>
           </div>
@@ -586,6 +616,7 @@ const Atividades = () => {
                 setFiltroStatusAberto(!filtroStatusAberto);
                 setFiltroResidenteAberto(false);
                 setFiltroPeriodoAberto(false);
+                setFiltroTipoAberto(false);
                 setCalendarioAberto(false);
               }}
             >
@@ -631,6 +662,7 @@ const Atividades = () => {
                 setFiltroResidenteAberto(!filtroResidenteAberto);
                 setFiltroStatusAberto(false);
                 setFiltroPeriodoAberto(false);
+                setFiltroTipoAberto(false);
                 setCalendarioAberto(false);
               }}
             >
@@ -709,6 +741,7 @@ const Atividades = () => {
                 setFiltroStatusAberto(false);
                 setFiltroResidenteAberto(false);
                 setFiltroPeriodoAberto(false);
+                setFiltroTipoAberto(false);
               }}
             >
               <FaFilter className="text-odara-accent mr-2" />
@@ -763,6 +796,7 @@ const Atividades = () => {
                 setFiltroPeriodoAberto(!filtroPeriodoAberto);
                 setFiltroStatusAberto(false);
                 setFiltroResidenteAberto(false);
+                setFiltroTipoAberto(false);
                 setCalendarioAberto(false);
               }}
             >
@@ -793,14 +827,74 @@ const Atividades = () => {
             )}
           </div>
 
+          {/* Filtro de Tipo */}
+          <div className="relative" ref={tipoRef}>
+            <button
+              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 font-medium hover:border-odara-primary transition text-sm
+                ${filtroTipoAberto
+                  ? 'border-odara-primary text-gray-700'
+                  : 'border-odara-primary/40 text-gray-700'}
+                `}
+              onClick={() => {
+                setFiltroTipoAberto(!filtroTipoAberto);
+                setFiltroStatusAberto(false);
+                setFiltroResidenteAberto(false);
+                setFiltroPeriodoAberto(false);
+                setCalendarioAberto(false);
+              }}
+            >
+              <FaFilter className="text-odara-accent mr-2" />
+              Tipo
+            </button>
+            {filtroTipoAberto && (
+              <div className="absolute mt-2 w-25 bg-white rounded-lg shadow-lg !border-2 !border-odara-primary z-10 max-h-60 overflow-y-auto">
+                <button
+                  onClick={() => {
+                    setFiltroTipo(TIPOS_ATIVIDADE.TODOS);
+                    setFiltroTipoAberto(false);
+                  }}
+
+                  className={`block w-full text-left px-2 py-2 text-sm hover:!bg-odara-primary/20 
+                    ${filtroTipo === TIPOS_ATIVIDADE.TODOS
+                      ? '!bg-odara-accent/20 font-semibold'
+                      : '!border-1 !border-odara-contorno !rounded'
+                    }
+                  `}
+                >
+                  Todos
+                </button>
+
+                {tipos.map(tipo => (
+                  <button
+                    key={tipo}
+                    onClick={() => {
+                      setFiltroTipo(tipo);
+                      setFiltroTipoAberto(false);
+                    }}
+
+                    className={`block w-full text-left px-2 py-2 text-sm hover:!bg-odara-primary/20 
+                      ${filtroTipo === tipo
+                        ? '!bg-odara-accent/20 font-semibold'
+                        : '!border-1 !border-odara-contorno !rounded'
+                      }
+                    `}
+                  >
+                    {tipo}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Botão Limpar Todos os Filtros */}
-          {(filtroData.toDateString() !== new Date().toDateString() || filtroResidente !== 'todos' || filtroStatus !== 'todos' || filtroPeriodo !== 'todos') && (
+          {(filtroData.toDateString() !== new Date().toDateString() || filtroResidente !== 'todos' || filtroStatus !== 'todos' || filtroPeriodo !== 'todos' || filtroTipo !== 'todos') && (
             <button
               onClick={() => {
+                setFiltroStatus('todos');
+                setFiltroResidente('todos');
                 setFiltroData(new Date());
                 setFiltroPeriodo('todos');
-                setFiltroResidente('todos');
-                setFiltroStatus('todos');
+                setFiltroTipo('todos');
               }}
 
               className="flex items-center bg-odara-accent text-odara-white rounded-full px-3 py-2 shadow-sm font-medium hover:bg-odara-secondary transition text-sm"
@@ -811,7 +905,7 @@ const Atividades = () => {
         </div>
 
         {/* ===== CONTAINER PRINCIPAL DO CHECKLIST ===== */}
-        <div className="w-full max-w-4xl bg-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-4 lg:p-6 relative">
+        <div className="w-full bg-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-4 lg:p-6 relative mx-2 md:mx-4 lg:mx-6">
 
           {/* ===== CONTROLES DE DATA E TÍTULO ===== */}
           <div className="flex flex-col items-center mb-4">
@@ -824,12 +918,14 @@ const Atividades = () => {
               >
                 <FaChevronLeft />
               </button>
+
               <button
                 onClick={irParaHoje}
                 className="bg-odara-accent hover:bg-odara-secondary text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm lg:text-base"
               >
                 Ir para Hoje
               </button>
+
               <button
                 onClick={irParaAmanha}
                 className="p-2 text-odara-accent hover:text-odara-secondary transition-colors"
@@ -839,13 +935,13 @@ const Atividades = () => {
               </button>
             </div>
 
-            {/* Título e contador - Centralizado */}
+            {/* ===== TÍTULO E CONTADOR ===== */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4 text-center sm:text-left">
-              <h2 className="text-xl lg:text-2xl font-bold text-odara-dark">
+              <h2 className="text-2xl lg:text-4xl md:text-4xl font-bold text-odara-dark">
                 {ROTULOS_STATUS[filtroStatus]}
               </h2>
               <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
-                Total: {totalAdministracoes}
+                Total: {totalAtividades}
               </span>
             </div>
 
@@ -876,177 +972,90 @@ const Atividades = () => {
                   Período: {ROTULOS_PERIODOS[filtroPeriodo]}
                 </span>
               )}
+
+              {/* Tarja de Tipos (apenas quando filtrado) */}
+              {filtroTipo !== TIPOS_ATIVIDADE.TODOS && (
+                <span className="bg-odara-secondary/20 text-odara-secondary font-bold px-3 py-1 rounded-full text-sm">
+                  Tipo: {ROTULOS_TIPOS[filtroTipo]}
+                </span>
+              )}
             </div>
           </div>
 
-          {/* ===== LISTA DE MEDICAMENTOS ===== */}
+          {/* ===== LISTA DE ATIVIDADES ===== */}
           <div
             id="checklist-container"
-            className="max-h-[500px] lg:max-h-[600px] overflow-y-auto"
-            onScroll={verificarScroll}
+            className="w-full flex-1 overflow-y-auto mx-auto"
           >
-            {/* Botão para voltar ao topo (fixo na tela mas alinhado com o container) */}
-            <button
-              onClick={scrollParaTopo}
-              className={`fixed bottom-6 bg-odara-accent text-white p-3 rounded-full shadow-lg hover:bg-odara-secondary transition-all duration-300 z-50 ${mostrarScrollTop
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-4 pointer-events-none'
-                }`}
-              title="Voltar ao topo"
-              style={{
-                right: `calc(50% - ${document.querySelector('.w-full.max-w-4xl') ? document.querySelector('.w-full.max-w-4xl').offsetWidth / 2 : 0}px)`
-              }}
-            >
-              <FaArrowUp />
-            </button>
-
-            {/* Renderização condicional baseada no filtro de período */}
-            {filtroPeriodo === PERIODOS.TODOS ? (
-              // ===== MODO TODOS OS PERÍODOS =====
-              <div>
-                {/* Período da Manhã */}
-                {medicamentosAgrupados[PERIODOS.MANHA].length > 0 && (
-                  <>
-                    {renderizarDivisorPeriodo(PERIODOS.MANHA)}
-                    <div className="space-y-4">
-                      {medicamentosAgrupados[PERIODOS.MANHA].map(medicamento => (
-                        <div key={medicamento.id} className="bg-white rounded-lg shadow-md border border-gray-200">
-                          {renderizarHeaderCard(medicamento)}
-                          <div className="p-4">
-                            <p className="mb-2">
-                              <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
-                            </p>
-                            <p className="mb-2">
-                              <strong>Dose:</strong> {medicamento.dose}
-                            </p>
-                            {medicamento.observacoes && (
-                              <p>
-                                <strong>Obs:</strong> {medicamento.observacoes}
-                              </p>
-                            )}
-                          </div>
-                          <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
-                            <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
-                              {medicamento.residente}
-                            </span>
-                            <span className="mx-2">•</span>
-                            <span className="text-odara-name">{medicamento.local}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-
-                {/* Período da Tarde */}
-                {medicamentosAgrupados[PERIODOS.TARDE].length > 0 && (
-                  <>
-                    {renderizarDivisorPeriodo(PERIODOS.TARDE)}
-                    <div className="space-y-4">
-                      {medicamentosAgrupados[PERIODOS.TARDE].map(medicamento => (
-                        <div key={medicamento.id} className="bg-white rounded-lg shadow-md border border-gray-200">
-                          {renderizarHeaderCard(medicamento)}
-                          <div className="p-4">
-                            <p className="mb-2">
-                              <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
-                            </p>
-                            <p className="mb-2">
-                              <strong>Dose:</strong> {medicamento.dose}
-                            </p>
-                            {medicamento.observacoes && (
-                              <p>
-                                <strong>Obs:</strong> {medicamento.observacoes}
-                              </p>
-                            )}
-                          </div>
-                          <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
-                            <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
-                              {medicamento.residente}
-                            </span>
-                            <span className="mx-2">•</span>
-                            <span className="text-odara-name">{medicamento.local}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-
-                {/* Período da Noite */}
-                {medicamentosAgrupados[PERIODOS.NOITE].length > 0 && (
-                  <>
-                    {renderizarDivisorPeriodo(PERIODOS.NOITE)}
-                    <div className="space-y-4">
-                      {medicamentosAgrupados[PERIODOS.NOITE].map(medicamento => (
-                        <div key={medicamento.id} className="bg-white rounded-lg shadow-md border border-gray-200">
-                          {renderizarHeaderCard(medicamento)}
-                          <div className="p-4">
-                            <p className="mb-2">
-                              <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
-                            </p>
-                            <p className="mb-2">
-                              <strong>Dose:</strong> {medicamento.dose}
-                            </p>
-                            {medicamento.observacoes && (
-                              <p>
-                                <strong>Obs:</strong> {medicamento.observacoes}
-                              </p>
-                            )}
-                          </div>
-                          <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
-                            <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
-                              {medicamento.residente}
-                            </span>
-                            <span className="mx-2">•</span>
-                            <span className="text-odara-name">{medicamento.local}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
+            {totalAtividades === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500">Nenhuma atividade encontrada para os filtros selecionados.</p>
               </div>
             ) : (
-              // ===== MODO PERÍODO ESPECÍFICO =====
               <div className="space-y-4">
-                {medicamentosFiltrados.map(medicamento => (
-                  <div key={medicamento.id} className="bg-white rounded-lg shadow-md border border-gray-200">
-                    {renderizarHeaderCard(medicamento)}
-                    <div className="p-4">
-                      <p className="mb-2">
-                        <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
-                      </p>
-                      <p className="mb-2">
-                        <strong>Dose:</strong> {medicamento.dose}
-                      </p>
-                      {medicamento.observacoes && (
-                        <p>
-                          <strong>Obs:</strong> {medicamento.observacoes}
-                        </p>
-                      )}
+                {Object.entries(atividadesAgrupadas).map(([periodo, atividadesPeriodo]) => (
+                  atividadesPeriodo.length > 0 && (
+                    <div key={periodo}>
+                      {renderizarDivisorPeriodo(periodo)}
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        {atividadesPeriodo.map(atividade => (
+                          <div
+                            key={atividade.id}
+                            className="bg-white rounded-lg shadow-md border border-gray-200"
+                          >
+                            {/* Header do card com status */}
+                            {renderizarHeaderCard(atividade)}
+
+                            {/* Corpo do card */}
+                            <div className="p-4">
+                              <p className="mb-2">
+                                <strong>{atividade.nomeAtividade}</strong>
+                              </p>
+
+                              <p className="mb-2">
+                                <strong>Tipo:</strong> {atividade.tipo}
+                              </p>
+
+                              <p className="mb-2">
+                                <strong>Duração:</strong> {atividade.duracao}
+                              </p>
+
+                              {atividade.observacoes && (
+                                <p className="mb-2">
+                                  <strong>Observações:</strong> {atividade.observacoes}
+                                </p>
+                              )}
+                            </div>
+
+                            <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
+                              <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
+                                {atividade.residente}
+                              </span>
+                              <span className="mx-2">•</span>
+                              <span className="text-odara-name">{atividade.local}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
-                      <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
-                        {medicamento.residente}
-                      </span>
-                      <span className="mx-2">•</span>
-                      <span className="text-odara-name">{medicamento.local}</span>
-                    </div>
-                  </div>
+                  )
                 ))}
               </div>
             )}
-
-            {/* Mensagem quando não há medicamentos */}
-            {medicamentosFiltrados.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                <p>Nenhuma administração encontrada para os filtros selecionados.</p>
-              </div>
-            )}
           </div>
+
+          {/* ===== BOTÃO SCROLL TO TOP ===== */}
+          {mostrarScrollTop && (
+            <button
+              onClick={scrollParaTopo}
+              className="fixed bottom-6 right-6 w-12 h-12 bg-odara-accent text-white rounded-full shadow-lg hover:bg-odara-secondary transition-colors flex items-center justify-center z-50"
+            >
+              <FaArrowUp size={18} />
+            </button>
+          )}
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

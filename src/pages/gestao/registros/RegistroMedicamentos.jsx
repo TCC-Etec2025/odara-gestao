@@ -1989,7 +1989,7 @@ const RegistroMedicamentos = () => {
             </div>
 
             {/* Calendário */}
-            <div className="flex justify-center border-2 border-odara-primary rounded-xl shadow-sm overflow-hidden max-w-full mx-auto">
+            <div className="flex justify-center border-2 border-odara-primary rounded-xl shadow-sm overflow-hidden max-w-2/3 mx-auto">
               <Calendar
                 value={dataAtual}
                 onChange={setDataAtual}
@@ -2003,7 +2003,7 @@ const RegistroMedicamentos = () => {
 
             {/* Legenda de Estatísticas */}
             <div className="grid grid-cols-1 mt-6 p-3 bg-odara-offwhite rounded-lg max-w-full mx-auto">
-              <h5 className='font-bold text-odara-dark text-center mb-2 text-sm sm:text-base'>
+              <h5 className='font-bold text-odara-dark text-center mb-4 text-sm sm:text-base'>
                 {filtroDia
                   ? `Estatísticas para ${formatarDataLegenda(filtroDia)}`
                   : 'Selecione uma data para visualizar as estatísticas'

@@ -830,6 +830,7 @@ const Medicamentos = () => {
               >
                 Ir para Hoje
               </button>
+
               <button
                 onClick={irParaAmanha}
                 className="p-2 text-odara-accent hover:text-odara-secondary transition-colors"
@@ -844,6 +845,7 @@ const Medicamentos = () => {
               <h2 className="text-xl lg:text-2xl font-bold text-odara-dark">
                 {ROTULOS_STATUS[filtroStatus]}
               </h2>
+
               <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
                 Total: {totalAdministracoes}
               </span>
@@ -916,19 +918,23 @@ const Medicamentos = () => {
                             <p className="mb-2">
                               <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
                             </p>
+
                             <p className="mb-2">
                               <strong>Dose:</strong> {medicamento.dose}
                             </p>
+
                             {medicamento.observacoes && (
-                              <p>
-                                <strong>Obs:</strong> {medicamento.observacoes}
+                              <p className='mb-2'>
+                                <strong>Observação:</strong> {medicamento.observacoes}
                               </p>
                             )}
                           </div>
+
                           <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
                             <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
                               {medicamento.residente}
                             </span>
+
                             <span className="mx-2">•</span>
                             <span className="text-odara-name">{medicamento.local}</span>
                           </div>
@@ -950,19 +956,23 @@ const Medicamentos = () => {
                             <p className="mb-2">
                               <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
                             </p>
+
                             <p className="mb-2">
                               <strong>Dose:</strong> {medicamento.dose}
                             </p>
+
                             {medicamento.observacoes && (
-                              <p>
-                                <strong>Obs:</strong> {medicamento.observacoes}
+                              <p className="mb-2">
+                                <strong>Observação:</strong> {medicamento.observacoes}
                               </p>
                             )}
                           </div>
+
                           <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
                             <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
                               {medicamento.residente}
                             </span>
+
                             <span className="mx-2">•</span>
                             <span className="text-odara-name">{medicamento.local}</span>
                           </div>
@@ -984,12 +994,14 @@ const Medicamentos = () => {
                             <p className="mb-2">
                               <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
                             </p>
+
                             <p className="mb-2">
                               <strong>Dose:</strong> {medicamento.dose}
                             </p>
+
                             {medicamento.observacoes && (
-                              <p>
-                                <strong>Obs:</strong> {medicamento.observacoes}
+                              <p className="mb-2">
+                                <strong>Observação:</strong> {medicamento.observacoes}
                               </p>
                             )}
                           </div>
