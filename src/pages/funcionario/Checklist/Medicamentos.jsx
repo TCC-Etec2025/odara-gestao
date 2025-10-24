@@ -416,6 +416,7 @@ const Medicamentos = () => {
         texto: 'Concluído',
         icone: <FaCheck size={10} />
       },
+
       [STATUS.PENDENTE]: {
         corBolinha: 'bg-yellow-500',
         corCheckbox: 'text-yellow-500 border-yellow-500',
@@ -424,6 +425,7 @@ const Medicamentos = () => {
         texto: 'Pendente',
         icone: <FaTimes size={10} />
       },
+
       [STATUS.ATRASADO]: {
         corBolinha: 'bg-red-500',
         corCheckbox: 'text-red-500 border-red-500',
@@ -447,7 +449,7 @@ const Medicamentos = () => {
         {/* Lado direito: checkbox e tarja de status */}
         <div className="flex items-center gap-2">
           <button
-            onClick={() => toggleAdministracao(medicamento.id)}
+            onClick={() => toggleConclusao(medicamento.id)}
             className={`w-6 h-6 border-2 rounded flex items-center justify-center ${config.corCheckbox} hover:opacity-80 transition-opacity`}
           >
             {config.icone}
@@ -563,6 +565,7 @@ const Medicamentos = () => {
               >
                 <FaArrowLeft size={20} />
               </Link>
+
               {/* Título da página */}
               <h1 className="text-2xl lg:text-3xl font-bold text-odara-dark">
                 Checklist de Medicamentos
@@ -811,7 +814,7 @@ const Medicamentos = () => {
         </div>
 
         {/* ===== CONTAINER PRINCIPAL DO CHECKLIST ===== */}
-        <div className="w-full max-w-4xl bg-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-4 lg:p-6 relative">
+        <div className="w-full bg-white border-l-4 border-odara-primary rounded-2xl shadow-lg p-4 lg:p-6 relative mx-2 md:mx-4 lg:mx-6">
 
           {/* ===== CONTROLES DE DATA E TÍTULO ===== */}
           <div className="flex flex-col items-center mb-4">
@@ -824,6 +827,7 @@ const Medicamentos = () => {
               >
                 <FaChevronLeft />
               </button>
+
               <button
                 onClick={irParaHoje}
                 className="bg-odara-accent hover:bg-odara-secondary text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm lg:text-base"
@@ -840,9 +844,9 @@ const Medicamentos = () => {
               </button>
             </div>
 
-            {/* Título e contador - Centralizado */}
+            {/* ===== TÍTULO E CONTADOR ===== */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4 text-center sm:text-left">
-              <h2 className="text-xl lg:text-2xl font-bold text-odara-dark">
+              <h2 className="text-2xl lg:text-4xl md:text-4xl font-bold text-odara-dark">
                 {ROTULOS_STATUS[filtroStatus]}
               </h2>
 
@@ -884,178 +888,74 @@ const Medicamentos = () => {
           {/* ===== LISTA DE MEDICAMENTOS ===== */}
           <div
             id="checklist-container"
-            className="max-h-[500px] lg:max-h-[600px] overflow-y-auto"
-            onScroll={verificarScroll}
+            className="w-full flex-1 overflow-y-auto mx-auto"
           >
-            {/* Botão para voltar ao topo (fixo na tela mas alinhado com o container) */}
-            <button
-              onClick={scrollParaTopo}
-              className={`fixed bottom-6 bg-odara-accent text-white p-3 rounded-full shadow-lg hover:bg-odara-secondary transition-all duration-300 z-50 ${mostrarScrollTop
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-4 pointer-events-none'
-                }`}
-              title="Voltar ao topo"
-              style={{
-                right: `calc(50% - ${document.querySelector('.w-full.max-w-4xl') ? document.querySelector('.w-full.max-w-4xl').offsetWidth / 2 : 0}px)`
-              }}
-            >
-              <FaArrowUp />
-            </button>
-
-            {/* Renderização condicional baseada no filtro de período */}
-            {filtroPeriodo === PERIODOS.TODOS ? (
-              // ===== MODO TODOS OS PERÍODOS =====
-              <div>
-                {/* Período da Manhã */}
-                {medicamentosAgrupados[PERIODOS.MANHA].length > 0 && (
-                  <>
-                    {renderizarDivisorPeriodo(PERIODOS.MANHA)}
-                    <div className="space-y-4">
-                      {medicamentosAgrupados[PERIODOS.MANHA].map(medicamento => (
-                        <div key={medicamento.id} className="bg-white rounded-lg shadow-md border border-gray-200">
-                          {renderizarHeaderCard(medicamento)}
-                          <div className="p-4">
-                            <p className="mb-2">
-                              <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
-                            </p>
-
-                            <p className="mb-2">
-                              <strong>Dose:</strong> {medicamento.dose}
-                            </p>
-
-                            {medicamento.observacoes && (
-                              <p className='mb-2'>
-                                <strong>Observação:</strong> {medicamento.observacoes}
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
-                            <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
-                              {medicamento.residente}
-                            </span>
-
-                            <span className="mx-2">•</span>
-                            <span className="text-odara-name">{medicamento.local}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-
-                {/* Período da Tarde */}
-                {medicamentosAgrupados[PERIODOS.TARDE].length > 0 && (
-                  <>
-                    {renderizarDivisorPeriodo(PERIODOS.TARDE)}
-                    <div className="space-y-4">
-                      {medicamentosAgrupados[PERIODOS.TARDE].map(medicamento => (
-                        <div key={medicamento.id} className="bg-white rounded-lg shadow-md border border-gray-200">
-                          {renderizarHeaderCard(medicamento)}
-                          <div className="p-4">
-                            <p className="mb-2">
-                              <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
-                            </p>
-
-                            <p className="mb-2">
-                              <strong>Dose:</strong> {medicamento.dose}
-                            </p>
-
-                            {medicamento.observacoes && (
-                              <p className="mb-2">
-                                <strong>Observação:</strong> {medicamento.observacoes}
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
-                            <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
-                              {medicamento.residente}
-                            </span>
-
-                            <span className="mx-2">•</span>
-                            <span className="text-odara-name">{medicamento.local}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-
-                {/* Período da Noite */}
-                {medicamentosAgrupados[PERIODOS.NOITE].length > 0 && (
-                  <>
-                    {renderizarDivisorPeriodo(PERIODOS.NOITE)}
-                    <div className="space-y-4">
-                      {medicamentosAgrupados[PERIODOS.NOITE].map(medicamento => (
-                        <div key={medicamento.id} className="bg-white rounded-lg shadow-md border border-gray-200">
-                          {renderizarHeaderCard(medicamento)}
-                          <div className="p-4">
-                            <p className="mb-2">
-                              <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
-                            </p>
-
-                            <p className="mb-2">
-                              <strong>Dose:</strong> {medicamento.dose}
-                            </p>
-
-                            {medicamento.observacoes && (
-                              <p className="mb-2">
-                                <strong>Observação:</strong> {medicamento.observacoes}
-                              </p>
-                            )}
-                          </div>
-                          <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
-                            <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
-                              {medicamento.residente}
-                            </span>
-                            <span className="mx-2">•</span>
-                            <span className="text-odara-name">{medicamento.local}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
+            {totalAdministracoes === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500">Nenhuma medicamento encontrada para os filtros selecionados.</p>
               </div>
             ) : (
-              // ===== MODO PERÍODO ESPECÍFICO =====
               <div className="space-y-4">
-                {medicamentosFiltrados.map(medicamento => (
-                  <div key={medicamento.id} className="bg-white rounded-lg shadow-md border border-gray-200">
-                    {renderizarHeaderCard(medicamento)}
-                    <div className="p-4">
-                      <p className="mb-2">
-                        <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
-                      </p>
-                      <p className="mb-2">
-                        <strong>Dose:</strong> {medicamento.dose}
-                      </p>
-                      {medicamento.observacoes && (
-                        <p>
-                          <strong>Obs:</strong> {medicamento.observacoes}
-                        </p>
-                      )}
+                {Object.entries(medicamentosAgrupados).map(([periodo, medicamentosPeriodo]) => (
+                  medicamentosPeriodo.length > 0 && (
+                    <div key={periodo}>
+                      {/* Divisor por Período */}
+                      {renderizarDivisorPeriodo(periodo)}
+
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        {medicamentosPeriodo.map(medicamento => (
+                          <div
+                            key={medicamento.id}
+                            className="bg-white rounded-lg shadow-md border border-gray-200"
+                          >
+                            {/* Header do card com status */}
+                            <div className=''>
+                              {renderizarHeaderCard(medicamento)}
+                            </div>
+
+                            {/* Corpo do card */}
+                            <div className="flex-grow-1 p-4">
+                              <p className="mb-2">
+                                <strong>Medicamento:</strong> {medicamento.nomeMedicamento} {medicamento.dosagem}
+                              </p>
+
+                              <p className="mb-2">
+                                <strong>Dose:</strong> {medicamento.dose}
+                              </p>
+
+                              {medicamento.observacoes && (
+                                <p className="mb-2">
+                                  <strong>Observações:</strong> {medicamento.observacoes}
+                                </p>
+                              )}
+                            </div>
+
+                            <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
+                              <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
+                                {medicamento.residente}
+                              </span>
+                              <span className="mx-2">•</span>
+                              <span className="text-odara-name">{medicamento.local}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
-                      <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
-                        {medicamento.residente}
-                      </span>
-                      <span className="mx-2">•</span>
-                      <span className="text-odara-name">{medicamento.local}</span>
-                    </div>
-                  </div>
+                  )
                 ))}
               </div>
             )}
-
-            {/* Mensagem quando não há medicamentos */}
-            {medicamentosFiltrados.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                <p>Nenhuma administração encontrada para os filtros selecionados.</p>
-              </div>
-            )}
           </div>
+
+          {/* ===== BOTÃO SCROLL TO TOP ===== */}
+          {mostrarScrollTop && (
+            <button
+              onClick={scrollParaTopo}
+              className="fixed bottom-6 right-6 w-12 h-12 bg-odara-accent text-white rounded-full shadow-lg hover:bg-odara-secondary transition-colors flex items-center justify-center z-50"
+            >
+              <FaArrowUp size={18} />
+            </button>
+          )}
         </div>
       </div>
     </div>

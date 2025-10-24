@@ -448,6 +448,7 @@ const Atividades = () => {
         texto: 'Concluído',
         icone: <FaCheck size={10} />
       },
+
       [STATUS.PENDENTE]: {
         corBolinha: 'bg-yellow-500',
         corCheckbox: 'text-yellow-500 border-yellow-500',
@@ -456,6 +457,7 @@ const Atividades = () => {
         texto: 'Pendente',
         icone: <FaTimes size={10} />
       },
+
       [STATUS.ATRASADO]: {
         corBolinha: 'bg-red-500',
         corCheckbox: 'text-red-500 border-red-500',
@@ -593,6 +595,7 @@ const Atividades = () => {
               >
                 <FaArrowLeft size={20} />
               </Link>
+              
               {/* Título da página */}
               <h1 className="text-2xl lg:text-3xl font-bold text-odara-dark">
                 Checklist de Atividades
@@ -936,10 +939,11 @@ const Atividades = () => {
             </div>
 
             {/* ===== TÍTULO E CONTADOR ===== */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 my-4 text-center sm:text-left">
               <h2 className="text-2xl lg:text-4xl md:text-4xl font-bold text-odara-dark">
                 {ROTULOS_STATUS[filtroStatus]}
               </h2>
+
               <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
                 Total: {totalAtividades}
               </span>
@@ -996,7 +1000,9 @@ const Atividades = () => {
                 {Object.entries(atividadesAgrupadas).map(([periodo, atividadesPeriodo]) => (
                   atividadesPeriodo.length > 0 && (
                     <div key={periodo}>
+                      {/* Divisor por Período */}
                       {renderizarDivisorPeriodo(periodo)}
+
                       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                         {atividadesPeriodo.map(atividade => (
                           <div
