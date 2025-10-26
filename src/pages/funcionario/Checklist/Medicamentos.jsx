@@ -80,7 +80,6 @@ const Medicamentos = () => {
       dataAdministracao: new Date() // Hoje
     },
 
-    // Medicamento para 3 dias atrás (exemplo de data passada)
     {
       id: 6,
       residente: "Carlos Mendes",
@@ -92,27 +91,11 @@ const Medicamentos = () => {
       local: "Quarto 4C-2",
       periodo: "manha",
       status: "pendente",
-      dataAdministracao: new Date(new Date().setDate(new Date().getDate() - 3)) // 3 dias atrás
+      dataAdministracao: new Date(new Date().setDate(new Date().getDate() - 3)) // 3 dias atrás (exemplo de data passada - dias)
     },
 
-    // Medicamento para 1 mês depois (exemplo de data futura)
     {
       id: 7,
-      residente: "Beatriz Hishimoto",
-      nomeMedicamento: "Levotiroxina",
-      dosagem: "50mcg",
-      dose: "1 comprimido",
-      horario: "07:00",
-      observacoes: "Em jejum, 30min antes do café",
-      local: "Quarto 3B-1",
-      periodo: "manha",
-      status: "pendente",
-      dataAdministracao: new Date(new Date().setMonth(new Date().getMonth() + 1)) // 1 mês depois
-    },
-
-    // Medicamento para 5 dias depois (exemplo de data futura próxima)
-    {
-      id: 8,
       residente: "Ricardo Almeida",
       nomeMedicamento: "AAS",
       dosagem: "100mg",
@@ -122,8 +105,22 @@ const Medicamentos = () => {
       local: "Quarto 2C-3",
       periodo: "noite",
       status: "pendente",
-      dataAdministracao: new Date(new Date().setDate(new Date().getDate() + 5)) // 5 dias depois
-    }
+      dataAdministracao: new Date(new Date().setDate(new Date().getDate() + 5)) // 5 dias depois (exemplo de data futura - dias)
+    },
+
+    {
+      id: 8,
+      residente: "Beatriz Hishimoto",
+      nomeMedicamento: "Levotiroxina",
+      dosagem: "50mcg",
+      dose: "1 comprimido",
+      horario: "07:00",
+      observacoes: "Em jejum, 30min antes do café",
+      local: "Quarto 3B-1",
+      periodo: "manha",
+      status: "pendente",
+      dataAdministracao: new Date(new Date().setMonth(new Date().getMonth() + 1)) // 1 mês depois (exemplo de data futura - meses)
+    },
   ]);
 
   // Estados para filtros
@@ -304,6 +301,7 @@ const Medicamentos = () => {
 
         return passaStatus && passaResidente && passaPeriodo;
       })
+
       .map(medicamento => {
         // Adicionar statusFinal ao medicamento para uso na renderização
         const statusFinal = obterStatusDinamico(medicamento);
@@ -312,6 +310,7 @@ const Medicamentos = () => {
           statusFinal: statusFinal
         };
       })
+
       .sort((a, b) => {
         // Ordenar primariamente por horário (mais cedo primeiro)
         const horaA = extrairHora(a.horario);
@@ -348,16 +347,16 @@ const Medicamentos = () => {
     setFiltroData(ontem);
   };
 
+  // Voltar para hoje
+  const irParaHoje = () => {
+    setFiltroData(new Date());
+  };
+
   // Ir para o dia seguinte
   const irParaAmanha = () => {
     const amanha = new Date(filtroData);
     amanha.setDate(amanha.getDate() + 1);
     setFiltroData(amanha);
-  };
-
-  // Voltar para hoje
-  const irParaHoje = () => {
-    setFiltroData(new Date());
   };
 
   // ===== FUNÇÕES DE CONTROLE DE SCROLL =====
@@ -396,6 +395,7 @@ const Medicamentos = () => {
         const novoStatus = med.status === 'concluido' ? 'pendente' : 'concluido';
         return { ...med, status: novoStatus };
       }
+
       return med;
     }));
   };
@@ -412,7 +412,7 @@ const Medicamentos = () => {
         corBolinha: 'bg-green-500',
         corCheckbox: 'text-green-500 border-green-500',
         corTarja: 'bg-green-500 text-white',
-        corFundo: 'bg-green-50',
+        corFundo: 'bg-green-50 border-b border-green-200',
         texto: 'Concluído',
         icone: <FaCheck size={10} />
       },
@@ -421,7 +421,7 @@ const Medicamentos = () => {
         corBolinha: 'bg-yellow-500',
         corCheckbox: 'text-yellow-500 border-yellow-500',
         corTarja: 'bg-yellow-500 text-white',
-        corFundo: 'bg-yellow-50',
+        corFundo: 'bg-yellow-50 border-b border-yellow-200',
         texto: 'Pendente',
         icone: <FaTimes size={10} />
       },
@@ -430,7 +430,7 @@ const Medicamentos = () => {
         corBolinha: 'bg-red-500',
         corCheckbox: 'text-red-500 border-red-500',
         corTarja: 'bg-red-500 text-white',
-        corFundo: 'bg-red-50',
+        corFundo: 'bg-red-50 border-b border-red-200',
         texto: 'Atrasado',
         icone: <FaTimes size={10} />
       }
@@ -449,11 +449,12 @@ const Medicamentos = () => {
         {/* Lado direito: checkbox e tarja de status */}
         <div className="flex items-center gap-2">
           <button
-            onClick={() => toggleConclusao(medicamento.id)}
+            onClick={() => toggleAdministracao(medicamento.id)}
             className={`w-6 h-6 border-2 rounded flex items-center justify-center ${config.corCheckbox} hover:opacity-80 transition-opacity`}
           >
             {config.icone}
           </button>
+
           <span className={`text-xs px-2 py-1 rounded-full ${config.corTarja}`}>
             {config.texto}
           </span>
@@ -543,12 +544,6 @@ const Medicamentos = () => {
   const residentes = obterResidentes();
   const totalAdministracoes = medicamentosFiltrados.length;
 
-  // Verificar se há filtros ativos (agora SEMPRE inclui a tarja de data)
-  const temFiltrosAtivos = filtroStatus !== STATUS.TODOS ||
-    filtroResidente !== 'todos' ||
-    filtroPeriodo !== PERIODOS.TODOS ||
-    true; // Sempre true para garantir que a tarja de data apareça
-
   return (
     <div className="flex min-h-screen bg-odara-offwhite">
       <div className="flex-1 flex flex-col items-center px-4 py-6 lg:px-10 lg:py-10">
@@ -556,7 +551,7 @@ const Medicamentos = () => {
         {/* ===== CABEÇALHO DA PÁGINA ===== */}
         <div className="w-full max-w-6xl mb-6">
           <div className="flex items-center justify-center">
-            {/* Título da página - Sempre centralizado */}
+            {/* Título da página */}
             <div className="flex items-center">
               {/* Botão voltar */}
               <Link
@@ -579,11 +574,12 @@ const Medicamentos = () => {
           {/* Filtro de Status */}
           <div className="relative" ref={statusRef}>
             <button
-              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 
+              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 font-medium hover:border-odara-primary transition text-sm
                 ${filtroStatusAberto
                   ? 'border-odara-primary text-gray-700'
-                  : 'border-odara-primary/40 text-gray-700'} 
-              font-medium hover:border-odara-primary transition text-sm`}
+                  : 'border-odara-primary/40 text-gray-700'
+                } 
+              `}
 
               onClick={() => {
                 setFiltroStatusAberto(!filtroStatusAberto);
@@ -760,8 +756,10 @@ const Medicamentos = () => {
               className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 font-medium hover:border-odara-primary transition text-sm
                 ${filtroPeriodoAberto
                   ? 'border-odara-primary text-gray-700'
-                  : 'border-odara-primary/40 text-gray-700'}
-                `}
+                  : 'border-odara-primary/40 text-gray-700'
+                }
+              `}
+
               onClick={() => {
                 setFiltroPeriodoAberto(!filtroPeriodoAberto);
                 setFiltroStatusAberto(false);
@@ -845,11 +843,13 @@ const Medicamentos = () => {
             </div>
 
             {/* ===== TÍTULO E CONTADOR ===== */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 my-4 text-center sm:text-left">
+              {/* Título */}
               <h2 className="text-2xl lg:text-4xl md:text-4xl font-bold text-odara-dark">
                 {ROTULOS_STATUS[filtroStatus]}
               </h2>
 
+              {/* Contador */}
               <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
                 Total: {totalAdministracoes}
               </span>
@@ -892,6 +892,7 @@ const Medicamentos = () => {
           >
             {totalAdministracoes === 0 ? (
               <div className="text-center py-8">
+                {/* Se não houver nenhuma atividade para o filtro/dia */}
                 <p className="text-gray-500">Nenhuma medicamento encontrada para os filtros selecionados.</p>
               </div>
             ) : (
@@ -930,7 +931,8 @@ const Medicamentos = () => {
                               )}
                             </div>
 
-                            <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
+                            {/* Footer do card */}
+                            <div className="px-4 py-3 bg-gray-50 border-t border-gray-200 rounded-b-lg text-odara-dark text-sm">
                               <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
                                 {medicamento.residente}
                               </span>

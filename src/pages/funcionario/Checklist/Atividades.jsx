@@ -7,14 +7,14 @@ import 'react-calendar/dist/Calendar.css';
 const Atividades = () => {
   // ===== ESTADOS DO COMPONENTE =====
 
-  // Estado para dados de exemplo (simulando dados do backend)
+  // Estado para dados de exemplo
   const [atividades, setAtividades] = useState([
-    // Atividades para hoje (data atual)
+    // Atividades com datas dependentes da data atual (para fins de demonstração)
     {
       id: 1,
       residente: "João Santos",
       nomeAtividade: "Fisioterapia",
-      tipo: "Fisioterapia",
+      tipo: "Física",
       horario: "09:00",
       duracao: "45 minutos",
       observacoes: "Exercícios de fortalecimento muscular",
@@ -28,7 +28,7 @@ const Atividades = () => {
       id: 2,
       residente: "Maria Oliveira",
       nomeAtividade: "Hidroginástica",
-      tipo: "Atividade Física",
+      tipo: "Física",
       horario: "10:30",
       duracao: "1 hora",
       observacoes: "Piscina aquecida",
@@ -42,7 +42,7 @@ const Atividades = () => {
       id: 3,
       residente: "Ana Fagundes",
       nomeAtividade: "Oficina de Artes",
-      tipo: "Atividade Criativa",
+      tipo: "Criativa",
       horario: "14:00",
       duracao: "1 hora",
       observacoes: "Pintura em tela",
@@ -56,7 +56,7 @@ const Atividades = () => {
       id: 4,
       residente: "Felipe Silva",
       nomeAtividade: "Jogos de Memória",
-      tipo: "Atividade Cognitiva",
+      tipo: "Cognitiva",
       horario: "15:30",
       duracao: "30 minutos",
       observacoes: "Cartas e quebra-cabeças",
@@ -70,7 +70,7 @@ const Atividades = () => {
       id: 5,
       residente: "Roberta Costa",
       nomeAtividade: "Musicoterapia",
-      tipo: "Atividade Musical",
+      tipo: "Musical",
       horario: "16:00",
       duracao: "45 minutos",
       observacoes: "Instrumentos musicais",
@@ -84,7 +84,7 @@ const Atividades = () => {
       id: 6,
       residente: "Carlos Mendes",
       nomeAtividade: "Cinema",
-      tipo: "Atividade Recreativa",
+      tipo: "Recreativa",
       horario: "19:30",
       duracao: "2 horas",
       observacoes: "Sessão de filme semanal",
@@ -94,34 +94,32 @@ const Atividades = () => {
       dataAtividade: new Date() // Hoje
     },
 
-    // Atividade para 3 dias atrás (exemplo de data passada)
     {
       id: 7,
       residente: "Beatriz Hishimoto",
       nomeAtividade: "Yoga",
-      tipo: "Atividade Física",
+      tipo: "Física",
       horario: "08:00",
       duracao: "1 hora",
       observacoes: "Alongamento e relaxamento",
       local: "Sala de Yoga",
       periodo: "manha",
       status: "pendente",
-      dataAtividade: new Date(new Date().setDate(new Date().getDate() - 3)) // 3 dias atrás
+      dataAtividade: new Date(new Date().setDate(new Date().getDate() - 3)) // 3 dias atrás (exemplo de data passada - dias)
     },
 
-    // Atividade para 5 dias depois (exemplo de data futura)
     {
       id: 8,
       residente: "Ricardo Almeida",
       nomeAtividade: "Bingo",
-      tipo: "Atividade Social",
+      tipo: "Social",
       horario: "17:00",
       duracao: "1 hora",
       observacoes: "Prêmios para os vencedores",
       local: "Salão Principal",
       periodo: "tarde",
       status: "pendente",
-      dataAtividade: new Date(new Date().setDate(new Date().getDate() + 5)) // 5 dias depois
+      dataAtividade: new Date(new Date().setDate(new Date().getDate() + 5)) // 5 dias depois (exemplo de data futura - dias)
     }
   ]);
 
@@ -192,12 +190,12 @@ const Atividades = () => {
   // Opções de tipo de atividade
   const TIPOS_ATIVIDADE = {
     TODOS: 'todos',
-    ATIVIDADE_FISICA: 'Atividade Física',
-    ATIVIDADE_COGNITIVA: 'Atividade Cognitiva',
-    ATIVIDADE_CRIATIVA: 'Atividade Criativa',
-    ATIVIDADE_MUSICAL: 'Atividade Musical',
-    ATIVIDADE_SOCIAL: 'Atividade Social',
-    ATIVIDADE_RECREATIVA: 'Atividade Recreativa'
+    ATIVIDADE_FISICA: 'fisica',
+    ATIVIDADE_COGNITIVA: 'cognitiva',
+    ATIVIDADE_CRIATIVA: 'criativa',
+    ATIVIDADE_MUSICAL: 'musical',
+    ATIVIDADE_SOCIAL: 'social',
+    ATIVIDADE_RECREATIVA: 'recreativa'
   };
 
   // Rótulos para exibição dos tipos
@@ -247,7 +245,7 @@ const Atividades = () => {
   };
 
   // Função para verificar se o horário já passou (considerando 10 minutos de tolerância)
-  const verificarHorarioPassou = (horario, dataAtividade) => {
+  const verificarHorarioPassou = (horario, duracao, dataAtividade) => {
     const agora = new Date();
     const [hora, minuto] = horario.split(':').map(Number);
 
@@ -255,10 +253,41 @@ const Atividades = () => {
     const horarioAtividade = new Date(dataAtividade);
     horarioAtividade.setHours(hora, minuto, 0, 0);
 
-    // Adicionar 10 minutos de tolerância
-    const horarioComTolerancia = new Date(horarioAtividade.getTime() + 10 * 60 * 1000);
+    // Converter duração string para milissegundos
+    const duracaoEmMs = converterDuracaoParaMs(duracao);
 
-    return agora > horarioComTolerancia;
+    // Calcular horário final (início + duração + 10min tolerância)
+    const horarioFinal = new Date(horarioAtividade.getTime() + duracaoEmMs + 10 * 60 * 1000);
+
+    return agora > horarioFinal;
+  };
+
+  // Função auxiliar para converter string de duração para milissegundos
+  const converterDuracaoParaMs = (duracao) => {
+    if (!duracao) return 0;
+    const duracaoLower = duracao.toLowerCase();
+
+    // Extrair números da string
+    const numeros = duracaoLower.match(/\d+/g);
+    if (!numeros || numeros.length === 0) return 0;
+
+    const valor = parseInt(numeros[0]);
+
+    // Verificar unidades de tempo
+    if (duracaoLower.includes('hora') || duracaoLower.includes('hr') || duracaoLower.includes('h')) {
+      return valor * 60 * 60 * 1000; // horas para ms
+    } 
+    
+    else if (duracaoLower.includes('minuto') || duracaoLower.includes('min') || duracaoLower.includes('m')) {
+      return valor * 60 * 1000; // minutos para ms
+    } 
+    
+    else if (duracaoLower.includes('segundo') || duracaoLower.includes('seg') || duracaoLower.includes('s')) {
+      return valor * 1000; // segundos para ms
+    }
+
+    // Se não reconhecer a unidade, assume que são minutos
+    return valor * 60 * 1000;
   };
 
   // Função para verificar se a atividade é para a data selecionada
@@ -282,7 +311,7 @@ const Atividades = () => {
     // Verificar se a atividade é para a data selecionada
     if (ehParaDataSelecionada(atividade.dataAtividade)) {
       // Se é para hoje e o horário já passou, marca como atrasado
-      if (verificarHorarioPassou(atividade.horario, atividade.dataAtividade)) {
+      if (verificarHorarioPassou(atividade.horario, atividade.duracao, atividade.dataAtividade)) {
         return 'atrasado';
       }
       // Se é para hoje mas o horário ainda não passou, mantém como pendente
@@ -336,6 +365,7 @@ const Atividades = () => {
 
         return passaStatus && passaResidente && passaPeriodo && passatipo;
       })
+
       .map(atividade => {
         // Adicionar statusFinal à atividade para uso na renderização
         const statusFinal = obterStatusDinamico(atividade);
@@ -344,6 +374,7 @@ const Atividades = () => {
           statusFinal: statusFinal
         };
       })
+
       .sort((a, b) => {
         // Ordenar primariamente por horário (mais cedo primeiro)
         const horaA = extrairHora(a.horario);
@@ -380,16 +411,16 @@ const Atividades = () => {
     setFiltroData(ontem);
   };
 
+  // Voltar para hoje
+  const irParaHoje = () => {
+    setFiltroData(new Date());
+  };
+
   // Ir para o dia seguinte
   const irParaAmanha = () => {
     const amanha = new Date(filtroData);
     amanha.setDate(amanha.getDate() + 1);
     setFiltroData(amanha);
-  };
-
-  // Voltar para hoje
-  const irParaHoje = () => {
-    setFiltroData(new Date());
   };
 
   // ===== FUNÇÕES DE CONTROLE DE SCROLL =====
@@ -428,6 +459,7 @@ const Atividades = () => {
         const novoStatus = atv.status === 'concluido' ? 'pendente' : 'concluido';
         return { ...atv, status: novoStatus };
       }
+
       return atv;
     }));
   };
@@ -444,7 +476,7 @@ const Atividades = () => {
         corBolinha: 'bg-green-500',
         corCheckbox: 'text-green-500 border-green-500',
         corTarja: 'bg-green-500 text-white',
-        corFundo: 'bg-green-50',
+        corFundo: 'bg-green-50 border-b border-green-200',
         texto: 'Concluído',
         icone: <FaCheck size={10} />
       },
@@ -453,7 +485,7 @@ const Atividades = () => {
         corBolinha: 'bg-yellow-500',
         corCheckbox: 'text-yellow-500 border-yellow-500',
         corTarja: 'bg-yellow-500 text-white',
-        corFundo: 'bg-yellow-50',
+        corFundo: 'bg-yellow-50 border-b border-yellow-200',
         texto: 'Pendente',
         icone: <FaTimes size={10} />
       },
@@ -462,7 +494,7 @@ const Atividades = () => {
         corBolinha: 'bg-red-500',
         corCheckbox: 'text-red-500 border-red-500',
         corTarja: 'bg-red-500 text-white',
-        corFundo: 'bg-red-50',
+        corFundo: 'bg-red-50 border-b border-red-200',
         texto: 'Atrasado',
         icone: <FaTimes size={10} />
       }
@@ -486,6 +518,7 @@ const Atividades = () => {
           >
             {config.icone}
           </button>
+
           <span className={`text-xs px-2 py-1 rounded-full ${config.corTarja}`}>
             {config.texto}
           </span>
@@ -586,7 +619,7 @@ const Atividades = () => {
         {/* ===== CABEÇALHO DA PÁGINA ===== */}
         <div className="w-full max-w-6xl mb-6">
           <div className="flex items-center justify-center">
-            {/* Título da página - Sempre centralizado */}
+            {/* Título da página */}
             <div className="flex items-center">
               {/* Botão voltar */}
               <Link
@@ -595,7 +628,7 @@ const Atividades = () => {
               >
                 <FaArrowLeft size={20} />
               </Link>
-              
+
               {/* Título da página */}
               <h1 className="text-2xl lg:text-3xl font-bold text-odara-dark">
                 Checklist de Atividades
@@ -609,11 +642,12 @@ const Atividades = () => {
           {/* Filtro de Status */}
           <div className="relative" ref={statusRef}>
             <button
-              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 
+              className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 font-medium hover:border-odara-primary transition text-sm
                 ${filtroStatusAberto
                   ? 'border-odara-primary text-gray-700'
-                  : 'border-odara-primary/40 text-gray-700'} 
-              font-medium hover:border-odara-primary transition text-sm`}
+                  : 'border-odara-primary/40 text-gray-700'
+                } 
+              `}
 
               onClick={() => {
                 setFiltroStatusAberto(!filtroStatusAberto);
@@ -793,8 +827,10 @@ const Atividades = () => {
               className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 font-medium hover:border-odara-primary transition text-sm
                 ${filtroPeriodoAberto
                   ? 'border-odara-primary text-gray-700'
-                  : 'border-odara-primary/40 text-gray-700'}
-                `}
+                  : 'border-odara-primary/40 text-gray-700'
+                }
+              `}
+
               onClick={() => {
                 setFiltroPeriodoAberto(!filtroPeriodoAberto);
                 setFiltroStatusAberto(false);
@@ -836,8 +872,10 @@ const Atividades = () => {
               className={`flex items-center bg-white rounded-full px-3 py-2 shadow-sm border-2 font-medium hover:border-odara-primary transition text-sm
                 ${filtroTipoAberto
                   ? 'border-odara-primary text-gray-700'
-                  : 'border-odara-primary/40 text-gray-700'}
-                `}
+                  : 'border-odara-primary/40 text-gray-700'
+                }
+              `}
+
               onClick={() => {
                 setFiltroTipoAberto(!filtroTipoAberto);
                 setFiltroStatusAberto(false);
@@ -940,10 +978,12 @@ const Atividades = () => {
 
             {/* ===== TÍTULO E CONTADOR ===== */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 my-4 text-center sm:text-left">
+              {/* Título */}
               <h2 className="text-2xl lg:text-4xl md:text-4xl font-bold text-odara-dark">
                 {ROTULOS_STATUS[filtroStatus]}
               </h2>
 
+              {/* Contador */}
               <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
                 Total: {totalAtividades}
               </span>
@@ -993,6 +1033,7 @@ const Atividades = () => {
           >
             {totalAtividades === 0 ? (
               <div className="text-center py-8">
+                {/* Se não houver nenhuma atividade para o filtro/dia */}
                 <p className="text-gray-500">Nenhuma atividade encontrada para os filtros selecionados.</p>
               </div>
             ) : (
@@ -1033,7 +1074,8 @@ const Atividades = () => {
                               )}
                             </div>
 
-                            <div className="px-4 py-3 bg-gray-50 rounded-b-lg text-odara-dark text-sm">
+                            {/* Footer do card */}
+                            <div className="px-4 py-3 bg-gray-50 border-t border-gray-200 rounded-b-lg text-odara-dark text-sm">
                               <span className="bg-odara-accent text-white px-3 py-1 rounded-full">
                                 {atividade.residente}
                               </span>
